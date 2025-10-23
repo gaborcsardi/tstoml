@@ -4,12 +4,18 @@
 \name{tstoml-package}
 \alias{tstoml}
 \alias{tstoml-package}
-\title{tstoml: What the Package Does (One Line, Title Case)}
+\title{tstoml: Edit TOML files}
 \description{
-What the package does (one paragraph).
+Extract and manipulate parts of TOML files without touching the formatting and comments in other parts.
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com}
+\strong{Maintainer}: Gábor Csárdi \email{csardi.gabor@gmail.com}
+
+Other contributors:
+\itemize{
+  \item Posit Software, PBC (\href{https://ror.org/03wc8by49}{ROR}) [copyright holder, funder]
+  \item  tree-sitter-json authors [contributor]
+}
 
 }
 \keyword{internal}
