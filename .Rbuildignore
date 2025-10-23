@@ -16,3 +16,4 @@
 ^README\.html$
 ^man/_cache$
 ^quickstart.Rmd$
+^[.]?air[.]toml$
