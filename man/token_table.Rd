@@ -50,5 +50,5 @@ the parser to recover from errors.
 Get the token table of a TOML file or string
 }
 \examples{
-token_table(text = "{ \"a\": true, \"b\": [1, 2, 3] }")
+token_table(text = toml_example_text())
 }

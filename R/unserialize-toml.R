@@ -1,3 +1,6 @@
+#' Unserialize TOML to R objects
+#'
+#' @inheritParams token_table
 #' @export
 
 unserialize_toml <- function(
@@ -62,39 +65,11 @@ unserialize_element <- function(token_table, id) {
     table = {
       unserialize_table(token_table, id)
     },
+    table_array_element = {
+      unserialize_table_array_element(token_table, id)
+    },
     stop("Unsupported token type: ", token_table$type[id])
   )
-}
-
-new_table <- function(name) {
-  list(
-    values = structure(list(), names = character()),
-    name = name
-  )
-}
-
-set_table_element <- function(table, elt) {
-  for (i in seq_along(elt$name[-1])) {
-    idx <- elt$name[1:i]
-    if (is.null(table$values[[idx]])) {
-      table$values[[idx]] <- list()
-    } else if (!is.list(table$values[[idx]])) {
-      stop(
-        "Cannot create sub-table under non-table key: ",
-        paste(idx, collapse = ".")
-      )
-    }
-  }
-  if (is.null(table$values[[elt$name]])) {
-    table$values[[elt$name]] <- elt$value
-  } else if (!is.list(table$values[[elt$name]])) {
-    stop("Duplicate key in table: ", paste(elt$name, collapse = "."), ".")
-  } else if (length(elt$value) == 0) {
-    # nothing to do, table is already there
-  } else {
-    stop("Duplicate key in table: ", paste(elt$name, collapse = "."), ".")
-  }
-  table
 }
 
 # the document is a table without a name
@@ -336,6 +311,21 @@ unserialize_table <- function(token_table, id) {
   for (i in children) {
     elem <- unserialize_element(token_table, i)
     result <- set_table_element(result, elem)
+  }
+  result
+}
+
+unserialize_table_array_element <- function(token_table, id) {
+  stopifnot(token_table$type[id] == "table_array_element")
+  children <- token_table$children[[id]]
+  name <- unserialize_key(token_table, children[2])
+  children <- children[
+    !token_table$type[children] %in% c("[[", "]]", "comment")
+  ][-1]
+  result <- new_array(name)
+  for (child in children) {
+    elem <- unserialize_element(token_table, child)
+    result <- set_array_element(result, elem)
   }
   result
 }

@@ -616,3 +616,36 @@ apple.taste.sweet = true
     unserialize_toml(text = txt13)
   })
 })
+
+test_that("inline table", {
+  txt <-
+    'name = { first = "Tom", last = "Preston-Werner" }
+point = { x = 1, y = 2 }
+animal = { type.name = "pug" }
+'
+  expect_snapshot({
+    unserialize_toml(text = txt)
+  })
+})
+
+test_that("inline tables are self-contained", {
+  txt <- '
+[product]
+type = { name = "Nail" }
+type.edible = false  # INVALID
+'
+  expect_snapshot(error = TRUE, {
+    unserialize_toml(text = txt)
+  })
+})
+
+test_that("inline tables cannot add keys or sub-tables to an existing table", {
+  txt <-
+    '[product]
+type.name = "Nail"
+type = { edible = false }  # INVALID
+'
+  expect_snapshot(error = TRUE, {
+    unserialize_toml(text = txt)
+  })
+})

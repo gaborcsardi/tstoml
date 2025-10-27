@@ -56,7 +56,7 @@ sexpr_toml <- function(
 #'
 #' @export
 #' @examples
-#' token_table(text = "{ \"a\": true, \"b\": [1, 2, 3] }")
+#' token_table(text = toml_example_text())
 
 token_table <- function(
   file = NULL,
@@ -134,6 +134,57 @@ token_table <- function(
   tab
 }
 
+new_table <- function(name) {
+  list(
+    values = structure(list(), names = character()),
+    name = name
+  )
+}
+
+set_table_element <- function(table, elt, inline = FALSE) {
+  for (i in seq_along(elt$name[-1])) {
+    idx <- elt$name[1:i]
+    if (is.null(table$values[[idx]])) {
+      table$values[[idx]] <- list()
+    } else if (inline) {
+      stop(
+        "Cannot add keys or sub-tables to inline tables."
+      )
+    } else if (!is.list(table$values[[idx]])) {
+      stop(
+        "Cannot create sub-table under non-table key: ",
+        paste(idx, collapse = ".")
+      )
+    } else if (inherits(table$values[[idx]], "final")) {
+      stop(
+        "Cannot add keys or sub-tables to inline tables."
+      )
+    }
+  }
+  if (is.null(table$values[[elt$name]])) {
+    table$values[[elt$name]] <- elt$value
+  } else if (!is.list(table$values[[elt$name]])) {
+    stop("Duplicate key in table: ", paste(elt$name, collapse = "."), ".")
+  } else if (length(elt$value) == 0) {
+    # nothing to do, table is already there
+  } else {
+    stop("Duplicate key in table: ", paste(elt$name, collapse = "."), ".")
+  }
+  table
+}
+
+new_array <- function(name) {
+  list(
+    values = list(),
+    name = name
+  )
+}
+
+set_array_element <- function(array, elt) {
+  array$values[[length(array$values) + 1L]] <- elt$value
+  array
+}
+
 check_element <- function(token_table, id) {
   switch(
     token_table$type[id],
@@ -148,6 +199,9 @@ check_element <- function(token_table, id) {
     },
     table = {
       check_table(token_table, id)
+    },
+    table_array_element = {
+      check_table_array_element(token_table, id)
     },
     "placeholder"
   )
@@ -200,8 +254,9 @@ check_inline_table <- function(token_table, id) {
   result <- new_table(NA_character_)
   for (child in children) {
     elem <- check_element(token_table, child)
-    result <- set_table_element(result, elem)
+    result <- set_table_element(result, elem, inline = TRUE)
   }
+  class(result$values) <- c("final", class(result))
   as.list(result$values)
 }
 
@@ -213,9 +268,24 @@ check_table <- function(token_table, id) {
     !token_table$type[children] %in% c("[", "]", "comment")
   ][-1]
   result <- new_table(name)
-  for (i in children) {
-    elem <- check_element(token_table, i)
+  for (child in children) {
+    elem <- check_element(token_table, child)
     result <- set_table_element(result, elem)
+  }
+  result
+}
+
+check_table_array_element <- function(token_table, id) {
+  stopifnot(token_table$type[id] == "table_array_element")
+  children <- token_table$children[[id]]
+  name <- unserialize_key(token_table, children[2])
+  children <- children[
+    !token_table$type[children] %in% c("[[", "]]", "comment")
+  ][-1]
+  result <- new_array(name)
+  for (child in children) {
+    elem <- check_element(token_table, child)
+    result <- set_array_element(result, elem)
   }
   result
 }
@@ -224,7 +294,7 @@ check_table <- function(token_table, id) {
 #' @inheritParams token_table
 #' @export
 #' @examples
-#' syntax_tree_toml(text = "{ \"a\": true, \"b\": [1, 2, 3] }")
+#' syntax_tree_toml(text = toml_example_text())
 
 syntax_tree_toml <- function(
   file = NULL,
@@ -311,19 +381,6 @@ syntax_tree_toml <- function(
 #'   column of `matched_captured` refers to the `id` column of `patterns`.
 #'
 #' @export
-#' @examples
-#' # A very simple TOML document
-#' txt <- c(
-#'   "[owner]",
-#'   "name = "Tom Preston-Werner",
-#'   "dob = 1979-05-27T07:32:00-08:00"
-#' )
-#'
-#' # Take a look at it
-#' load_toml(text = txt) |> format_selected()
-#'
-#' # Select all pairs where the value is a number
-#' TODO
 
 query_toml <- function(
   file = NULL,

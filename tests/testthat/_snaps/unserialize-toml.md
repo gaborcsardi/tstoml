@@ -725,3 +725,48 @@
       
       
 
+# inline table
+
+    Code
+      unserialize_toml(text = txt)
+    Output
+      $name
+      $name$first
+      [1] "Tom"
+      
+      $name$last
+      [1] "Preston-Werner"
+      
+      
+      $point
+      $point$x
+      [1] 1
+      
+      $point$y
+      [1] 2
+      
+      
+      $animal
+      $animal$type
+      $animal$type$name
+      [1] "pug"
+      
+      
+      
+
+# inline tables are self-contained
+
+    Code
+      unserialize_toml(text = txt)
+    Condition
+      Error in `set_table_element()`:
+      ! Cannot add keys or sub-tables to inline tables.
+
+# inline tables cannot add keys or sub-tables to an existing table
+
+    Code
+      unserialize_toml(text = txt)
+    Condition
+      Error in `set_table_element()`:
+      ! Duplicate key in table: type.
+
