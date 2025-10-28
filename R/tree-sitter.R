@@ -208,6 +208,17 @@ create_sub_tables_table <- function(doc, key) {
   doc
 }
 
+create_sub_tables_array <- function(doc, key) {
+  doc <- create_sub_tables(doc, key)
+  k <- key[[length(key)]]
+  if (!is.null(doc$env[[k]])) {
+    if (!inherits(doc$env[[k]], "table_array_element")) {
+      stop("Cannot redefine array of tables: ", paste(key, collapse = "."), ".")
+    }
+  }
+  doc
+}
+
 # document -> pair
 # table -> pair
 # table_array_element -> pair
@@ -301,16 +312,21 @@ chk_add_table <- function(token_table, id, doc, final = FALSE) {
 
 chk_add_table_array_element <- function(token_table, id, doc) {
   stopifnot(token_table$type[id] == "table_array_element")
-  warning("TODO: chk_add_table_array_element not implemented yet")
-  return()
   children <- token_table$children[[id]]
   key <- unserialize_key(token_table, children[2])
   doc <- create_sub_tables_array(doc, key)
+
+  k <- key[[length(key)]]
+  arr <- doc$env[[k]] %||% structure(list(), class = "table_array_element")
+  arr[[length(arr) + 1L]] <- new_env("table")
+  doc$env[[k]] <- arr
+
   children <- children[
     !token_table$type[children] %in% c("[[", "]]", "comment")
   ][-1]
-  k <- key[[length(key)]]
-  tab <- list(new_env("table"))
+  for (i in seq_along(children)) {
+    chk_add_pair(token_table, children[i], arr[[length(arr)]])
+  }
 
   invisible()
 }

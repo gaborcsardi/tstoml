@@ -775,19 +775,14 @@
     Code
       unserialize_toml(text = txt)
     Condition
-      Warning in `chk_add_table_array_element()`:
-      TODO: chk_add_table_array_element not implemented yet
-      Warning in `chk_add_table_array_element()`:
-      TODO: chk_add_table_array_element not implemented yet
-      Warning in `chk_add_table_array_element()`:
-      TODO: chk_add_table_array_element not implemented yet
+      Warning in `unserialize_table_array_element()`:
+      TODO: unserialize_table_array_element called
+      Warning in `unserialize_table_array_element()`:
+      TODO: unserialize_table_array_element called
+      Warning in `unserialize_table_array_element()`:
+      TODO: unserialize_table_array_element called
     Output
       $products
-      $products[[1]]
-      [1] "Hammer"
-      
-      $products[[2]]
-      [1] 738594937
-      
+      named list()
       
 

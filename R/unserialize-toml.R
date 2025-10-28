@@ -92,18 +92,6 @@ set_table_element <- function(table, elt, inline = FALSE) {
   table
 }
 
-new_array <- function(name) {
-  list(
-    values = list(),
-    name = name
-  )
-}
-
-set_array_element <- function(array, elt) {
-  array$values[[length(array$values) + 1L]] <- elt$value
-  array
-}
-
 # the document is a table without a name
 unserialize_document <- function(token_table, id) {
   stopifnot(token_table$type[id] == "document")
@@ -340,8 +328,8 @@ unserialize_table <- function(token_table, id) {
     !token_table$type[children] %in% c("[", "]", "comment")
   ][-1]
   result <- new_table(name)
-  for (i in children) {
-    elem <- unserialize_element(token_table, i)
+  for (child in children) {
+    elem <- unserialize_element(token_table, child)
     result <- set_table_element(result, elem)
   }
   result
@@ -349,15 +337,8 @@ unserialize_table <- function(token_table, id) {
 
 unserialize_table_array_element <- function(token_table, id) {
   stopifnot(token_table$type[id] == "table_array_element")
+  warning("TODO: unserialize_table_array_element called")
   children <- token_table$children[[id]]
   name <- unserialize_key(token_table, children[2])
-  children <- children[
-    !token_table$type[children] %in% c("[[", "]]", "comment")
-  ][-1]
-  result <- new_array(name)
-  for (child in children) {
-    elem <- unserialize_element(token_table, child)
-    result <- set_array_element(result, elem)
-  }
-  result
+  new_table(name)
 }
