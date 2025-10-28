@@ -63,16 +63,16 @@
     Code
       unserialize_toml(text = txt)
     Condition
-      Error in `set_table_element()`:
-      ! Duplicate key in table: name.
+      Error in `create_sub_keys()`:
+      ! Duplicate key in document: name.
 
 ---
 
     Code
       unserialize_toml(text = txt2)
     Condition
-      Error in `set_table_element()`:
-      ! Duplicate key in table: spelling.
+      Error in `create_sub_keys()`:
+      ! Duplicate key in document: spelling.
 
 # more keys
 
@@ -162,7 +162,7 @@
     Code
       unserialize_toml(text = txt)
     Condition
-      Error in `set_table_element()`:
+      Error in `create_sub_keys()`:
       ! Cannot create sub-table under non-table key: fruit.apple
 
 # offset date-time
@@ -583,16 +583,16 @@
     Code
       unserialize_toml(text = txt5)
     Condition
-      Error in `set_table_element()`:
-      ! Duplicate key in table: fruit.
+      Error in `create_sub_tables()`:
+      ! Cannot redefine table: fruit.
 
 ---
 
     Code
       unserialize_toml(text = txt6)
     Condition
-      Error in `set_table_element()`:
-      ! Duplicate key in table: fruit.apple.
+      Error in `create_sub_tables()`:
+      ! Duplicate key in document: fruit.apple.
 
 ---
 
@@ -759,14 +759,14 @@
     Code
       unserialize_toml(text = txt)
     Condition
-      Error in `set_table_element()`:
-      ! Cannot add keys or sub-tables to inline tables.
+      Error in `create_sub_keys()`:
+      ! Cannot create sub-table under non-table key: type
 
 # inline tables cannot add keys or sub-tables to an existing table
 
     Code
       unserialize_toml(text = txt)
     Condition
-      Error in `set_table_element()`:
-      ! Duplicate key in table: type.
+      Error in `create_sub_keys()`:
+      ! Duplicate key in document: type.
 

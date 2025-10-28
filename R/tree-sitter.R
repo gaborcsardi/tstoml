@@ -4,7 +4,9 @@
 #'
 #' @export
 #' @examples
-#' sexpr_toml(text = "[owner]\nname = \"Tom Preston-Werner\"\nemail = \"tom@github.com\"")
+#' sexpr_toml(
+#'   text = "[owner]\nname = \"Tom Preston-Werner\"\nemail = \"tom@github.com\""
+#' )
 
 sexpr_toml <- function(
   file = NULL,
@@ -86,9 +88,9 @@ token_table <- function(
   tab$children <- I(unname(split(lvls, factor(tab$parent, levels = lvls))))
   attr(tab, "file") <- file
 
-  check_document(tab, 1L)
+  chk_document(tab, 1L)
 
-  # # this is a workarond for TS adding code to a non-terminal array/object node
+  # # this is a workaround for TS adding code to a non-terminal array/object node
   # tab$code[tab$type %in% c("array", "object")] <- NA_character_
 
   # if (fail_on_parse_error && (tab$has_error[1] || any(tab$is_missing))) {
@@ -146,29 +148,10 @@ set_table_element <- function(table, elt, inline = FALSE) {
     idx <- elt$name[1:i]
     if (is.null(table$values[[idx]])) {
       table$values[[idx]] <- list()
-    } else if (inline) {
-      stop(
-        "Cannot add keys or sub-tables to inline tables."
-      )
-    } else if (!is.list(table$values[[idx]])) {
-      stop(
-        "Cannot create sub-table under non-table key: ",
-        paste(idx, collapse = ".")
-      )
-    } else if (inherits(table$values[[idx]], "final")) {
-      stop(
-        "Cannot add keys or sub-tables to inline tables."
-      )
     }
   }
   if (is.null(table$values[[elt$name]])) {
     table$values[[elt$name]] <- elt$value
-  } else if (!is.list(table$values[[elt$name]])) {
-    stop("Duplicate key in table: ", paste(elt$name, collapse = "."), ".")
-  } else if (length(elt$value) == 0) {
-    # nothing to do, table is already there
-  } else {
-    stop("Duplicate key in table: ", paste(elt$name, collapse = "."), ".")
   }
   table
 }
@@ -185,110 +168,181 @@ set_array_element <- function(array, elt) {
   array
 }
 
-check_element <- function(token_table, id) {
-  switch(
-    token_table$type[id],
-    pair = {
-      check_pair(token_table, id)
-    },
-    array = {
-      check_array(token_table, id)
-    },
-    inline_table = {
-      check_inline_table(token_table, id)
-    },
-    table = {
-      check_table(token_table, id)
-    },
-    table_array_element = {
-      check_table_array_element(token_table, id)
-    },
-    "placeholder"
-  )
+# ------------------------------------------------------------------------------
+
+new_env <- function(class) {
+  env <- list(env = new.env(parent = emptyenv()))
+  class(env) <- c(class, "tstoml_env")
+  env
 }
 
-check_pair <- function(token_table, id) {
+chk_document <- function(token_table, id = 1L) {
+  stopifnot(token_table$type[id] == "document")
+  doc <- new_env("table")
+  children <- token_table$children[[id]]
+  children <- children[token_table$type[children] != "comment"]
+  for (child in children) {
+    switch(
+      token_table$type[child],
+      pair = {
+        chk_add_pair(token_table, child, doc)
+      },
+      table = {
+        chk_add_table(token_table, child, doc, final = TRUE)
+      },
+      table_array_element = {
+        chk_add_table_array_element(token_table, child, doc)
+      }
+    )
+  }
+  invisible(doc)
+}
+
+# make sure that the subtables exist, and return the final table.
+# also check for duplicate keys.
+
+create_sub_keys <- function(doc, key) {
+  for (idx in seq_along(key[-1])) {
+    k <- key[[idx]]
+    if (is.null(doc$env[[k]])) {
+      # no such subtable yet, create it
+      doc$env[[k]] <- new_env("table")
+    } else if (!inherits(doc$env[[k]], "table")) {
+      stop(
+        "Cannot create sub-table under non-table key: ",
+        paste(key[1:idx], collapse = ".")
+      )
+    }
+    doc <- doc$env[[k]]
+  }
+  k <- key[[length(key)]]
+  if (!is.null(doc$env[[k]])) {
+    stop("Duplicate key in document: ", paste(key, collapse = "."), ".")
+  }
+  doc
+}
+
+create_sub_tables <- function(doc, key) {
+  for (idx in seq_along(key[-1])) {
+    k <- key[[idx]]
+    if (is.null(doc$env[[k]])) {
+      # no such subtable yet, create it
+      doc$env[[k]] <- new_env("table")
+    } else if (!inherits(doc$env[[k]], "table")) {
+      stop(
+        "Cannot create sub-table under non-table key: ",
+        paste(key[1:idx], collapse = ".")
+      )
+    }
+    doc <- doc$env[[k]]
+  }
+  k <- key[[length(key)]]
+  if (!is.null(doc$env[[k]])) {
+    if (!inherits(doc$env[[k]], "table")) {
+      stop("Duplicate key in document: ", paste(key, collapse = "."), ".")
+    } else if (inherits(doc$env[[k]], "final_table")) {
+      stop("Cannot redefine table: ", paste(key, collapse = "."), ".")
+    }
+  }
+  doc
+}
+
+# document -> pair
+# table -> pair
+# table_array_element -> pair
+# inline_table -> pair
+
+chk_add_pair <- function(token_table, id, doc) {
   stopifnot(token_table$type[id] == "pair")
   children <- token_table$children[[id]]
   # first must be a key, second =, third the value
   key <- unserialize_key(token_table, children[1])
-  value <- check_element(token_table, children[3])
-  list(
-    name = key,
-    value = value
+  doc <- create_sub_keys(doc, key)
+  chk_value(token_table, children[3])
+  k <- key[[length(key)]]
+  doc$env[[k]] <- "ok"
+  invisible()
+}
+
+# pair -> value
+# array -> value
+
+chk_value <- function(token_table, id) {
+  switch(
+    token_table$type[id],
+    array = {
+      chk_array(token_table, id)
+    },
+    inline_table = {
+      chk_inline_table(token_table, id)
+    }
   )
+  invisible()
 }
 
-check_document <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "document")
-  children <- token_table$children[[id]]
-  children <- children[token_table$type[children] != "comment"]
-  result <- new_table(NA_character_)
-  for (child in children) {
-    elem <- check_element(token_table, child)
-    result <- set_table_element(result, elem)
-  }
-  as.list(result$values)
-}
+# value -> array
 
-check_array <- function(token_table, id) {
+chk_array <- function(token_table, id) {
   stopifnot(token_table$type[id] == "array")
+  # we need to check the array elements internally for name clashes,
+  # but everything is local to each array element, so we do not need to
+  # store anything between them
   children <- token_table$children[[id]]
-  # filter out commas
   children <- children[
     !token_table$type[children] %in% c("[", ",", "]", "comment")
   ]
-  result <- vector("list", length(children))
   for (i in seq_along(children)) {
-    result[[i]] <- check_element(token_table, children[i])
+    chk_value(token_table, children[i])
   }
-  result
+  invisible()
 }
 
-check_inline_table <- function(token_table, id) {
+# value -> inline_table
+
+chk_inline_table <- function(token_table, id) {
   stopifnot(token_table$type[id] == "inline_table")
+  # we need to check the inline table internally for name clashes,
+  # but everything is local to the inline table, so we do not need to
+  # store anything in doc
   children <- token_table$children[[id]]
   children <- children[
     !token_table$type[children] %in% c("{", ",", "}", "comment")
   ]
-  result <- new_table(NA_character_)
-  for (child in children) {
-    elem <- check_element(token_table, child)
-    result <- set_table_element(result, elem, inline = TRUE)
+  tmp <- new_env("inline_table")
+  for (i in seq_along(children)) {
+    chk_add_pair(token_table, children[i], tmp)
   }
-  class(result$values) <- c("final", class(result))
-  as.list(result$values)
+  invisible()
 }
 
-check_table <- function(token_table, id) {
+# document -> table
+
+chk_add_table <- function(token_table, id, doc, final = FALSE) {
   stopifnot(token_table$type[id] == "table")
   children <- token_table$children[[id]]
-  name <- unserialize_key(token_table, children[2])
+  key <- unserialize_key(token_table, children[2])
+  doc <- create_sub_tables(doc, key)
   children <- children[
     !token_table$type[children] %in% c("[", "]", "comment")
   ][-1]
-  result <- new_table(name)
-  for (child in children) {
-    elem <- check_element(token_table, child)
-    result <- set_table_element(result, elem)
+  tab <- new_env(c(if (final) "final_table", "table"))
+  for (i in seq_along(children)) {
+    chk_add_pair(token_table, children[i], tab)
   }
-  result
+  k <- key[[length(key)]]
+  doc$env[[k]] <- tab
+  invisible()
 }
 
-check_table_array_element <- function(token_table, id) {
+# document -> table_array_element
+
+chk_add_table_array_element <- function(token_table, id, doc) {
   stopifnot(token_table$type[id] == "table_array_element")
-  children <- token_table$children[[id]]
-  name <- unserialize_key(token_table, children[2])
-  children <- children[
-    !token_table$type[children] %in% c("[[", "]]", "comment")
-  ][-1]
-  result <- new_array(name)
-  for (child in children) {
-    elem <- check_element(token_table, child)
-    result <- set_array_element(result, elem)
-  }
-  result
+  TODO
+  invisible()
 }
+
+# ------------------------------------------------------------------------------
 
 #' Show the annotated syntax tree of a TOML file or string
 #' @inheritParams token_table
