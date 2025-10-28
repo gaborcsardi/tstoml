@@ -72,6 +72,38 @@ unserialize_element <- function(token_table, id) {
   )
 }
 
+new_table <- function(name) {
+  list(
+    values = structure(list(), names = character()),
+    name = name
+  )
+}
+
+set_table_element <- function(table, elt, inline = FALSE) {
+  for (i in seq_along(elt$name[-1])) {
+    idx <- elt$name[1:i]
+    if (is.null(table$values[[idx]])) {
+      table$values[[idx]] <- list()
+    }
+  }
+  if (is.null(table$values[[elt$name]])) {
+    table$values[[elt$name]] <- elt$value
+  }
+  table
+}
+
+new_array <- function(name) {
+  list(
+    values = list(),
+    name = name
+  )
+}
+
+set_array_element <- function(array, elt) {
+  array$values[[length(array$values) + 1L]] <- elt$value
+  array
+}
+
 # the document is a table without a name
 unserialize_document <- function(token_table, id) {
   stopifnot(token_table$type[id] == "document")

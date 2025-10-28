@@ -136,38 +136,6 @@ token_table <- function(
   tab
 }
 
-new_table <- function(name) {
-  list(
-    values = structure(list(), names = character()),
-    name = name
-  )
-}
-
-set_table_element <- function(table, elt, inline = FALSE) {
-  for (i in seq_along(elt$name[-1])) {
-    idx <- elt$name[1:i]
-    if (is.null(table$values[[idx]])) {
-      table$values[[idx]] <- list()
-    }
-  }
-  if (is.null(table$values[[elt$name]])) {
-    table$values[[elt$name]] <- elt$value
-  }
-  table
-}
-
-new_array <- function(name) {
-  list(
-    values = list(),
-    name = name
-  )
-}
-
-set_array_element <- function(array, elt) {
-  array$values[[length(array$values) + 1L]] <- elt$value
-  array
-}
-
 # ------------------------------------------------------------------------------
 
 new_env <- function(class) {
@@ -201,27 +169,6 @@ chk_document <- function(token_table, id = 1L) {
 # make sure that the subtables exist, and return the final table.
 # also check for duplicate keys.
 
-create_sub_keys <- function(doc, key) {
-  for (idx in seq_along(key[-1])) {
-    k <- key[[idx]]
-    if (is.null(doc$env[[k]])) {
-      # no such subtable yet, create it
-      doc$env[[k]] <- new_env("table")
-    } else if (!inherits(doc$env[[k]], "table")) {
-      stop(
-        "Cannot create sub-table under non-table key: ",
-        paste(key[1:idx], collapse = ".")
-      )
-    }
-    doc <- doc$env[[k]]
-  }
-  k <- key[[length(key)]]
-  if (!is.null(doc$env[[k]])) {
-    stop("Duplicate key in document: ", paste(key, collapse = "."), ".")
-  }
-  doc
-}
-
 create_sub_tables <- function(doc, key) {
   for (idx in seq_along(key[-1])) {
     k <- key[[idx]]
@@ -236,6 +183,20 @@ create_sub_tables <- function(doc, key) {
     }
     doc <- doc$env[[k]]
   }
+  doc
+}
+
+create_sub_tables_pair <- function(doc, key) {
+  doc <- create_sub_tables(doc, key)
+  k <- key[[length(key)]]
+  if (!is.null(doc$env[[k]])) {
+    stop("Duplicate key in document: ", paste(key, collapse = "."), ".")
+  }
+  doc
+}
+
+create_sub_tables_table <- function(doc, key) {
+  doc <- create_sub_tables(doc, key)
   k <- key[[length(key)]]
   if (!is.null(doc$env[[k]])) {
     if (!inherits(doc$env[[k]], "table")) {
@@ -257,7 +218,7 @@ chk_add_pair <- function(token_table, id, doc) {
   children <- token_table$children[[id]]
   # first must be a key, second =, third the value
   key <- unserialize_key(token_table, children[1])
-  doc <- create_sub_keys(doc, key)
+  doc <- create_sub_tables_pair(doc, key)
   chk_value(token_table, children[3])
   k <- key[[length(key)]]
   doc$env[[k]] <- "ok"
@@ -321,16 +282,18 @@ chk_add_table <- function(token_table, id, doc, final = FALSE) {
   stopifnot(token_table$type[id] == "table")
   children <- token_table$children[[id]]
   key <- unserialize_key(token_table, children[2])
-  doc <- create_sub_tables(doc, key)
+  tab <- new_env(c(if (final) "final_table", "table"))
+  doc <- create_sub_tables_table(doc, key)
+  k <- key[[length(key)]]
+  doc$env[[k]] <- tab
+
   children <- children[
     !token_table$type[children] %in% c("[", "]", "comment")
   ][-1]
-  tab <- new_env(c(if (final) "final_table", "table"))
   for (i in seq_along(children)) {
     chk_add_pair(token_table, children[i], tab)
   }
-  k <- key[[length(key)]]
-  doc$env[[k]] <- tab
+
   invisible()
 }
 
@@ -338,7 +301,17 @@ chk_add_table <- function(token_table, id, doc, final = FALSE) {
 
 chk_add_table_array_element <- function(token_table, id, doc) {
   stopifnot(token_table$type[id] == "table_array_element")
-  TODO
+  warning("TODO: chk_add_table_array_element not implemented yet")
+  return()
+  children <- token_table$children[[id]]
+  key <- unserialize_key(token_table, children[2])
+  doc <- create_sub_tables_array(doc, key)
+  children <- children[
+    !token_table$type[children] %in% c("[[", "]]", "comment")
+  ][-1]
+  k <- key[[length(key)]]
+  tab <- list(new_env("table"))
+
   invisible()
 }
 

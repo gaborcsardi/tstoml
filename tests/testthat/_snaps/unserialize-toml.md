@@ -63,7 +63,7 @@
     Code
       unserialize_toml(text = txt)
     Condition
-      Error in `create_sub_keys()`:
+      Error in `create_sub_tables_pair()`:
       ! Duplicate key in document: name.
 
 ---
@@ -71,7 +71,7 @@
     Code
       unserialize_toml(text = txt2)
     Condition
-      Error in `create_sub_keys()`:
+      Error in `create_sub_tables_pair()`:
       ! Duplicate key in document: spelling.
 
 # more keys
@@ -162,7 +162,7 @@
     Code
       unserialize_toml(text = txt)
     Condition
-      Error in `create_sub_keys()`:
+      Error in `create_sub_tables()`:
       ! Cannot create sub-table under non-table key: fruit.apple
 
 # offset date-time
@@ -583,7 +583,7 @@
     Code
       unserialize_toml(text = txt5)
     Condition
-      Error in `create_sub_tables()`:
+      Error in `create_sub_tables_table()`:
       ! Cannot redefine table: fruit.
 
 ---
@@ -591,7 +591,7 @@
     Code
       unserialize_toml(text = txt6)
     Condition
-      Error in `create_sub_tables()`:
+      Error in `create_sub_tables_table()`:
       ! Duplicate key in document: fruit.apple.
 
 ---
@@ -759,7 +759,7 @@
     Code
       unserialize_toml(text = txt)
     Condition
-      Error in `create_sub_keys()`:
+      Error in `create_sub_tables()`:
       ! Cannot create sub-table under non-table key: type
 
 # inline tables cannot add keys or sub-tables to an existing table
@@ -767,6 +767,27 @@
     Code
       unserialize_toml(text = txt)
     Condition
-      Error in `create_sub_keys()`:
+      Error in `create_sub_tables_pair()`:
       ! Duplicate key in document: type.
+
+# array of tables
+
+    Code
+      unserialize_toml(text = txt)
+    Condition
+      Warning in `chk_add_table_array_element()`:
+      TODO: chk_add_table_array_element not implemented yet
+      Warning in `chk_add_table_array_element()`:
+      TODO: chk_add_table_array_element not implemented yet
+      Warning in `chk_add_table_array_element()`:
+      TODO: chk_add_table_array_element not implemented yet
+    Output
+      $products
+      $products[[1]]
+      [1] "Hammer"
+      
+      $products[[2]]
+      [1] 738594937
+      
+      
 

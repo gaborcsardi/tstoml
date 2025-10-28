@@ -649,3 +649,22 @@ type = { edible = false }  # INVALID
     unserialize_toml(text = txt)
   })
 })
+
+test_that("array of tables", {
+  txt <-
+    '[[products]]
+name = "Hammer"
+sku = 738594937
+
+[[products]]  # empty table within the array
+
+[[products]]
+name = "Nail"
+sku = 284758393
+
+color = "gray"
+'
+  expect_snapshot({
+    unserialize_toml(text = txt)
+  })
+})
