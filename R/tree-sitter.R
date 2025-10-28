@@ -175,13 +175,17 @@ create_sub_tables <- function(doc, key) {
     if (is.null(doc$env[[k]])) {
       # no such subtable yet, create it
       doc$env[[k]] <- new_env("table")
-    } else if (!inherits(doc$env[[k]], "table")) {
+      doc <- doc$env[[k]]
+    } else if (inherits(doc$env[[k]], "table_array_element")) {
+      doc <- doc$env[[k]][[length(doc$env[[k]])]]
+    } else if (inherits(doc$env[[k]], "table")) {
+      doc <- doc$env[[k]]
+    } else {
       stop(
         "Cannot create sub-table under non-table key: ",
         paste(key[1:idx], collapse = ".")
       )
     }
-    doc <- doc$env[[k]]
   }
   doc
 }

@@ -786,3 +786,33 @@
       named list()
       
 
+---
+
+    Code
+      unserialize_toml(text = txt2)
+    Condition
+      Warning in `unserialize_table_array_element()`:
+      TODO: unserialize_table_array_element called
+      Warning in `unserialize_table_array_element()`:
+      TODO: unserialize_table_array_element called
+      Warning in `unserialize_table_array_element()`:
+      TODO: unserialize_table_array_element called
+      Warning in `unserialize_table_array_element()`:
+      TODO: unserialize_table_array_element called
+      Warning in `unserialize_table_array_element()`:
+      TODO: unserialize_table_array_element called
+    Output
+      $fruits
+      $fruits$physical
+      $fruits$physical$color
+      [1] "red"
+      
+      $fruits$physical$shape
+      [1] "round"
+      
+      
+      $fruits$varieties
+      named list()
+      
+      
+

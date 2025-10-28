@@ -667,4 +667,29 @@ color = "gray"
   expect_snapshot({
     unserialize_toml(text = txt)
   })
+
+  txt2 <-
+    '[[fruits]]
+name = "apple"
+
+[fruits.physical]  # subtable
+color = "red"
+shape = "round"
+
+[[fruits.varieties]]  # nested array of tables
+name = "red delicious"
+
+[[fruits.varieties]]
+name = "granny smith"
+
+
+[[fruits]]
+name = "banana"
+
+[[fruits.varieties]]
+name = "plantain"
+'
+  expect_snapshot({
+    unserialize_toml(text = txt2)
+  })
 })
