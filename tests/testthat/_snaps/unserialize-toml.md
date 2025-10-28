@@ -774,45 +774,147 @@
 
     Code
       unserialize_toml(text = txt)
-    Condition
-      Warning in `unserialize_table_array_element()`:
-      TODO: unserialize_table_array_element called
-      Warning in `unserialize_table_array_element()`:
-      TODO: unserialize_table_array_element called
-      Warning in `unserialize_table_array_element()`:
-      TODO: unserialize_table_array_element called
     Output
       $products
+      $products[[1]]
+      $products[[1]]$name
+      [1] "Hammer"
+      
+      $products[[1]]$sku
+      [1] 738594937
+      
+      
+      $products[[2]]
       named list()
+      
+      $products[[3]]
+      $products[[3]]$name
+      [1] "Nail"
+      
+      $products[[3]]$sku
+      [1] 284758393
+      
+      $products[[3]]$color
+      [1] "gray"
+      
+      
       
 
 ---
 
     Code
       unserialize_toml(text = txt2)
-    Condition
-      Warning in `unserialize_table_array_element()`:
-      TODO: unserialize_table_array_element called
-      Warning in `unserialize_table_array_element()`:
-      TODO: unserialize_table_array_element called
-      Warning in `unserialize_table_array_element()`:
-      TODO: unserialize_table_array_element called
-      Warning in `unserialize_table_array_element()`:
-      TODO: unserialize_table_array_element called
-      Warning in `unserialize_table_array_element()`:
-      TODO: unserialize_table_array_element called
     Output
       $fruits
-      $fruits$physical
-      $fruits$physical$color
+      $fruits[[1]]
+      $fruits[[1]]$name
+      [1] "apple"
+      
+      $fruits[[1]]$physical
+      $fruits[[1]]$physical$color
       [1] "red"
       
-      $fruits$physical$shape
+      $fruits[[1]]$physical$shape
       [1] "round"
       
       
-      $fruits$varieties
-      named list()
+      $fruits[[1]]$varieties
+      $fruits[[1]]$varieties[[1]]
+      $fruits[[1]]$varieties[[1]]$name
+      [1] "red delicious"
+      
+      
+      $fruits[[1]]$varieties[[2]]
+      $fruits[[1]]$varieties[[2]]$name
+      [1] "granny smith"
+      
+      
+      
+      
+      $fruits[[2]]
+      $fruits[[2]]$name
+      [1] "banana"
+      
+      $fruits[[2]]$varieties
+      $fruits[[2]]$varieties[[1]]
+      $fruits[[2]]$varieties[[1]]$name
+      [1] "plantain"
+      
+      
+      
+      
+      
+
+---
+
+    Code
+      unserialize_toml(text = txt3)
+    Condition
+      Error in `create_sub_tables_array()`:
+      ! Cannot redefine array of tables: fruit.
+
+---
+
+    Code
+      unserialize_toml(text = txt4)
+    Condition
+      Error in `create_sub_tables_array()`:
+      ! Cannot redefine array of tables: fruits.
+
+---
+
+    Code
+      unserialize_toml(text = txt5)
+    Condition
+      Error in `create_sub_tables_table()`:
+      ! Duplicate key in document: fruits.varieties.
+
+---
+
+    Code
+      unserialize_toml(text = txt6)
+    Condition
+      Error in `create_sub_tables_array()`:
+      ! Cannot redefine array of tables: fruits.physical.
+
+---
+
+    Code
+      unserialize_toml(text = txt7)
+    Output
+      $points
+      $points[[1]]
+      $points[[1]]$x
+      [1] 1
+      
+      $points[[1]]$y
+      [1] 2
+      
+      $points[[1]]$z
+      [1] 3
+      
+      
+      $points[[2]]
+      $points[[2]]$x
+      [1] 7
+      
+      $points[[2]]$y
+      [1] 8
+      
+      $points[[2]]$z
+      [1] 9
+      
+      
+      $points[[3]]
+      $points[[3]]$x
+      [1] 2
+      
+      $points[[3]]$y
+      [1] 4
+      
+      $points[[3]]$z
+      [1] 8
+      
       
       
 

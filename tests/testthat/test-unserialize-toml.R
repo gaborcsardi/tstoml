@@ -692,4 +692,66 @@ name = "plantain"
   expect_snapshot({
     unserialize_toml(text = txt2)
   })
+
+  txt3 <-
+    '# INVALID TOML DOC
+[fruit.physical]  # subtable, but to which parent element should it belong?
+color = "red"
+shape = "round"
+
+[[fruit]]  # parser must throw an error upon discovering that "fruit" is
+           # an array rather than a table
+name = "apple"
+'
+  expect_snapshot(error = TRUE, {
+    unserialize_toml(text = txt3)
+  })
+
+  txt4 <-
+    '# INVALID TOML DOC
+fruits = []
+
+[[fruits]] # Not allowed
+'
+  expect_snapshot(error = TRUE, {
+    unserialize_toml(text = txt4)
+  })
+
+  txt5 <-
+    '# INVALID TOML DOC
+[[fruits]]
+name = "apple"
+
+[[fruits.varieties]]
+name = "red delicious"
+
+# INVALID: This table conflicts with the previous array of tables
+[fruits.varieties]
+name = "granny smith"
+'
+  expect_snapshot(error = TRUE, {
+    unserialize_toml(text = txt5)
+  })
+
+  txt6 <-
+    '[fruits.physical]
+color = "red"
+shape = "round"
+
+# INVALID: This array of tables conflicts with the previous table
+[[fruits.physical]]
+color = "green"
+'
+  expect_snapshot(error = TRUE, {
+    unserialize_toml(text = txt6)
+  })
+
+  txt7 <-
+    'points = [ { x = 1, y = 2, z = 3 },
+           { x = 7, y = 8, z = 9 },
+           { x = 2, y = 4, z = 8 } ]
+'
+  expect_snapshot({
+    unserialize_toml(text = txt7)
+  })
 })

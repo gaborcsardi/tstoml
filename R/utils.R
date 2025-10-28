@@ -6,6 +6,10 @@
   }
 }
 
+named_list <- function() {
+  structure(list(), names = character())
+}
+
 map_int <- function(.x, .f, ...) {
   vapply(.x, .f, integer(1), ...)
 }
