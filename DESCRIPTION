@@ -17,5 +17,6 @@ Imports:
     cli (>= 3.6.0)
 Suggests:
     hms,
+    pillar,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
