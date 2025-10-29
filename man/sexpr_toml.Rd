@@ -19,5 +19,7 @@ data frame with integer columns \code{start_row}, \code{start_col}, \code{end_ro
 Show the syntax tree structure of a TOML file or string
 }
 \examples{
-sexpr_toml(text = "[owner]\nname = \"Tom Preston-Werner\"\nemail = \"tom@github.com\"")
+sexpr_toml(
+  text = "[owner]\nname = \"Tom Preston-Werner\"\nemail = \"tom@github.com\""
+)
 }

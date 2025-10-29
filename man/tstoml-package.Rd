@@ -14,7 +14,7 @@ Extract and manipulate parts of TOML files without touching the formatting and c
 Other contributors:
 \itemize{
   \item Posit Software, PBC (\href{https://ror.org/03wc8by49}{ROR}) [copyright holder, funder]
-  \item  tree-sitter-json authors [contributor]
+  \item  tree-sitter-toml authors [contributor]
 }
 
 }
