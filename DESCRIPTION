@@ -15,7 +15,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Depends: R (>= 4.1.0)
 Imports:
-    cli (>= 3.6.0)
+    cli (>= 3.6.0),
+    utils
 Suggests:
     hms,
     pillar,

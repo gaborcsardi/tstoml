@@ -671,7 +671,7 @@ SEXP code_query_c(const char *c_input, uint32_t length, SEXP pattern,
 
     // collect the results
     for (uint16_t cc = 0; cc < match.capture_count; cc++) {
-      SEXP res1 = PROTECT(Rf_allocVector(VECSXP, 11));
+      SEXP res1 = PROTECT(Rf_allocVector(VECSXP, 12));
       SET_VECTOR_ELT(result_captures, residx++, res1);
       UNPROTECT(1);
 
@@ -699,14 +699,15 @@ SEXP code_query_c(const char *c_input, uint32_t length, SEXP pattern,
         end_byte - start_byte,
         CE_UTF8
       )));
-      SET_VECTOR_ELT(res1, 5, Rf_ScalarInteger(start_byte + 1));
-      SET_VECTOR_ELT(res1, 6, Rf_ScalarInteger(end_byte)); // this is + 1
+      SET_VECTOR_ELT(res1, 5, Rf_ScalarInteger(start_byte));
+      SET_VECTOR_ELT(res1, 6, Rf_ScalarInteger(end_byte));
       TSPoint start_point = ts_node_start_point(node);
-      SET_VECTOR_ELT(res1, 7, Rf_ScalarInteger(start_point.row + 1));
-      SET_VECTOR_ELT(res1, 8, Rf_ScalarInteger(start_point.column + 1));
+      SET_VECTOR_ELT(res1, 7, Rf_ScalarInteger(start_point.row));
+      SET_VECTOR_ELT(res1, 8, Rf_ScalarInteger(start_point.column));
       TSPoint end_point = ts_node_end_point(node);
-      SET_VECTOR_ELT(res1, 9, Rf_ScalarInteger(end_point.row + 1));
-      SET_VECTOR_ELT(res1, 10, Rf_ScalarInteger(end_point.column + 1));
+      SET_VECTOR_ELT(res1, 9, Rf_ScalarInteger(end_point.row));
+      SET_VECTOR_ELT(res1, 10, Rf_ScalarInteger(end_point.column));
+      SET_VECTOR_ELT(res1, 11, Rf_mkString(ts_node_type(node)));
     }
   }
 

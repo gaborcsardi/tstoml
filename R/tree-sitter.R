@@ -469,6 +469,7 @@ query_toml <- function(
       id = map_int(res[[2]], "[[", 3L),
       pattern = map_int(res[[2]], "[[", 1L),
       match = map_int(res[[2]], "[[", 2L),
+      type = map_chr(res[[2]], "[[", 12L),
       start_byte = map_int(res[[2]], "[[", 6L),
       end_byte = map_int(res[[2]], "[[", 7L),
       start_row = map_int(res[[2]], "[[", 8L),

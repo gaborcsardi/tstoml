@@ -52,7 +52,7 @@ format_tstoml_selection <- function(x, n = n, context = 3, ...) {
   sel <- get_selected_nodes(x, default = FALSE)
   nsel <- length(sel)
   ssel <- min(nsel, n)
-  sel <- head(sel, ssel)
+  sel <- utils::head(sel, ssel)
 
   # calculate the lines affected by the first ssel selections
   selrows <- rep(FALSE, nlns)
@@ -103,7 +103,7 @@ format_tstoml_selection <- function(x, n = n, context = 3, ...) {
   dots <- diff(c(1, num[shwrows])) > 1
   dotlns <- num[shwrows][dots] - 1L
   # add ... to the end
-  lastshown <- tail(num[shwrows], 1)
+  lastshown <- utils::tail(num[shwrows], 1)
   if (lastshown < nlns) {
     dotlns <- c(dotlns, lastshown + 1L)
   }
