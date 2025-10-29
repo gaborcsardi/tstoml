@@ -57,6 +57,18 @@ unserialize_element <- function(token_table, id) {
     string = {
       unserialize_string(token_table, id)
     },
+    basic_string = {
+      unserialize_basic_string(token_table, id)
+    },
+    multiline_basic_string = {
+      unserialize_multiline_basic_string(token_table, id)
+    },
+    literal_string = {
+      unserialize_literal_string(token_table, id)
+    },
+    multiline_literal_string = {
+      unserialize_multiline_literal_string(token_table, id)
+    },
     array = {
       unserialize_array(token_table, id)
     },
@@ -187,7 +199,7 @@ unserialize_bare_key <- function(token_table, id) {
 
 unserialize_quoted_key <- function(token_table, id) {
   stopifnot(token_table$type[id] == "quoted_key")
-  unserialize_string(token_table, id, type = "quoted_key")
+  unserialize_element(token_table, token_table$children[[id]][1])
 }
 
 unserialize_dotted_key <- function(token_table, id) {
@@ -272,22 +284,7 @@ unserialize_local_time <- function(token_table, id) {
 unserialize_string <- function(token_table, id, type = "string") {
   stopifnot(token_table$type[id] == type)
   chdn <- token_table$children[[id]]
-  switch(
-    token_table$type[chdn[1]],
-    '"' = {
-      unserialize_basic_string(token_table, id, type)
-    },
-    '"""' = {
-      unserialize_multiline_basic_string(token_table, id)
-    },
-    "'" = {
-      unserialize_literal_string(token_table, id, type)
-    },
-    "'''" = {
-      unserialize_multiline_literal_string(token_table, id)
-    },
-    stop("Unsupported string delimiter: ", token_table$type[chdn[1]])
-  )
+  unserialize_element(token_table, chdn[1])
 }
 
 # - Embedded zero is not supported in R, so \u0000 will error.
@@ -296,16 +293,18 @@ unserialize_string <- function(token_table, id, type = "string") {
 # - The parser will error for the escapes that are not supported by TOML,
 #   even if they are supported by R.
 
-unserialize_basic_string <- function(token_table, id, type = "string") {
-  stopifnot(token_table$type[id] == type)
+unserialize_basic_string <- function(token_table, id) {
+  stopifnot(token_table$type[id] == "basic_string")
   # also has " delimiters
-  str <- token_table$code[id]
+  chdn <- token_table$children[[id]]
+  str <- paste(token_table$code[chdn], collapse = "")
   eval(parse(text = str, keep.source = FALSE))
 }
 
 unserialize_multiline_basic_string <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "string")
-  str <- token_table$code[id]
+  stopifnot(token_table$type[id] == "multiline_basic_string")
+  chdn <- token_table$children[[id]]
+  str <- paste(token_table$code[chdn], collapse = "")
   # trim delimiters first
   str <- substr(str, 4L, nchar(str) - 3L)
   # remove leading newline if present
@@ -319,17 +318,19 @@ unserialize_multiline_basic_string <- function(token_table, id) {
   eval(parse(text = paste0("'", str, "'"), keep.source = FALSE))
 }
 
-unserialize_literal_string <- function(token_table, id, type = "string") {
-  stopifnot(token_table$type[id] == type)
-  str <- token_table$code[id]
+unserialize_literal_string <- function(token_table, id) {
+  stopifnot(token_table$type[id] == "literal_string")
+  chdn <- token_table$children[[id]]
+  str <- paste(token_table$code[chdn], collapse = "")
   # trim delimiters first
   str <- substr(str, 2L, nchar(str) - 1L)
   str
 }
 
 unserialize_multiline_literal_string <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "string")
-  str <- token_table$code[id]
+  stopifnot(token_table$type[id] == "multiline_literal_string")
+  chdn <- token_table$children[[id]]
+  str <- paste(token_table$code[chdn], collapse = "")
   # trim delimiters first
   str <- substr(str, 4L, nchar(str) - 3L)
   # remove leading newline if present

@@ -2,9 +2,9 @@
 
 typedef enum {
     LINE_ENDING_OR_EOF,
-    MULTILINE_BASIC_STRING_CONTENT,
+    MULTILINE_BASIC_STRING_CONTENT_INTERNAL,
     MULTILINE_BASIC_STRING_END,
-    MULTILINE_LITERAL_STRING_CONTENT,
+    MULTILINE_LITERAL_STRING_CONTENT_INTERNAL,
     MULTILINE_LITERAL_STRING_END,
 } TokenType;
 
@@ -53,9 +53,9 @@ bool tree_sitter_toml_external_scanner_scan_multiline_string_end(TSLexer *lexer,
 
 bool tree_sitter_toml_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
     if (tree_sitter_toml_external_scanner_scan_multiline_string_end(
-            lexer, valid_symbols, '"', MULTILINE_BASIC_STRING_CONTENT, MULTILINE_BASIC_STRING_END) ||
+            lexer, valid_symbols, '"', MULTILINE_BASIC_STRING_CONTENT_INTERNAL, MULTILINE_BASIC_STRING_END) ||
         tree_sitter_toml_external_scanner_scan_multiline_string_end(
-            lexer, valid_symbols, '\'', MULTILINE_LITERAL_STRING_CONTENT, MULTILINE_LITERAL_STRING_END)) {
+            lexer, valid_symbols, '\'', MULTILINE_LITERAL_STRING_CONTENT_INTERNAL, MULTILINE_LITERAL_STRING_END)) {
         return true;
     }
 

@@ -21,10 +21,10 @@ module.exports = grammar({
 
   externals: $ => [
     $._line_ending_or_eof,
-    $._multiline_basic_string_content,
-    $._multiline_basic_string_end,
-    $._multiline_literal_string_content,
-    $._multiline_literal_string_end,
+    $._multiline_basic_string_content_internal,
+    $.multiline_basic_string_end,
+    $._multiline_literal_string_content_internal,
+    $.multiline_literal_string_end,
   ],
 
   extras: $ => [$.comment, /[ \t]/],
@@ -66,7 +66,7 @@ module.exports = grammar({
     _key: $ => choice($.bare_key, $.quoted_key),
     dotted_key: $ => seq(choice($.dotted_key, $._key), '.', $._key),
     bare_key: $ => /[A-Za-z0-9_-]+/,
-    quoted_key: $ => choice($._basic_string, $._literal_string),
+    quoted_key: $ => choice($.basic_string, $.literal_string),
 
     _inline_value: $ =>
       choice(
@@ -84,66 +84,79 @@ module.exports = grammar({
 
     string: $ =>
       choice(
-        $._basic_string,
-        $._multiline_basic_string,
-        $._literal_string,
-        $._multiline_literal_string,
+        $.basic_string,
+        $.multiline_basic_string,
+        $.literal_string,
+        $.multiline_literal_string,
       ),
-    _basic_string: $ =>
+    basic_string: $ =>
       seq(
         '"',
         repeat(
           choice(
-            token.immediate(
-              repeat1(/[^\x00-\x08\x0a-\x1f\x22\x5c\x7f]/),
-            ),
+            $.basic_string_content,
             $.escape_sequence,
           ),
         ),
         token.immediate('"'),
       ),
-    _multiline_basic_string: $ =>
+    basic_string_content: _ =>
+      token.immediate(
+        repeat1(/[^\x00-\x08\x0a-\x1f\x22\x5c\x7f]/),
+      ),
+
+    multiline_basic_string: $ =>
       seq(
         '"""',
         repeat(
           choice(
-            token.immediate(
-              repeat1(/[^\x00-\x08\x0a-\x1f\x22\x5c\x7f]/),
-            ),
-            $._multiline_basic_string_content,
-            token.immediate(newline),
+            $.multiline_basic_string_content,
             $.escape_sequence,
             alias($._escape_line_ending, $.escape_sequence),
           ),
         ),
-        $._multiline_basic_string_end,
+        $.multiline_basic_string_end,
+      ),
+    multiline_basic_string_content: $ =>
+      choice(
+        token.immediate(
+          repeat1(/[^\x00-\x08\x0a-\x1f\x22\x5c\x7f]/),
+        ),
+        $._multiline_basic_string_content_internal,
+        token.immediate(newline),
       ),
     escape_sequence: $ =>
       token.immediate(/\\([btnfr"\\]|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8})/),
     _escape_line_ending: $ => token.immediate(seq(/\\/, newline)),
-    _literal_string: $ =>
+    literal_string: $ =>
       seq(
         '\'',
         optional(
-          token.immediate(
-            repeat1(/[^\x00-\x08\x0a-\x1f\x27\x7f]/),
-          ),
+          $.literal_string_content,
         ),
         token.immediate('\''),
       ),
-    _multiline_literal_string: $ =>
+    literal_string_content: _ =>
+      token.immediate(
+        repeat1(/[^\x00-\x08\x0a-\x1f\x27\x7f]/),
+      ),
+    multiline_literal_string: $ =>
       seq(
         '\'\'\'',
         repeat(
           choice(
-            token.immediate(
-              repeat1(/[^\x00-\x08\x0a-\x1f\x27\x7f]/),
-            ),
-            $._multiline_literal_string_content,
-            token.immediate(newline),
+            $.multiline_literal_string_content,
           ),
         ),
-        $._multiline_literal_string_end,
+        $.multiline_literal_string_end,
+      ),
+    multiline_literal_string_content: $ =>
+      choice(
+        token.immediate(
+          repeat1(/[^\x00-\x08\x0a-\x1f\x27\x7f]/),
+        ),
+        $._multiline_literal_string_content_internal,
+        token.immediate(newline),
       ),
 
     integer: $ =>
