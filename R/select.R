@@ -43,13 +43,11 @@ sel_default <- function() {
   )
 }
 
-sel_ids <- function(ids) {
-  structure(
-    list(ids = ids),
-    class = c("tstoml_selector_ids", "tstoml_selector", "list")
-  )
-}
-
+#' Select elements in a tstoml object
+#'
+#' @param x,toml tstoml object.
+#' @param i,... Selectors, see below.
+#'
 #' @export
 
 select <- function(toml, ...) {
@@ -72,6 +70,18 @@ select <- function(toml, ...) {
   unserialize_selected(select(x, i, ...))
 }
 
+sel_ids <- function(ids) {
+  structure(
+    list(ids = ids),
+    class = c("tstoml_selector_ids", "tstoml_selector", "list")
+  )
+}
+
+#' Select the nodes matching a tree-sitter query in a tstoml object
+#'
+#' @param toml tstoml object.
+#' @param query String, a tree-sitter query.
+#'
 #' @export
 
 select_query <- function(toml, query) {
@@ -88,4 +98,52 @@ select_query <- function(toml, query) {
     toml0$id[match(mkeys, jkeys)]
   }
   toml |> select(sel_ids(ids))
+}
+
+#' @rdname select
+#' @export
+
+select_refine <- function(toml, ...) {
+  current <- get_selection(toml)
+  select_(toml, current = current, list(...))
+}
+
+select_ <- function(toml, current, slts) {
+  slts <- unlist(
+    lapply(slts, function(x) {
+      if (inherits(x, "tstoml_selector") || !is.list(x)) list(x) else x
+    }),
+    recursive = FALSE
+  )
+  current <- current %||% get_default_selection(toml)
+  cnodes <- current[[length(current)]]$nodes
+
+  for (slt in slts) {
+    nxt <- integer()
+    for (cur in cnodes) {
+      nxt <- unique(c(nxt, select1(toml, cur, slt)))
+    }
+    current[[length(current) + 1L]] <- list(
+      selector = slt,
+      nodes = sort(nxt)
+    )
+    cnodes <- current[[length(current)]]$nodes
+  }
+  # if 'document' is selected, that means there is no selection
+  if (identical(current[[1]]$nodes, 1L)) {
+    attr(toml, "selection") <- NULL
+  } else {
+    attr(toml, "selection") <- current
+  }
+  toml
+}
+
+select1 <- function(toml, idx, slt) {
+  sel <- if (inherits(slt, "tstoml_selector_ids")) {
+    return(slt$ids)
+  } else {
+    stop("Invalid TOML selector")
+  }
+
+  sel
 }

@@ -10,7 +10,8 @@ print.tstoml <- function(x, n = 10, ...) {
 format.tstoml <- function(x, n = 10, ...) {
   sel <- get_selected_nodes(x, default = FALSE)
   if (length(sel) > 0) {
-    format_tstoml_selection(x, n = n, ...)
+    # TODO: format_tstoml_selection(x, n = n, ...)
+    format_tstoml_noselection(x, n = n, ...)
   } else {
     format_tstoml_noselection(x, n = n, ...)
   }
@@ -20,7 +21,7 @@ format_tstoml_noselection <- function(x, n = 10, ...) {
   lns <- strsplit(rawToChar(attr(x, "text")), "\r?\n")[[1]]
   nc <- length(lns)
   sc <- min(nc, n)
-  lns <- head(lns, sc)
+  lns <- utils::head(lns, sc)
   num <- cli::col_grey(format(seq_len(sc)))
 
   sel <- get_selection(x, default = FALSE)

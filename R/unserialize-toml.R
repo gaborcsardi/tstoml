@@ -23,6 +23,17 @@ unserialize_toml <- function(
   unserialize_element(tab, 1L)
 }
 
+#' Unserialize selected elements from a tstoml object
+#'
+#' @param toml tstoml object.
+#'
+#' @export
+
+unserialize_selected <- function(toml) {
+  sel <- get_selected_nodes(toml)
+  as.list(lapply(sel, unserialize_element, token_table = toml))
+}
+
 unserialize_element <- function(token_table, id) {
   type <- token_table$type[id]
   elt <- switch(

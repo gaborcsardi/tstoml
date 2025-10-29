@@ -1,3 +1,8 @@
+#' Parse a TOML file or string into a tstoml object
+#'
+#' @inheritParams token_table
+#' @return A tstoml object.
+#'
 #' @export
 
 load_toml <- function(
