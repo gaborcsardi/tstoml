@@ -22,7 +22,6 @@
 #'
 #' @export
 #' @seealso [unserialize_toml()] for the opposite.
-#' @examples
 
 serialize_toml <- function(obj, file = NULL, collapse = FALSE, options = NULL) {
   lns <- stl_table(
@@ -117,6 +116,17 @@ stl_inline <- function(
       call = call
     ))
   }
+}
+
+#' Serialize a TOML value
+#'
+#' @param obj R object to serialize as a TOML value.
+#' @param options A named list of `tstoml` options, see
+#'   [tstoml_options()].
+# '@export
+
+serialize_toml_value <- function(obj, options = NULL) {
+  stl_inline(obj, options = options)
 }
 
 stl_table_body <- function(
