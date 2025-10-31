@@ -48,6 +48,11 @@ mkdirp <- function(x) {
   dir.create(x, showWarnings = FALSE, recursive = TRUE)
 }
 
+is_named <- function(x) {
+  nms <- names(x)
+  length(x) == length(nms) && !anyNA(nms) && all(nms != "")
+}
+
 # For roxygen2 -----------------------------------------------------------------
 
 # nocov start
