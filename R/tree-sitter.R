@@ -465,19 +465,23 @@ query_toml <- function(
       pattern = res[[1]][[1]],
       match_count = res[[1]][[2]]
     ),
+    captures = data_frame(
+      id = seq_along(res[[2]]),
+      name = res[[2]]
+    ),
     matched_captures = data_frame(
-      id = map_int(res[[2]], "[[", 3L),
-      pattern = map_int(res[[2]], "[[", 1L),
-      match = map_int(res[[2]], "[[", 2L),
-      type = map_chr(res[[2]], "[[", 12L),
-      start_byte = map_int(res[[2]], "[[", 6L),
-      end_byte = map_int(res[[2]], "[[", 7L),
-      start_row = map_int(res[[2]], "[[", 8L),
-      start_column = map_int(res[[2]], "[[", 9L),
-      end_row = map_int(res[[2]], "[[", 10L),
-      end_column = map_int(res[[2]], "[[", 11L),
-      name = map_chr(res[[2]], "[[", 4L),
-      code = map_chr(res[[2]], "[[", 5L)
+      id = map_int(res[[3]], "[[", 3L),
+      pattern = map_int(res[[3]], "[[", 1L),
+      match = map_int(res[[3]], "[[", 2L),
+      type = map_chr(res[[3]], "[[", 12L),
+      start_byte = map_int(res[[3]], "[[", 6L),
+      end_byte = map_int(res[[3]], "[[", 7L),
+      start_row = map_int(res[[3]], "[[", 8L),
+      start_column = map_int(res[[3]], "[[", 9L),
+      end_row = map_int(res[[3]], "[[", 10L),
+      end_column = map_int(res[[3]], "[[", 11L),
+      name = map_chr(res[[3]], "[[", 4L),
+      code = map_chr(res[[3]], "[[", 5L)
     )
   )
 }

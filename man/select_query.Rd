@@ -4,12 +4,15 @@
 \alias{select_query}
 \title{Select the nodes matching a tree-sitter query in a tstoml object}
 \usage{
-select_query(toml, query)
+select_query(toml, query, captures = NULL)
 }
 \arguments{
 \item{toml}{tstoml object.}
 
 \item{query}{String, a tree-sitter query.}
+
+\item{captures}{Optional character vector, the names of the captures to
+select. By default all captured nodes are selected.}
 }
 \description{
 Select the nodes matching a tree-sitter query in a tstoml object

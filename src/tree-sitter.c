@@ -631,8 +631,8 @@ SEXP code_query_c(const char *c_input, uint32_t length, SEXP pattern,
 
   // TODO: we should allocate a DF here, probably
   PROTECT_INDEX rpi;
-  SEXP result_captures = Rf_allocVector(VECSXP, 100);
-  PROTECT_WITH_INDEX(result_captures, &rpi);
+  SEXP result_matched_captures = Rf_allocVector(VECSXP, 100);
+  PROTECT_WITH_INDEX(result_matched_captures, &rpi);
   uint32_t total_capture_count = 0, residx = 0;
 
   TSQueryCursor *cursor = ts_query_cursor_new();
@@ -665,14 +665,20 @@ SEXP code_query_c(const char *c_input, uint32_t length, SEXP pattern,
     match_idx++;
     INTEGER(VECTOR_ELT(result_matches, 1))[match.pattern_index] += 1;
     total_capture_count += match.capture_count;
-    if (total_capture_count > Rf_length(result_captures)) {
-      REPROTECT(result_captures = Rf_xlengthgets(result_captures, total_capture_count * 2), rpi);
+    if (total_capture_count > Rf_length(result_matched_captures)) {
+      REPROTECT(
+        result_matched_captures = Rf_xlengthgets(
+          result_matched_captures,
+          total_capture_count * 2
+        ),
+        rpi
+      );
     }
 
     // collect the results
     for (uint16_t cc = 0; cc < match.capture_count; cc++) {
       SEXP res1 = PROTECT(Rf_allocVector(VECSXP, 12));
-      SET_VECTOR_ELT(result_captures, residx++, res1);
+      SET_VECTOR_ELT(result_matched_captures, residx++, res1);
       UNPROTECT(1);
 
       SET_VECTOR_ELT(res1, 0, Rf_ScalarInteger(match.pattern_index + 1));
@@ -711,11 +717,26 @@ SEXP code_query_c(const char *c_input, uint32_t length, SEXP pattern,
     }
   }
 
-  REPROTECT(result_captures = Rf_xlengthgets(result_captures, total_capture_count), rpi);
-  SEXP result = PROTECT(Rf_allocVector(VECSXP, 2));
+  REPROTECT(
+    result_matched_captures = Rf_xlengthgets(
+      result_matched_captures,
+      total_capture_count),
+    rpi
+  );
+
+  uint32_t query_capture_count = ts_query_capture_count(query);
+  SEXP result_captures = Rf_protect(Rf_allocVector(STRSXP, query_capture_count));
+  for (uint32_t i = 0; i < query_capture_count; i++) {
+    uint32_t len;
+    const char *cn = ts_query_capture_name_for_id(query, i, &len);
+    SET_STRING_ELT(result_captures, i, Rf_mkCharLenCE(cn, len, CE_UTF8));
+  }
+
+  SEXP result = PROTECT(Rf_allocVector(VECSXP, 3));
   SET_VECTOR_ELT(result, 0, result_matches);
   SET_VECTOR_ELT(result, 1, result_captures);
-  UNPROTECT(3);
+  SET_VECTOR_ELT(result, 2, result_matched_captures);
+  UNPROTECT(4);
   return result;
 }
 

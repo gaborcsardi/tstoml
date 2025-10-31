@@ -81,19 +81,37 @@ sel_ids <- function(ids) {
 #'
 #' @param toml tstoml object.
 #' @param query String, a tree-sitter query.
+#' @param captures Optional character vector, the names of the captures to
+#'   select. By default all captured nodes are selected.
 #'
 #' @export
 
-select_query <- function(toml, query) {
+select_query <- function(toml, query, captures = NULL) {
   text <- attr(toml, "text")
-  mch <- query_toml(text = text, query = query)$matched_captures
-  ids <- if (nrow(mch) == 0) {
+  mch <- query_toml(text = text, query = query)
+
+  if (!is.null(captures)) {
+    bad <- !captures %in% mch$captures$name
+    if (any(bad)) {
+      stop(cnd(paste0(
+        "Invalid capture names in `select_query()`: ",
+        paste(captures[bad], collapse = ", ")
+      )))
+    }
+    mc <- mch$matched_captures[
+      mch$matched_captures$name %in% captures,
+    ]
+  } else {
+    mc <- mch$matched_captures
+  }
+
+  ids <- if (nrow(mc) == 0) {
     integer()
   } else {
     toml0 <- toml[
-      toml$start_byte %in% mch$start_byte & toml$end_byte %in% mch$end_byte,
+      toml$start_byte %in% mc$start_byte & toml$end_byte %in% mc$end_byte,
     ]
-    mkeys <- paste0(mch$type, ":", mch$start_byte, ":", mch$end_byte)
+    mkeys <- paste0(mc$type, ":", mc$start_byte, ":", mc$end_byte)
     jkeys <- paste0(toml0$type, ":", toml0$start_byte, ":", toml0$end_byte)
     toml0$id[match(mkeys, jkeys)]
   }
