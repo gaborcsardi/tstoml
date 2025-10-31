@@ -1,4 +1,28 @@
+#' Serialize an R object to TOML
+#'
+#' Create TOML from an R object.
+#' Note that this function is not a generic serializer that can represent
+#' any R object in TOML. Also, you cannot expect that [unserialize_toml()]
+#' will do the exact inverse of [serialize_toml()].
+#'
+#  tstoml functions [update_selected()] and [insert_into_selected()] use
+# [serialize_toml()] to create new TOML code.
+#'
+#' See the examples below on how to create all possible TOML elements with
+#' [serialize_toml()].
+#'
+#' @param obj R object to serialize.
+#' @param file If not `NULL` then the result if written to this file.
+#' @param collapse If `file` is `NULL` then whether to return a character
+#'   scalar or a character vector.
+#' @param options A named list of `tstoml` options, see
+#'   [tstoml_options()].
+#' @return If `file` is `NULL` then a character scalar (`collapse` = TRUE)
+#'   or vector (`collapse` = FALSE). If `file` is not `NULL` then nothing.
+#'
 #' @export
+#' @seealso [unserialize_toml()] for the opposite.
+#' @examples
 
 serialize_toml <- function(obj, file = NULL, collapse = FALSE, options = NULL) {
   lns <- stl_table(
