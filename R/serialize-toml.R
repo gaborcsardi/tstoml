@@ -89,7 +89,7 @@ stl_inline <- function(
     stl_boolean(obj, options = options, arg = arg, call = call)
   } else {
     stop(cnd(
-      "Invalid argument: {arg}. Cannot convert {typename(obj)} to TOML.",
+      "Invalid argument: `{arg}`. Cannot convert {typename(obj)} to TOML.",
       call = call
     ))
   }

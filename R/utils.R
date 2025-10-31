@@ -50,7 +50,7 @@ mkdirp <- function(x) {
 
 is_named <- function(x) {
   nms <- names(x)
-  length(x) == length(nms) && !anyNA(nms) && all(nms != "")
+  !is.null(nms) && length(x) == length(nms) && !anyNA(nms) && all(nms != "")
 }
 
 # For roxygen2 -----------------------------------------------------------------
