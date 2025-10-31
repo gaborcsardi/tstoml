@@ -87,7 +87,7 @@ format_tstoml_selection <- function(x, n = n, context = 3, ...) {
         lns[mid] <- hl(lns[mid])
       }
       # last row
-      if (length(rows) >= 2) {
+      if (length(rows) >= 2 && rows[length(rows)] < length(lns)) {
         lns[rows[length(rows)]] <- hl(
           lns[rows[length(rows)]],
           start = NULL,
