@@ -115,7 +115,28 @@ select_query <- function(toml, query, captures = NULL) {
     jkeys <- paste0(toml0$type, ":", toml0$start_byte, ":", toml0$end_byte)
     toml0$id[match(mkeys, jkeys)]
   }
+  ids <- minimize_selection(toml, ids)
   toml |> select(sel_ids(ids))
+}
+
+# remove nodes that are in the subtree of other selected nodes
+# start from the last nodes and go up
+
+minimize_selection <- function(toml, ids) {
+  ids <- sort(unique(ids))
+  sel <- logical(nrow(toml))
+  sel[ids] <- TRUE
+  for (id in rev(ids)) {
+    parent <- toml$parent[id]
+    while (!is.na(parent)) {
+      if (sel[parent]) {
+        sel[id] <- FALSE
+        break
+      }
+      parent <- toml$parent[parent]
+    }
+  }
+  which(sel)
 }
 
 #' @rdname select
