@@ -393,6 +393,40 @@ select1_numeric <- function(toml, idx, slt) {
       res[!pos] <- rev(rev(chdn)[abs(slt[!pos])])
     }
     res
+  } else if (type == "inline_table") {
+    # inline table, select keys inside
+    children <- toml$children[[idx]]
+    children <- children[toml$type[children] == "pair"]
+    res <- integer(length(slt))
+    pos <- slt >= 0
+    if (any(pos)) {
+      res[pos] <- unlist(lapply(children[slt[pos]], function(child) {
+        keyid <- toml$children[[child]][1]
+        # if this is a pair with a dotted key then a subtable is selected
+        # we represent this by selecting the first key in the dotted key
+        if (toml$type[keyid] == "dotted_key") {
+          get_dotted_key_component(toml, keyid, 1L)
+        } else {
+          toml$children[[child]][3]
+        }
+      }))
+    }
+    if (any(!pos)) {
+      res[!pos] <- unlist(lapply(
+        rev(rev(children)[abs(slt[!pos])]),
+        function(child) {
+          keyid <- toml$children[[child]][1]
+          # if this is a pair with a dotted key then a subtable is selected
+          # we represent this by selecting the first key in the dotted key
+          if (toml$type[keyid] == "dotted_key") {
+            get_dotted_key_component(toml, keyid, 1L)
+          } else {
+            toml$children[[child]][3]
+          }
+        }
+      ))
+    }
+    res
   } else {
     if (
       toml$array_position[idx] %in% slt || toml$rev_array_position[idx] %in% slt
