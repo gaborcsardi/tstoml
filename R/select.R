@@ -187,6 +187,16 @@ select1 <- function(toml, idx, slt) {
 # select all child elements
 select1_true <- function(toml, idx) {
   type <- toml$type[idx]
+  # This is AOT _element_, so we need to take its parent AOT and treat is
+  # like a table
+  if (
+    !is.na(toml$parent[idx]) &&
+      toml$type[toml$parent[idx]] == "table_array_element" &&
+      toml$type[idx] %in% c("bare_key", "quoted_key", "dotted_key")
+  ) {
+    idx <- toml$parent[idx]
+    type <- "table"
+  }
   if (type %in% c("document", "table")) {
     children <- toml$children[[idx]]
     unlist(lapply(children, function(child) {
@@ -246,7 +256,9 @@ select1_true <- function(toml, idx) {
     children <- toml$children[[idx]]
     children[!toml$type[children] %in% c("[", "]", ",", "comment")]
   } else if (type == "table_array_element") {
-    TODO
+    # select this element of the array, we denote that by selecting its
+    # key element
+    toml$children[[idx]][2]
   } else {
     # string, integer, float, boolean, datetime
     integer()
@@ -255,6 +267,17 @@ select1_true <- function(toml, idx) {
 
 select1_key <- function(toml, idx, slt) {
   type <- toml$type[idx]
+  # This is AOT _element_, so we need to take its parent AOT and treat is
+  # like a table
+  if (
+    !is.na(toml$parent[idx]) &&
+      toml$type[toml$parent[idx]] == "table_array_element" &&
+      toml$type[idx] %in% c("bare_key", "quoted_key", "dotted_key")
+  ) {
+    idx <- toml$parent[idx]
+    type <- "table"
+  }
+
   if (type %in% c("document", "table")) {
     children <- toml$children[[idx]]
     unlist(lapply(children, function(child) {
