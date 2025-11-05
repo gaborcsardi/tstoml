@@ -48,6 +48,28 @@ load_toml <- function(
     }
   }
 
+  # add positions for arrays of tables, so we can use selections based
+  # on their positions
+  dict <- new.env(parent = emptyenv())
+  array_position <- rev_array_position <- integer(nrow(tt))
+  aots <- which(tt$type == "table_array_element")
+  for (aot in aots) {
+    # need to convert dotted keys to string keys
+    key <- unserialize_key(tt, tt$children[[aot]][2L])
+    key <- paste0(seq_along(key), ":", key, collapse = ".")
+    array_position[aot] <- (dict[[key]] %||% 0L) + 1L
+    assign(key, array_position[aot], envir = dict)
+  }
+  tt$array_position <- array_position
+  dict <- new.env(parent = emptyenv())
+  for (aot in rev(aots)) {
+    key <- unserialize_key(tt, tt$children[[aot]][2L])
+    key <- paste0(seq_along(key), ":", key, collapse = ".")
+    rev_array_position[aot] <- (dict[[key]] %||% 0L) - 1L
+    assign(key, rev_array_position[aot], envir = dict)
+  }
+  tt$rev_array_position <- rev_array_position
+
   attr(tt, "text") <- text
   attr(tt, "file") <- if (!is.null(file)) normalizePath(file)
   class(tt) <- c("tstoml", class(tt))

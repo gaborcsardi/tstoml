@@ -394,6 +394,12 @@ select1_numeric <- function(toml, idx, slt) {
     }
     res
   } else {
-    TODO
+    if (
+      toml$array_position[idx] %in% slt || toml$rev_array_position[idx] %in% slt
+    ) {
+      toml$children[[idx]][2]
+    } else {
+      integer()
+    }
   }
 }
