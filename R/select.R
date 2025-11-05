@@ -377,9 +377,22 @@ get_dotted_key_component <- function(toml, keyid, idx) {
 }
 
 select1_numeric <- function(toml, idx, slt) {
+  if (any(slt == 0)) {
+    stop(cnd("Zero indices are not allowed in JSON selectors."))
+  }
   type <- toml$type[idx]
   if (type == "array") {
-    TODO
+    chdn <- toml$children[[idx]]
+    chdn <- chdn[!toml$type[chdn] %in% c("[", "]", ",", "comment")]
+    res <- integer(length(slt))
+    pos <- slt >= 0
+    if (any(pos)) {
+      res[pos] <- chdn[slt[pos]]
+    }
+    if (any(!pos)) {
+      res[!pos] <- rev(rev(chdn)[abs(slt[!pos])])
+    }
+    res
   } else {
     TODO
   }
