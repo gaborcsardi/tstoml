@@ -60,6 +60,9 @@ format_tstoml_selection <- function(x, n = n, context = 3, ...) {
   for (sel1 in sel) {
     beg <- x$start_row[sel1] + 1L
     end <- x$end_row[sel1] + 1L
+    if (x$end_column[sel1] == 0) {
+      end <- end - 1L
+    }
     selrows[beg:end] <- TRUE
     sbeg <- max(1, beg - context)
     send <- min(nlns, end + context)
@@ -69,14 +72,21 @@ format_tstoml_selection <- function(x, n = n, context = 3, ...) {
   # now highlight the selected elements
   mark <- rep("  ", nlns)
   for (sel1 in sel) {
-    rows <- x$start_row[sel1]:x$end_row[sel1] + 1L
+    beg <- x$start_row[sel1] + 1L
+    end <- x$end_row[sel1] + 1L
+    endcol <- x$end_column[sel1]
+    if (x$end_column[sel1] == 0) {
+      end <- end - 1L
+      endcol <- cli::ansi_nchar(lns[end], type = "bytes")
+    }
+    rows <- beg:end
     mark[rows] <- paste0(cli::bg_cyan(">"), " ")
     # one row only
     if (length(rows) == 1) {
       lns[rows] <- hl(
         lns[rows],
         x$start_column[sel1] + 1L,
-        x$end_column[sel1]
+        endcol
       )
     } else {
       # first row
@@ -87,11 +97,11 @@ format_tstoml_selection <- function(x, n = n, context = 3, ...) {
         lns[mid] <- hl(lns[mid])
       }
       # last row
-      if (length(rows) >= 2 && rows[length(rows)] < length(lns)) {
+      if (length(rows) >= 2) {
         lns[rows[length(rows)]] <- hl(
           lns[rows[length(rows)]],
           start = NULL,
-          x$end_column[sel1]
+          endcol
         )
       }
     }
