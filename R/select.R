@@ -473,7 +473,34 @@ interpret_selection1 <- function(toml, idx) {
     # this is AOT _element_, select it like a table, but not the [[ ]] tokens
     toml$children[[parent]][c(-1, -3)]
   } else if (toml$type[idx] %in% c("bare_key", "quoted_key")) {
-    idx
+    # This is a selected subtable. Check the next part of the dotted key
+    dot <- toml$parent[idx]
+    # find the root of the dotted keys first
+    while (toml$type[toml$parent[dot]] == "dotted_key") {
+      dot <- toml$parent[dot]
+    }
+    dotchildren <- get_dotted_key_components(toml, dot)
+    keyidx <- which(dotchildren == idx)
+    parent <- toml$parent[dot]
+    if (keyidx == length(dotchildren)) {
+      if (toml$type[parent] == "table") {
+        parent
+      } else {
+        toml$children[[parent]][-(1:3)]
+      }
+    } else {
+      if (toml$type[parent] == "table") {
+        c(
+          dotchildren[keyidx:length(dotchildren)],
+          toml$children[[parent]][-(1:3)]
+        )
+      } else {
+        c(
+          dotchildren[keyidx:length(dotchildren)],
+          toml$children[[parent]][2:3]
+        )
+      }
+    }
   } else {
     idx
   }
