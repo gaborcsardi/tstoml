@@ -56,16 +56,14 @@ load_toml <- function(
   aots <- which(tt$type == "table_array_element")
   for (aot in aots) {
     # need to convert dotted keys to string keys
-    key <- unserialize_key(tt, tt$children[[aot]][2L])
-    key <- paste0(seq_along(key), ":", key, collapse = ".")
+    key <- encode_key(unserialize_key(tt, tt$children[[aot]][2L]))
     array_position[aot] <- (dict[[key]] %||% 0L) + 1L
     assign(key, array_position[aot], envir = dict)
   }
   tt$array_position <- array_position
   dict <- new.env(parent = emptyenv())
   for (aot in rev(aots)) {
-    key <- unserialize_key(tt, tt$children[[aot]][2L])
-    key <- paste0(seq_along(key), ":", key, collapse = ".")
+    key <- encode_key(unserialize_key(tt, tt$children[[aot]][2L]))
     rev_array_position[aot] <- (dict[[key]] %||% 0L) - 1L
     assign(key, rev_array_position[aot], envir = dict)
   }
