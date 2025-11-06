@@ -407,6 +407,11 @@ select1_numeric <- function(toml, idx, slt) {
       toml$children[[pair]][3]
     })
     res
+    aots <- toml$type[res] == "table_array_element"
+    res[aots] <- map_int(res[aots], function(aot) {
+      toml$children[[aot]][2]
+    })
+    res
   } else if (type %in% c("bare_key", "quoted_key")) {
     # This is a selected subtable. It always has a single element!
     if (!1 %in% slt && !-1 %in% slt) {
