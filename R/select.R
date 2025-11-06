@@ -443,7 +443,9 @@ select1_numeric <- function(toml, idx, slt) {
       }
     }
   } else if (
-    toml$array_position[idx] %in% slt || toml$rev_array_position[idx] %in% slt
+    toml$type[idx] == "table_array_element" &&
+      toml$array_position[idx] %in% slt ||
+      toml$rev_array_position[idx] %in% slt
   ) {
     # select this element of the array, we denote that by selecting its
     # key element
@@ -455,4 +457,24 @@ select1_numeric <- function(toml, idx, slt) {
   # TODO:
   # - table_array_element
   #
+}
+
+interpret_selection <- function(toml, sel) {
+  unlist(lapply(sel, interpret_selection1, toml = toml))
+}
+
+interpret_selection1 <- function(toml, idx) {
+  parent <- toml$parent[idx]
+  if (
+    !is.na(parent) &&
+      toml$type[toml$parent[idx]] == "table_array_element" &&
+      toml$type[idx] %in% c("bare_key", "quoted_key", "dotted_key")
+  ) {
+    # this is AOT _element_, select it like a table, but not the [[ ]] tokens
+    toml$children[[parent]][c(-1, -3)]
+  } else if (toml$type[idx] %in% c("bare_key", "quoted_key")) {
+    idx
+  } else {
+    idx
+  }
 }

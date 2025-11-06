@@ -53,11 +53,12 @@ format_tstoml_selection <- function(x, n = n, context = 3, ...) {
   nsel <- length(sel)
   ssel <- min(nsel, n)
   sel <- utils::head(sel, ssel)
+  isel <- interpret_selection(x, sel)
 
   # calculate the lines affected by the first ssel selections
   selrows <- rep(FALSE, nlns)
   shwrows <- rep(FALSE, nlns)
-  for (sel1 in sel) {
+  for (sel1 in isel) {
     beg <- x$start_row[sel1] + 1L
     end <- x$end_row[sel1] + 1L
     if (x$end_column[sel1] == 0) {
@@ -71,7 +72,7 @@ format_tstoml_selection <- function(x, n = n, context = 3, ...) {
 
   # now highlight the selected elements
   mark <- rep("  ", nlns)
-  for (sel1 in sel) {
+  for (sel1 in isel) {
     beg <- x$start_row[sel1] + 1L
     end <- x$end_row[sel1] + 1L
     endcol <- x$end_column[sel1]
