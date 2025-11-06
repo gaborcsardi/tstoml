@@ -393,6 +393,9 @@ select1_numeric <- function(toml, idx, slt) {
   }
   if (type %in% c("array", "document", "table", "inline_table")) {
     chdn <- toml$children[[idx]]
+    if (type == "table") {
+      chdn <- chdn[-(1:3)] # remove the table header
+    }
     chdn <- chdn[!toml$type[chdn] %in% c("[", "]", "{", "}", ",", "comment")]
     res <- integer(length(slt))
     pos <- slt >= 0
