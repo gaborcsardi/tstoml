@@ -49,7 +49,8 @@ load_toml <- function(
   }
 
   # add positions for arrays of tables, so we can use selections based
-  # on their positions
+  # on their positions.
+  # TODO: we could do this in chk_document() already?
   dict <- new.env(parent = emptyenv())
   array_position <- rev_array_position <- integer(nrow(tt))
   aots <- which(tt$type == "table_array_element")

@@ -88,7 +88,7 @@ token_table <- function(
   tab$children <- I(unname(split(lvls, factor(tab$parent, levels = lvls))))
   attr(tab, "file") <- file
 
-  chk_document(tab, 1L)
+  tab <- chk_document(tab, 1L)
 
   # # this is a workaround for TS adding code to a non-terminal array/object node
   # tab$code[tab$type %in% c("array", "object")] <- NA_character_
@@ -144,6 +144,10 @@ new_env <- function(class) {
   env
 }
 
+encode_key <- function(key) {
+  paste0(nchar(key, type = "bytes"), ":", key, collapse = ".")
+}
+
 chk_document <- function(token_table, id = 1L) {
   stopifnot(token_table$type[id] == "document")
   doc <- new_env("table")
@@ -163,7 +167,7 @@ chk_document <- function(token_table, id = 1L) {
       }
     )
   }
-  invisible(doc)
+  token_table
 }
 
 # make sure that the subtables exist, and return the final table.
@@ -393,6 +397,9 @@ syntax_tree_toml <- function(
     children = lapply(tokens$children, as.character),
     label = paste0(
       type,
+      " (",
+      tokens$id,
+      ")",
       "\t",
       linum,
       "|",

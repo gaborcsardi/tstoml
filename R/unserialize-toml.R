@@ -222,6 +222,44 @@ unserialize_dotted_key <- function(token_table, id) {
   )
 }
 
+unserialize_key_with_ids <- function(token_table, id) {
+  switch(
+    token_table$type[id],
+    bare_key = {
+      unserialize_bare_key_with_ids(token_table, id)
+    },
+    quoted_key = {
+      unserialize_quoted_key_with_ids(token_table, id)
+    },
+    dotted_key = {
+      unserialize_dotted_key_with_ids(token_table, id)
+    },
+    stop("Unsupported key type in pair: ", token_table$type[id])
+  )
+}
+
+unserialize_bare_key_with_ids <- function(token_table, id) {
+  stopifnot(token_table$type[id] == "bare_key")
+  list(key = token_table$code[id], ids = id)
+}
+
+unserialize_quoted_key_with_ids <- function(token_table, id) {
+  stopifnot(token_table$type[id] == "quoted_key")
+  list(
+    key = unserialize_element(token_table, token_table$children[[id]][1]),
+    ids = id
+  )
+}
+
+unserialize_dotted_key_with_ids <- function(token_table, id) {
+  stopifnot(token_table$type[id] == "dotted_key")
+  children <- token_table$children[[id]]
+  ki1 <- unserialize_key_with_ids(token_table, children[1])
+  ki2 <- unserialize_key_with_ids(token_table, children[3])
+  list(key = c(ki1$key, ki2$key), ids = c(ki1$ids, ki2$ids))
+}
+
+
 # TODO: support 64 bit integers
 unserialize_integer <- function(token_table, id) {
   stopifnot(token_table$type[id] == "integer")
