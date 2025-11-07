@@ -14,7 +14,7 @@ as_toml_float <- function(
 ) {
   if (is.numeric(x) && length(x) == 1) {
     if (!is.na(x)) {
-      return(x)
+      return(as.numeric(x))
     } else {
       return(NaN)
     }
@@ -37,14 +37,14 @@ as_toml_boolean <- function(
   }
 
   if (!is.logical(x) || length(x) != 1) {
-    stop(call(
+    stop(cnd(
       "Invalid argument: `{arg}` contains an atomic logical vector of length \\
        {length(x)}. TOML only supports logical scalars and lists.",
       call = call
     ))
   }
 
-  stop(call(
+  stop(cnd(
     "Invalid argument: `{arg}` contains a logical `NA`. TOML does not support \\
     logical `NA` values.",
     call = call
@@ -61,15 +61,15 @@ as_toml_integer <- function(
   }
 
   if (!is.integer(x) || length(x) != 1) {
-    stop(call(
-      "Invalid argument: `{arg}` contains an atomic integer vector of length \
+    stop(cnd(
+      "Invalid argument: `{arg}` contains an atomic integer vector of length \\
        {length(x)}. TOML only supports integer scalars and lists.",
       call = call
     ))
   }
 
-  stop(call(
-    "Invalid argument: `{arg}` contains an integer `NA`. TOML does not support \
+  stop(cnd(
+    "Invalid argument: `{arg}` contains an integer `NA`. TOML does not support \\
     integer `NA` values.",
     call = call
   ))

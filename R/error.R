@@ -22,7 +22,7 @@ as_caller_arg <- function(x) {
 }
 
 as.character.tstoml_caller_arg <- function(x, ...) {
-  lbl <- format(x[[1]])
+  lbl <- paste(format(x[[1]]), collapse = "\n")
   gsub("\n.*$", "...", lbl)
 }
 

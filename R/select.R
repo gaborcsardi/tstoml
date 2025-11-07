@@ -91,10 +91,10 @@ select_query <- function(toml, query, captures = NULL) {
   if (!is.null(captures)) {
     bad <- !captures %in% mch$captures$name
     if (any(bad)) {
-      stop(cnd(paste0(
-        "Invalid capture names in `select_query()`: ",
-        paste(captures[bad], collapse = ", ")
-      )))
+      stop(cnd(
+        "Invalid capture names in `select_query()`: \\
+         {collapse(captures[bad])}."
+      ))
     }
     mc <- mch$matched_captures[
       mch$matched_captures$name %in% captures,
@@ -180,7 +180,10 @@ select1 <- function(toml, idx, slt) {
   } else if (is.numeric(slt)) {
     select1_numeric(toml, idx, slt)
   } else {
-    stop("Invalid TOML selector")
+    stop(cnd(
+      "Invalid TOML selector, it is {typename(slt)}. \\
+       See `?select` for valid selectors."
+    ))
   }
 }
 
@@ -378,7 +381,7 @@ get_dotted_key_component <- function(toml, keyid, idx) {
 
 select1_numeric <- function(toml, idx, slt) {
   if (any(slt == 0)) {
-    stop(cnd("Zero indices are not allowed in JSON selectors."))
+    stop(cnd("Zero indices are not allowed in TOML selectors."))
   }
   type <- toml$type[idx]
   # This is AOT _element_, so we need to take its parent AOT and treat is
@@ -483,11 +486,14 @@ interpret_selection1 <- function(toml, idx) {
     keyidx <- which(dotchildren == idx)
     parent <- toml$parent[dot]
     if (keyidx == length(dotchildren)) {
+      # nocov start this does not happen currently, we select the whole
+      # table element instead of the last component of the dotted key
       if (toml$type[parent] == "table") {
         parent
       } else {
         toml$children[[parent]][-(1:3)]
       }
+      # nocov end
     } else {
       if (toml$type[parent] == "table") {
         c(
