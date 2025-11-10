@@ -22,11 +22,3 @@ Format the selected TOML elements
 If \code{toml} does not have a selection, then all of it is formatted.
 If \code{toml} has an empty selection, then nothing happens.
 }
-\examples{
-toml <- load_toml(text = "{ \"a\": [1,2,3] }")
-toml
-
-toml |> format_selected()
-
-toml |> select("a") |> format_selected()
-}

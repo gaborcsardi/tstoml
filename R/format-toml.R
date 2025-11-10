@@ -25,13 +25,6 @@ format_toml <- function(
 #' @return The updated tstoml object.
 #'
 #' @export
-#' @examples
-#' toml <- load_toml(text = "{ \"a\": [1,2,3] }")
-#' toml
-#'
-#' toml |> format_selected()
-#'
-#' toml |> select("a") |> format_selected()
 
 format_selected <- function(
   toml,
