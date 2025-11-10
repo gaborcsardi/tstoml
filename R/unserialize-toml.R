@@ -36,10 +36,28 @@ unserialize_selected <- function(toml) {
 
 unserialize_element <- function(token_table, id) {
   type <- token_table$type[id]
+  parent <- token_table$parent[id]
+  if (
+    !is.na(parent) &&
+      token_table$type[parent] == "table_array_element" &&
+      type %in% c("bare_key", "quoted_key", "dotted_key")
+  ) {
+    # this is an AOT _element_, unserialize like a table
+    type <- "table"
+  }
+
   elt <- switch(
     type,
-    document = {
-      unserialize_document(token_table, id)
+    table = ,
+    document = ,
+    inline_table = ,
+    bare_key = ,
+    quoted_key = {
+      unserialize_table(token_table, id)
+    },
+    array = ,
+    table_array_element = {
+      unserialize_array(token_table, id)
     },
     pair = {
       unserialize_pair(token_table, id)
@@ -80,111 +98,14 @@ unserialize_element <- function(token_table, id) {
     multiline_literal_string = {
       unserialize_multiline_literal_string(token_table, id)
     },
-    array = {
-      unserialize_array(token_table, id)
-    },
-    inline_table = {
-      unserialize_inline_table(token_table, id)
-    },
-    table = {
-      unserialize_table(token_table, id, type)
-    },
-    table_array_element = {
-      c(
-        unserialize_table(token_table, id, type),
-        list(type = "table_array_element")
-      )
-    },
     stop("Unsupported token type: ", token_table$type[id])
   )
   elt
 }
 
-new_table <- function(name) {
-  list(
-    values = structure(list(), names = character()),
-    name = name
-  )
-}
-
-set_table_element <- function(table, elt, inline = FALSE) {
-  idx <- integer()
-  for (i in seq_along(elt$name[-1])) {
-    nms <- names(if (length(idx)) table$values[[idx]] else table$values)
-    idx1 <- match(elt$name[i], nms)
-    if (is.na(idx1)) {
-      # no subtable called elt$name[i]
-      if (length(idx)) {
-        table$values[[idx]][[elt$name[i]]] <- named_list()
-        idx <- c(idx, length(table$values[[idx]]))
-      } else {
-        table$values[[elt$name[i]]] <- named_list()
-        idx <- c(idx, length(table$values))
-      }
-    } else {
-      idx <- c(idx, idx1)
-      # if this is an unnamed list, then it is an array of tables,
-      # use the last element
-      if (is.null(names(table$values[[idx]]))) {
-        idx <- c(idx, length(table$values[[idx]]))
-      }
-    }
-  }
-
-  lastname <- elt$name[[length(elt$name)]]
-  if (identical(elt$type, "table_array_element")) {
-    if (length(idx)) {
-      len <- length(table$values[[idx]][[lastname]])
-      if (len) {
-        table$values[[idx]][[lastname]][[len + 1L]] <- elt$value
-      } else {
-        table$values[[idx]][[lastname]] <- list(elt$value)
-      }
-    } else {
-      len <- length(table$values[[lastname]])
-      if (len) {
-        table$values[[lastname]][[len + 1L]] <- elt$value
-      } else {
-        table$values[[lastname]] <- list(elt$value)
-      }
-    }
-  } else {
-    if (length(idx)) {
-      if (is.null(table$values[[idx]][[lastname]])) {
-        table$values[[idx]][[lastname]] <- elt$value
-      }
-    } else {
-      if (is.null(table$values[[lastname]])) {
-        table$values[[lastname]] <- elt$value
-      }
-    }
-  }
-  table
-}
-
-# the document is a table without a name
-unserialize_document <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "document")
-  children <- token_table$children[[id]]
-  children <- children[token_table$type[children] != "comment"]
-  result <- new_table(NA_character_)
-  for (child in children) {
-    elem <- unserialize_element(token_table, child)
-    result <- set_table_element(result, elem)
-  }
-  as.list(result$values)
-}
-
 unserialize_pair <- function(token_table, id) {
   stopifnot(token_table$type[id] == "pair")
-  children <- token_table$children[[id]]
-  # first must be a key, second =, third the value
-  key <- unserialize_key(token_table, children[1])
-  value <- unserialize_element(token_table, children[3])
-  list(
-    name = key,
-    value = value
-  )
+  unserialize_element(token_table, token_table$dom_children[[id]])
 }
 
 unserialize_key <- function(token_table, id) {
@@ -390,12 +311,7 @@ unserialize_multiline_literal_string <- function(token_table, id) {
 }
 
 unserialize_array <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "array")
-  children <- token_table$children[[id]]
-  # filter out commas
-  children <- children[
-    !token_table$type[children] %in% c("[", ",", "]", "comment")
-  ]
+  children <- token_table$dom_children[[id]]
   result <- vector("list", length(children))
   for (i in seq_along(children)) {
     result[[i]] <- unserialize_element(token_table, children[i])
@@ -403,31 +319,12 @@ unserialize_array <- function(token_table, id) {
   result
 }
 
-unserialize_inline_table <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "inline_table")
-  children <- token_table$children[[id]]
-  children <- children[
-    !token_table$type[children] %in% c("{", ",", "}", "comment")
-  ]
-  result <- new_table(NA_character_)
-  for (child in children) {
-    elem <- unserialize_element(token_table, child)
-    result <- set_table_element(result, elem)
+unserialize_table <- function(token_table, id) {
+  children <- token_table$dom_children[[id]]
+  res <- named_list(length(children))
+  names(res) <- map_chr(children, get_element_key, toml = token_table)
+  for (i in seq_along(children)) {
+    res[[i]] <- unserialize_element(token_table, children[i])
   }
-  as.list(result$values)
-}
-
-unserialize_table <- function(token_table, id, type) {
-  stopifnot(token_table$type[id] == type)
-  children <- token_table$children[[id]]
-  name <- unserialize_key(token_table, children[2])
-  children <- children[
-    !token_table$type[children] %in% c("[", "]", "[[", "]]", "comment")
-  ][-1]
-  result <- new_table(name)
-  for (child in children) {
-    elem <- unserialize_element(token_table, child)
-    result <- set_table_element(result, elem)
-  }
-  result
+  res
 }

@@ -106,16 +106,11 @@
       toml[["owner"]]
     Output
       [[1]]
-      [[1]]$values
-      [[1]]$values$name
+      [[1]]$name
       [1] "Tom Preston-Werner"
       
-      [[1]]$values$dob
+      [[1]]$dob
       [1] "1979-05-27 15:32:00 UTC"
-      
-      
-      [[1]]$name
-      [1] "owner"
       
       
     Code

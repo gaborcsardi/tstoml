@@ -6,8 +6,8 @@
   }
 }
 
-named_list <- function() {
-  structure(list(), names = character())
+named_list <- function(n = 0) {
+  structure(vector("list", n), names = character(n))
 }
 
 map_int <- function(.x, .f, ...) {

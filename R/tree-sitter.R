@@ -216,7 +216,7 @@ add_dom <- function(tab) {
   current_prefix <- character()
 
   check_sub_keys <- function(key, prefix = NULL) {
-    ec <- if (is.null(prefix)) "" else encode_key(prefix)
+    ec <- if (length(prefix) == 0) "" else encode_key(prefix)
     for (idx in seq_along(key$key[-1])) {
       ec <- paste0(ec, encode_key(key$key[idx]))
       rec <- dict[[ec]]
@@ -266,14 +266,14 @@ add_dom <- function(tab) {
     key <- unserialize_key_with_ids(tab, tab$children[[id]][2])
     check_sub_keys(key)
 
-    # set my parent
-    tab$dom_parent[i] <<- current_table
-
     # create new table of upgrade a subtable to a table
     ec <- encode_key(key$key)
     rec <- dict[[ec]]
-    if (is.null(rec) || rec$type == "subtable") {
-      dict[[ec]] <- list(id = id, type = "table")
+    if (is.null(rec)) {
+      dict[[ec]] <- rec <- list(id = id, type = "table")
+      tab$dom_parent[i] <<- current_table
+    } else if (rec$type == "subtable") {
+      dict[[ec]] <- list(id = rec$id, type = "table")
     } else if (rec$type == "table") {
       stop(cnd(
         "Duplicate table definition: {paste(key$key, collapse = '.')}."
@@ -285,7 +285,7 @@ add_dom <- function(tab) {
       ))
     }
     # this is the current table now
-    current_table <<- id
+    current_table <<- rec$id
     current_prefix <<- key$key
   }
 
@@ -392,7 +392,7 @@ add_dom <- function(tab) {
   # wire up arrays as well
   for (i in which(tab$type == "array")) {
     children <- tab$children[[i]]
-    children <- children[!tab$type[children] %in% c("[", "]", ",")]
+    children <- children[!tab$type[children] %in% c("[", "]", ",", "comment")]
     for (el in children) {
       tab$dom_parent[el] <- i
     }

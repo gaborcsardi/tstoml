@@ -162,8 +162,8 @@
     Code
       unserialize_toml(text = txt)
     Condition
-      Error in `table$values[[idx]][[lastname]]`:
-      ! subscript out of bounds
+      Error in `check_sub_keys()`:
+      ! Cannot define subtable under pair: fruit.apple.
 
 # offset date-time
 

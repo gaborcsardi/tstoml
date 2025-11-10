@@ -206,29 +206,31 @@ select1_key <- function(toml, idx, slt) {
   }
 
   chdn <- toml$dom_children[[idx]]
-  keys <- map_chr(chdn, function(ch) {
-    switch(
-      toml$type[ch],
-      table = ,
-      table_array_element = {
-        last(unserialize_key(toml, toml$children[[ch]][2]))
-      },
-      pair = {
-        last(unserialize_key(toml, toml$children[[ch]][1]))
-      },
-      bare_key = ,
-      quoted_key = {
-        unserialize_key(toml, ch)
-      },
-      NA_character_
-    )
-  })
+  keys <- map_chr(chdn, get_element_key, toml = toml)
   sel <- chdn[keys %in% slt]
   pairs <- toml$type[sel] == "pair"
   sel[pairs] <- map_int(sel[pairs], function(pair) {
     toml$children[[pair]][3]
   })
   sel
+}
+
+get_element_key <- function(toml, id) {
+  switch(
+    toml$type[id],
+    table = ,
+    table_array_element = {
+      last(unserialize_key(toml, toml$children[[id]][2]))
+    },
+    pair = {
+      last(unserialize_key(toml, toml$children[[id]][1]))
+    },
+    bare_key = ,
+    quoted_key = {
+      unserialize_key(toml, id)
+    },
+    NA_character_
+  )
 }
 
 get_dotted_key_components <- function(toml, keyid) {
@@ -241,11 +243,6 @@ get_dotted_key_components <- function(toml, keyid) {
   } else {
     keyid
   }
-}
-
-get_dotted_key_component <- function(toml, keyid, idx) {
-  comps <- get_dotted_key_components(toml, keyid)
-  comps[idx]
 }
 
 select1_numeric <- function(toml, idx, slt) {
@@ -277,11 +274,10 @@ interpret_selection <- function(toml, sel) {
 interpret_selection1 <- function(toml, idx) {
   parent <- toml$parent[idx]
   if (toml$type[idx] == "table_array_element") {
-    # select all children except the [[ ]] tokens
     toml$parent[toml$dom_children[[idx]]]
   } else if (
     !is.na(parent) &&
-      toml$type[toml$parent[idx]] == "table_array_element" &&
+      toml$type[parent] == "table_array_element" &&
       toml$type[idx] %in% c("bare_key", "quoted_key", "dotted_key")
   ) {
     # this is AOT _element_, select it like a table, but not the [[ ]] tokens
