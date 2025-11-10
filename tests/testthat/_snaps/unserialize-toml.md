@@ -63,16 +63,16 @@
     Code
       unserialize_toml(text = txt)
     Condition
-      Error in `create_sub_tables_pair()`:
-      ! Duplicate key in document: name.
+      Error in `add_dom_pair()`:
+      ! Duplicate key definition: name.
 
 ---
 
     Code
       unserialize_toml(text = txt2)
     Condition
-      Error in `create_sub_tables_pair()`:
-      ! Duplicate key in document: spelling.
+      Error in `add_dom_pair()`:
+      ! Duplicate key definition: spelling.
 
 # more keys
 
@@ -162,8 +162,8 @@
     Code
       unserialize_toml(text = txt)
     Condition
-      Error in `create_sub_tables()`:
-      ! Cannot create sub-table under non-table key: fruit.apple
+      Error in `table$values[[idx]][[lastname]]`:
+      ! subscript out of bounds
 
 # offset date-time
 
@@ -583,16 +583,16 @@
     Code
       unserialize_toml(text = txt5)
     Condition
-      Error in `create_sub_tables_table()`:
-      ! Cannot redefine table: fruit.
+      Error in `add_dom_table()`:
+      ! Duplicate table definition: fruit.
 
 ---
 
     Code
       unserialize_toml(text = txt6)
     Condition
-      Error in `create_sub_tables_table()`:
-      ! Duplicate key in document: fruit.apple.
+      Error in `add_dom_table()`:
+      ! Cannot redefine array of tables as table: fruit.apple.
 
 ---
 
@@ -759,16 +759,32 @@
     Code
       unserialize_toml(text = txt)
     Condition
-      Error in `create_sub_tables()`:
-      ! Cannot create sub-table under non-table key: type
+      Error in `check_sub_keys()`:
+      ! Cannot define subtable under pair: product.type.
+
+# inline tables are consistent
+
+    Code
+      unserialize_toml(text = txt)
+    Condition
+      Error in `check_keys()`:
+      ! Cannot define subtable under pair in inline table: b.
+
+---
+
+    Code
+      unserialize_toml(text = txt2)
+    Condition
+      Error in `check_inline_table()`:
+      ! Duplicate key definition in inline table: x.
 
 # inline tables cannot add keys or sub-tables to an existing table
 
     Code
       unserialize_toml(text = txt)
     Condition
-      Error in `create_sub_tables_pair()`:
-      ! Duplicate key in document: type.
+      Error in `add_dom_pair()`:
+      ! Duplicate key definition: type.
 
 # array of tables
 
@@ -850,32 +866,32 @@
     Code
       unserialize_toml(text = txt3)
     Condition
-      Error in `create_sub_tables_array()`:
-      ! Cannot redefine array of tables: fruit.
+      Error in `add_dom_table_array_element()`:
+      ! Cannot redefine table as array of tables: fruit.
 
 ---
 
     Code
       unserialize_toml(text = txt4)
     Condition
-      Error in `create_sub_tables_array()`:
-      ! Cannot redefine array of tables: fruits.
+      Error in `add_dom_table_array_element()`:
+      ! Cannot redefine table as array of tables: fruits.
 
 ---
 
     Code
       unserialize_toml(text = txt5)
     Condition
-      Error in `create_sub_tables_table()`:
-      ! Duplicate key in document: fruits.varieties.
+      Error in `add_dom_table()`:
+      ! Cannot redefine array of tables as table: fruits.varieties.
 
 ---
 
     Code
       unserialize_toml(text = txt6)
     Condition
-      Error in `create_sub_tables_array()`:
-      ! Cannot redefine array of tables: fruits.physical.
+      Error in `add_dom_table_array_element()`:
+      ! Cannot redefine table as array of tables: fruits.physical.
 
 ---
 

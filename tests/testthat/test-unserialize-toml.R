@@ -639,6 +639,24 @@ type.edible = false  # INVALID
   })
 })
 
+test_that("inline tables are consistent", {
+  txt <- '
+a = { b = 1, b.b = 2 }  # INVALID
+'
+
+  expect_snapshot(error = TRUE, {
+    unserialize_toml(text = txt)
+  })
+
+  txt2 <- '
+a = { a = { a = { x.x = 2, x = 1 } } }  # INVALID
+  '
+
+  expect_snapshot(error = TRUE, {
+    unserialize_toml(text = txt2)
+  })
+})
+
 test_that("inline tables cannot add keys or sub-tables to an existing table", {
   txt <-
     '[product]

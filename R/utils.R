@@ -53,6 +53,10 @@ is_named <- function(x) {
   !is.null(nms) && length(x) == length(nms) && !anyNA(nms) && all(nms != "")
 }
 
+last <- function(x) {
+  x[[length(x)]]
+}
+
 # For roxygen2 -----------------------------------------------------------------
 
 # nocov start
