@@ -199,96 +199,36 @@ select1_true <- function(toml, idx) {
 
 select1_key <- function(toml, idx, slt) {
   type <- toml$type[idx]
-  # This is AOT _element_, so we need to take its parent AOT and treat is
-  # like a table
   if (
-    !is.na(toml$parent[idx]) &&
-      toml$type[toml$parent[idx]] == "table_array_element" &&
-      toml$type[idx] %in% c("bare_key", "quoted_key", "dotted_key")
+    !type %in% c("document", "table", "inline_table", "bare_key", "quoted_key")
   ) {
-    idx <- toml$parent[idx]
-    type <- "table"
+    return(integer())
   }
 
-  if (type %in% c("document", "table")) {
-    children <- toml$children[[idx]]
-    unlist(lapply(children, function(child) {
-      ctype <- toml$type[child]
-      if (ctype == "table" || ctype == "table_array_element") {
-        keyid <- toml$children[[child]][2]
-        key <- unserialize_key(toml, keyid)
-        key1 <- key[1]
-        if (key1 %in% slt) {
-          # if this is a table with a dotted key then a subtable is selected
-          # we represent this by selecting the first key in the dotted key
-          if (toml$type[keyid] == "dotted_key") {
-            get_dotted_key_component(toml, keyid, 1L)
-          } else {
-            child
-          }
-        }
-      } else if (ctype == "pair") {
-        keyid <- toml$children[[child]][1]
-        key <- unserialize_key(toml, keyid)
-        key1 <- key[1]
-        if (key1 %in% slt) {
-          # if this is a pair with a dotted key then a subtable is selected
-          # we represent this by selecting the first key in the dotted key
-          if (toml$type[keyid] == "dotted_key") {
-            get_dotted_key_component(toml, keyid, 1L)
-          } else {
-            toml$children[[child]][3]
-          }
-        }
-      }
-    }))
-  } else if (type %in% c("bare_key", "quoted_key")) {
-    # This is a selected subtable. Check the next part of the dotted key
-    dot <- toml$parent[idx]
-    # find the root of the dotted keys first
-    while (toml$type[toml$parent[dot]] == "dotted_key") {
-      dot <- toml$parent[dot]
-    }
-    dotchildren <- get_dotted_key_components(toml, dot)
-    nextkeyidx <- which(dotchildren == idx) + 1L
-    nextkeyid <- dotchildren[nextkeyidx]
-    nextkey <- unserialize_key(toml, nextkeyid)
-    if (nextkey %in% slt) {
-      # if this is the last part of the dotted key then select the value
-      # or the whole table. otherwise select the next part of the dotted key
-      if (nextkeyidx == length(dotchildren)) {
-        parent <- toml$parent[dot]
-        if (toml$type[parent] == "table") {
-          parent
-        } else {
-          toml$children[[parent]][3]
-        }
-      } else {
-        nextkeyid
-      }
-    }
-  } else if (type == "inline_table") {
-    # inline table, select keys inside
-    children <- toml$children[[idx]]
-    children <- children[toml$type[children] == "pair"]
-    unlist(lapply(children, function(child) {
-      keyid <- toml$children[[child]][1]
-      key <- unserialize_key(toml, keyid)
-      key1 <- key[1]
-      if (key1 %in% slt) {
-        # if this is a pair with a dotted key then a subtable is selected
-        # we represent this by selecting the first key in the dotted key
-        if (toml$type[keyid] == "dotted_key") {
-          get_dotted_key_component(toml, keyid, 1L)
-        } else {
-          toml$children[[child]][3]
-        }
-      }
-    }))
-  } else {
-    # table_array_element, string, integer, float, boolean, datetime, array
-    integer()
-  }
+  chdn <- toml$dom_children[[idx]]
+  keys <- map_chr(chdn, function(ch) {
+    switch(
+      toml$type[ch],
+      table = ,
+      table_array_element = {
+        last(unserialize_key(toml, toml$children[[ch]][2]))
+      },
+      pair = {
+        last(unserialize_key(toml, toml$children[[ch]][1]))
+      },
+      bare_key = ,
+      quoted_key = {
+        unserialize_key(toml, ch)
+      },
+      NA_character_
+    )
+  })
+  sel <- chdn[keys %in% slt]
+  pairs <- toml$type[sel] == "pair"
+  sel[pairs] <- map_int(sel[pairs], function(pair) {
+    toml$children[[pair]][3]
+  })
+  sel
 }
 
 get_dotted_key_components <- function(toml, keyid) {
@@ -312,83 +252,22 @@ select1_numeric <- function(toml, idx, slt) {
   if (any(slt == 0)) {
     stop(cnd("Zero indices are not allowed in TOML selectors."))
   }
-  type <- toml$type[idx]
-  # This is AOT _element_, so we need to take its parent AOT and treat is
-  # like a table
-  if (
-    !is.na(toml$parent[idx]) &&
-      toml$type[toml$parent[idx]] == "table_array_element" &&
-      toml$type[idx] %in% c("bare_key", "quoted_key", "dotted_key")
-  ) {
-    idx <- toml$parent[idx]
-    type <- "table"
+  chdn <- toml$dom_children[[idx]]
+  slt <- slt[slt <= length(chdn) & slt >= -length(chdn)]
+
+  res <- integer(length(slt))
+  pos <- slt >= 0
+  if (any(pos)) {
+    res[pos] <- chdn[slt[pos]]
   }
-  if (type %in% c("array", "document", "table", "inline_table")) {
-    chdn <- toml$children[[idx]]
-    if (type == "table") {
-      chdn <- chdn[-(1:3)] # remove the table header
-    }
-    chdn <- chdn[!toml$type[chdn] %in% c("[", "]", "{", "}", ",", "comment")]
-    res <- integer(length(slt))
-    pos <- slt >= 0
-    if (any(pos)) {
-      res[pos] <- chdn[slt[pos]]
-    }
-    if (any(!pos)) {
-      res[!pos] <- rev(rev(chdn)[abs(slt[!pos])])
-    }
-    pairs <- toml$type[res] == "pair"
-    res[pairs] <- map_int(res[pairs], function(pair) {
-      toml$children[[pair]][3]
-    })
-    res
-    aots <- toml$type[res] == "table_array_element"
-    res[aots] <- map_int(res[aots], function(aot) {
-      toml$children[[aot]][2]
-    })
-    res
-  } else if (type %in% c("bare_key", "quoted_key")) {
-    # This is a selected subtable. It always has a single element!
-    if (!1 %in% slt && !-1 %in% slt) {
-      integer()
-    } else {
-      # Check the next part of the dotted key
-      dot <- toml$parent[idx]
-      # find the root of the dotted keys first
-      while (toml$type[toml$parent[dot]] == "dotted_key") {
-        dot <- toml$parent[dot]
-      }
-      dotchildren <- get_dotted_key_components(toml, dot)
-      nextkeyidx <- which(dotchildren == idx) + 1L
-      nextkeyid <- dotchildren[nextkeyidx]
-      # if this is the last part of the dotted key then select the value
-      # or the whole table. otherwise select the next part of the dotted key
-      if (nextkeyidx == length(dotchildren)) {
-        parent <- toml$parent[dot]
-        if (toml$type[parent] == "table") {
-          parent
-        } else {
-          toml$children[[parent]][3]
-        }
-      } else {
-        nextkeyid
-      }
-    }
-  } else if (
-    toml$type[idx] == "table_array_element" &&
-      toml$array_position[idx] %in% slt ||
-      toml$rev_array_position[idx] %in% slt
-  ) {
-    # select this element of the array, we denote that by selecting its
-    # key element
-    toml$children[[idx]][2]
-  } else {
-    # string, integer, float, boolean, datetime
-    integer()
+  if (any(!pos)) {
+    res[!pos] <- rev(rev(chdn)[abs(slt[!pos])])
   }
-  # TODO:
-  # - table_array_element
-  #
+  pairs <- toml$type[res] == "pair"
+  res[pairs] <- map_int(res[pairs], function(pair) {
+    toml$children[[pair]][3]
+  })
+  res
 }
 
 interpret_selection <- function(toml, sel) {
@@ -397,7 +276,10 @@ interpret_selection <- function(toml, sel) {
 
 interpret_selection1 <- function(toml, idx) {
   parent <- toml$parent[idx]
-  if (
+  if (toml$type[idx] == "table_array_element") {
+    # select all children except the [[ ]] tokens
+    toml$parent[toml$dom_children[[idx]]]
+  } else if (
     !is.na(parent) &&
       toml$type[toml$parent[idx]] == "table_array_element" &&
       toml$type[idx] %in% c("bare_key", "quoted_key", "dotted_key")

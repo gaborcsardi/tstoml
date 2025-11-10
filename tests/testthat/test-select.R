@@ -267,8 +267,8 @@ test_that("select1_numeric", {
 
   # selecting AOT elements by position
   expect_snapshot({
-    toml |> select(1)
-    toml |> select(-1)
+    toml |> select("products", 1)
+    toml |> select("products", -1)
   })
 
   # in subtables (tables)

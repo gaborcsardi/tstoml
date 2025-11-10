@@ -294,7 +294,7 @@
     Code
       select(toml, "products")
     Output
-      [90m# toml (11 lines, 2 selected elements)[39m
+      [90m# toml (11 lines, 1 selected element)[39m
         [90m 1[39m[90m | [39m# A TOML document with all types of arrays of tables
         [90m 2[39m[90m | [39m
       [46m>[49m [90m 3[39m[90m | [39m  [36m[[products]][39m
@@ -837,7 +837,7 @@
     Code
       select(toml, "products")
     Output
-      [90m# toml (11 lines, 2 selected elements)[39m
+      [90m# toml (11 lines, 1 selected element)[39m
         [90m 1[39m[90m | [39m# A TOML document with all types of arrays of tables
         [90m 2[39m[90m | [39m
       [46m>[49m [90m 3[39m[90m | [39m  [36m[[products]][39m
@@ -1021,7 +1021,7 @@
     Code
       select(toml, "products")
     Output
-      [90m# toml (11 lines, 2 selected elements)[39m
+      [90m# toml (11 lines, 1 selected element)[39m
         [90m 1[39m[90m | [39m# A TOML document with all types of arrays of tables
         [90m 2[39m[90m | [39m
       [46m>[49m [90m 3[39m[90m | [39m  [36m[[products]][39m
@@ -1081,7 +1081,7 @@
 ---
 
     Code
-      select(toml, 1)
+      select(toml, "products", 1)
     Output
       [90m# toml (11 lines, 1 selected element)[39m
         [90m1  [39m[90m | [39m# A TOML document with all types of arrays of tables
@@ -1094,7 +1094,7 @@
         [90m8  [39m[90m | [39m  name = "Nail"
         [90m...[39m   
     Code
-      select(toml, -1)
+      select(toml, "products", -1)
     Output
       [90m# toml (11 lines, 1 selected element)[39m
         [90m...[39m   
