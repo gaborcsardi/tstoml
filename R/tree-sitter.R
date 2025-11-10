@@ -389,6 +389,15 @@ add_dom <- function(tab) {
     check_inline_table(i)
   }
 
+  # wire up arrays as well
+  for (i in which(tab$type == "array")) {
+    children <- tab$children[[i]]
+    children <- children[!tab$type[children] %in% c("[", "]", ",")]
+    for (el in children) {
+      tab$dom_parent[el] <- i
+    }
+  }
+
   lvls <- seq_len(nrow(tab))
   tab$dom_children <- I(unname(split(
     lvls,
