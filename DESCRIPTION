@@ -18,7 +18,12 @@ Imports:
     cli (>= 3.6.0),
     utils
 Suggests:
+    asciicast,
     hms,
     pillar,
     testthat (>= 3.0.0)
+Config/Needs/website:
+    r-lib/asciicast
 Config/testthat/edition: 3
+URL: https://github.com/gaborcsardi/tstoml
+BugReports: https://github.com/gaborcsardi/tstoml/issues

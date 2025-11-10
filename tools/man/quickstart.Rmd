@@ -1,0 +1,85 @@
+```{asciicast}
+#| include: FALSE
+pkgload::load_all()
+```
+
+### Create a tstoml object
+
+Create a tstoml object from a string:
+
+```{asciicast}
+#| results: hide
+txt <- r"(
+# This is a TOML document
+
+title = "TOML Example"
+
+[owner]
+name = "Tom Preston-Werner"
+dob = 1979-05-27T07:32:00-08:00
+
+[database]
+enabled = true
+ports = [ 8000, 8001, 8002 ]
+data = [ ["delta", "phi"], [3.14] ]
+temp_targets = { cpu = 79.5, case = 72.0 }
+
+[servers]
+
+[servers.alpha]
+ip = "10.0.0.1"
+role = "frontend"
+
+[servers.beta]
+ip = "10.0.0.2"
+role = "backend"
+)"
+toml <- load_toml(text = txt)
+```
+
+Pretty print a tstoml object:
+
+```{asciicast}
+#| label: print-toml
+toml
+```
+
+### Select elements in a tsjson object
+
+```{asciicast}
+#| label: select-table
+select(toml, "owner")
+```
+
+Select element(s) inside elements:
+
+```{asciicast}
+#| label: select-select
+select(toml, "owner", "name")
+```
+
+Select element(s) of an array:
+
+```{asciicast}
+#| label: select-array
+select(toml, "database", "ports", 1:2)
+```
+
+Select multiple keys from a table:
+
+```{asciicast}
+#| label: select-multiple
+select(toml, "owner", c("name", "dob"))
+```
+
+### Delete elements
+
+TODO
+
+### Insert elements
+
+TODO
+
+### Update elements
+
+TODO

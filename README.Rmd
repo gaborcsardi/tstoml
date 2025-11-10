@@ -1,0 +1,69 @@
+---
+output:
+  github_document:
+always_allow_html: yes
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r}
+#| label: setup
+#| include: false
+knitr::opts_chunk$set(
+  comment = "#>",
+  fig.path = "man/figures",
+  fig.width = 10,
+  asciicast_theme = if (Sys.getenv("IN_PKGDOWN") == "true") "pkgdown" else "readme"
+)
+asciicast::init_knitr_engine(
+  echo = TRUE,
+  echo_input = FALSE,
+  startup = quote({
+    library(cli)
+    options(cli.num_colors = cli::truecolor)
+  })
+)
+```
+
+# tstoml
+
+<!-- badges: start -->
+![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)
+[![R-CMD-check](https://github.com/gaborcsardi/tstoml/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gaborcsardi/tstoml/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
+Extract and manipulate parts of TOML files without touching the formatting
+and comments in other parts.
+
+## Installation
+
+You can install the development version of tstoml from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("gaborcsardi/tstoml")
+```
+
+## Documentation
+
+See at [`https://gaborcsardi.github.io/tstoml/`](
+  https://gaborcsardi.github.io/tstoml/reference/index.html/)
+and also in the installed package: `help(package = "tstoml")`.
+
+## Quickstart
+
+```{r include = FALSE}
+file.copy("tools/man/quickstart.Rmd", ".")
+```
+
+```{r child ="quickstart.Rmd"}
+```
+
+```{r include = FALSE}
+unlink("quickstart.Rmd")
+```
+
+# License
+
+MIT © Posit Software, PBC

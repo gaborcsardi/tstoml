@@ -8,6 +8,14 @@
 \description{
 Extract and manipulate parts of TOML files without touching the formatting and comments in other parts.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/gaborcsardi/tstoml}
+  \item Report bugs at \url{https://github.com/gaborcsardi/tstoml/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Gábor Csárdi \email{csardi.gabor@gmail.com}
 

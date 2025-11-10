@@ -6,6 +6,14 @@
 ## usethis namespace: end
 NULL
 
+#' @name quickstart
+#' @title tsjson quickstart
+#' @details
+#'
+#' ```{r, child = "tools/man/quickstart.Rmd"}
+#' ```
+NULL
+
 #' Example TOML text
 #' @export
 #' @examples
