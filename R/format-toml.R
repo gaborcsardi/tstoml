@@ -197,7 +197,7 @@ format_array <- function(toml, id, options) {
 
 format_pair <- function(toml, id, options) {
   key_chld <- get_subtree(toml, toml$children[[id]][1L], with_root = TRUE)
-  key <- paste(na.omit(toml$code[key_chld]), collapse = "")
+  key <- paste(na_omit(toml$code[key_chld]), collapse = "")
   paste0(
     key,
     " = ",
@@ -235,7 +235,7 @@ format_local_time <- function(toml, id, options) {
 
 format_string <- function(toml, id, options) {
   chld <- get_subtree(toml, id, with_root = TRUE)
-  paste(na.omit(toml$code[chld]), collapse = "")
+  paste(na_omit(toml$code[chld]), collapse = "")
 }
 
 format_comment <- function(toml, id, options) {
