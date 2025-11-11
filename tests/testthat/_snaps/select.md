@@ -349,8 +349,8 @@
       select(load_toml(text = "[a.b.c]\nx=1\n"), TRUE)
     Output
       [90m# toml (2 lines, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39m[[36ma[39m.[36mb[39m.[36mc[39m]
-      [46m>[49m [90m2[39m[90m | [39m[36mx=1[39m
+      [46m>[49m [90m1[39m[90m | [39m[36m[a.[36mb[36m.c][39m
+      [46m>[49m [90m2[39m[90m | [39m[36mx=[39m[36m[36m1[36m[39m
 
 ---
 
@@ -358,7 +358,7 @@
       select(load_toml(text = "a.b.c=1\nb=2\nc=3"), TRUE)
     Output
       [90m# toml (3 lines, 3 selected elements)[39m
-      [46m>[49m [90m1[39m[90m | [39m[36ma[39m.[36mb[39m.[36mc=[39m[36m1[39m
+      [46m>[49m [90m1[39m[90m | [39m[36ma.b.c=[39m[36m[36m1[36m[39m
       [46m>[49m [90m2[39m[90m | [39mb=[36m2[39m
       [46m>[49m [90m3[39m[90m | [39mc=[36m3[39m
 
@@ -398,9 +398,9 @@
       select(load_toml(text = txt), "a", TRUE)
     Output
       [90m# toml (3 lines, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39m[a.[36mb[39m.[36mc[39m]
-      [46m>[49m [90m2[39m[90m | [39m[36ma=1[39m
-      [46m>[49m [90m3[39m[90m | [39m[36mb=2[39m
+      [46m>[49m [90m1[39m[90m | [39m[36m[a.b.c][39m
+      [46m>[49m [90m2[39m[90m | [39m[36ma=[39m[36m[36m1[36m[39m
+      [46m>[49m [90m3[39m[90m | [39m[36mb=[39m[36m[36m2[36m[39m
     Code
       get_selection(select(load_toml(text = txt), "a", TRUE))
     Output
@@ -505,7 +505,7 @@
       select(load_toml(text = txt), "a", TRUE)
     Output
       [90m# toml (1 line, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39ma.[36mb[39m.[36mc[39m [36m=[39m [36m1[39m
+      [46m>[49m [90m1[39m[90m | [39m[36ma.b.c = [39m[36m[36m1[36m[39m
     Code
       get_selection(select(load_toml(text = txt), "a", TRUE))
     Output
@@ -738,12 +738,12 @@
       select(load_toml(text = txt), "a", TRUE)
     Output
       [90m# toml (1 line, 2 selected elements)[39m
-      [46m>[49m [90m1[39m[90m | [39ma = { [36mb[39m.[36mc[39m.[36md[39m [36m=[39m [36m1[39m, d = [36m2[39m }
+      [46m>[49m [90m1[39m[90m | [39ma = { [36mb.c.d = 1[39m, d = [36m2[39m }
     Code
       select(load_toml(text = txt), "a", TRUE, TRUE)
     Output
       [90m# toml (1 line, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39ma = { b.[36mc[39m.[36md[39m [36m=[39m [36m1[39m, d = 2 }
+      [46m>[49m [90m1[39m[90m | [39ma = { [36mb.c.d = [39m[36m[36m1[36m[39m, d = 2 }
     Code
       select(load_toml(text = txt), "a", TRUE, TRUE, TRUE)
     Output
@@ -882,16 +882,16 @@
       select(toml, "a")
     Output
       [90m# toml (3 lines, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39m[[36ma[39m.[36mb[39m.[36mc[39m]
-      [46m>[49m [90m2[39m[90m | [39m[36mx=1[39m
-      [46m>[49m [90m3[39m[90m | [39m[36my=2[39m
+      [46m>[49m [90m1[39m[90m | [39m[36m[a.[36mb[36m.c][39m
+      [46m>[49m [90m2[39m[90m | [39m[36mx=[39m[36m[36m1[36m[39m
+      [46m>[49m [90m3[39m[90m | [39m[36my=[39m[36m[36m2[36m[39m
     Code
       select(toml, "a", "b")
     Output
       [90m# toml (3 lines, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39m[a.[36mb[39m.[36mc[39m]
-      [46m>[49m [90m2[39m[90m | [39m[36mx=1[39m
-      [46m>[49m [90m3[39m[90m | [39m[36my=2[39m
+      [46m>[49m [90m1[39m[90m | [39m[36m[a.b.c][39m
+      [46m>[49m [90m2[39m[90m | [39m[36mx=[39m[36m[36m1[36m[39m
+      [46m>[49m [90m3[39m[90m | [39m[36my=[39m[36m[36m2[36m[39m
     Code
       select(toml, "a", "b", "c")
     Output
@@ -913,13 +913,13 @@
       select(toml, "a")
     Output
       [90m# toml (2 lines, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39m[36ma[39m.[36mb[39m.[36mc=[39m[36m1[39m
+      [46m>[49m [90m1[39m[90m | [39m[36ma.b.c=[39m[36m[36m1[36m[39m
         [90m2[39m[90m | [39md=2
     Code
       select(toml, "a", "b")
     Output
       [90m# toml (2 lines, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39ma.[36mb[39m.[36mc=[39m[36m1[39m
+      [46m>[49m [90m1[39m[90m | [39m[36ma.b.c=[39m[36m[36m1[36m[39m
         [90m2[39m[90m | [39md=2
     Code
       select(toml, "a", "b", "c")
@@ -968,7 +968,7 @@
       select(toml, "a", "b")
     Output
       [90m# toml (1 line, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39ma = { [36mb[39m.[36mc[39m [36m=[39m [36m1[39m, d = 2 }
+      [46m>[49m [90m1[39m[90m | [39ma = { [36mb.c = [39m[36m[36m1[36m[39m, d = 2 }
     Code
       select(toml, "a", "b", "c")
     Output
@@ -1108,16 +1108,16 @@
       select(toml, "a")
     Output
       [90m# toml (3 lines, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39m[[36ma[39m.[36mb[39m.[36mc[39m]
-      [46m>[49m [90m2[39m[90m | [39m[36mx=1[39m
-      [46m>[49m [90m3[39m[90m | [39m[36my=2[39m
+      [46m>[49m [90m1[39m[90m | [39m[36m[a.[36mb[36m.c][39m
+      [46m>[49m [90m2[39m[90m | [39m[36mx=[39m[36m[36m1[36m[39m
+      [46m>[49m [90m3[39m[90m | [39m[36my=[39m[36m[36m2[36m[39m
     Code
       select(toml, "a", 1)
     Output
       [90m# toml (3 lines, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39m[a.[36mb[39m.[36mc[39m]
-      [46m>[49m [90m2[39m[90m | [39m[36mx=1[39m
-      [46m>[49m [90m3[39m[90m | [39m[36my=2[39m
+      [46m>[49m [90m1[39m[90m | [39m[36m[a.b.c][39m
+      [46m>[49m [90m2[39m[90m | [39m[36mx=[39m[36m[36m1[36m[39m
+      [46m>[49m [90m3[39m[90m | [39m[36my=[39m[36m[36m2[36m[39m
     Code
       select(toml, "a", 1, 1)
     Output
@@ -1139,13 +1139,13 @@
       select(toml, "a")
     Output
       [90m# toml (2 lines, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39m[36ma[39m.[36mb[39m.[36mc=[39m[36m1[39m
+      [46m>[49m [90m1[39m[90m | [39m[36ma.b.c=[39m[36m[36m1[36m[39m
         [90m2[39m[90m | [39md=2
     Code
       select(toml, "a", 1)
     Output
       [90m# toml (2 lines, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39ma.[36mb[39m.[36mc=[39m[36m1[39m
+      [46m>[49m [90m1[39m[90m | [39m[36ma.b.c=[39m[36m[36m1[36m[39m
         [90m2[39m[90m | [39md=2
     Code
       select(toml, "a", 1, 1)

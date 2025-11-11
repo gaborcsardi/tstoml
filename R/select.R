@@ -291,38 +291,19 @@ interpret_selection1 <- function(toml, idx) {
     # this is AOT _element_, select it like a table, but not the [[ ]] tokens
     toml$children[[parent]][c(-1, -3)]
   } else if (toml$type[idx] %in% c("bare_key", "quoted_key")) {
-    # This is a selected subtable. Check the next part of the dotted key
-    dot <- toml$parent[idx]
-    # find the root of the dotted keys first
-    while (toml$type[toml$parent[dot]] == "dotted_key") {
-      dot <- toml$parent[dot]
-    }
-    dotchildren <- get_dotted_key_components(toml, dot)
-    keyidx <- which(dotchildren == idx)
-    parent <- toml$parent[dot]
-    if (keyidx == length(dotchildren)) {
-      # nocov start this does not happen currently, we select the whole
-      # table element instead of the last component of the dotted key
-      if (toml$type[parent] == "table") {
-        parent
-      } else {
-        toml$children[[parent]][-(1:3)]
-      }
-      # nocov end
-    } else {
-      if (toml$type[parent] == "table") {
-        c(
-          dotchildren[keyidx:length(dotchildren)],
-          toml$children[[parent]][-(1:3)]
-        )
-      } else {
-        c(
-          dotchildren[keyidx:length(dotchildren)],
-          toml$children[[parent]][2:3]
-        )
-      }
-    }
+    get_dom_subtree(toml, idx, with_root = FALSE)
   } else {
     idx
+  }
+}
+
+get_dom_subtree <- function(toml, id, with_root = FALSE) {
+  sel <- c(if (with_root) id, toml$dom_children[[id]])
+  while (TRUE) {
+    sel2 <- unique(c(sel, unlist(toml$dom_children[sel])))
+    if (length(sel2) == length(sel)) {
+      return(sel)
+    }
+    sel <- sel2
   }
 }
