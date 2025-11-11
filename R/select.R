@@ -200,7 +200,15 @@ select1_true <- function(toml, idx) {
 select1_key <- function(toml, idx, slt) {
   type <- toml$type[idx]
   if (
-    !type %in% c("document", "table", "inline_table", "bare_key", "quoted_key")
+    !type %in%
+      c(
+        "document",
+        "table",
+        "inline_table",
+        "bare_key",
+        "quoted_key",
+        "dotted_key"
+      )
   ) {
     return(integer())
   }
