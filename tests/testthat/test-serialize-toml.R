@@ -77,3 +77,56 @@ test_that("stl_inline", {
     stl_inline(a)
   })
 })
+
+test_that("serialize_toml_value", {
+  expect_snapshot({
+    t <- structure(1763104922, class = c("POSIXct", "POSIXt"))
+    serialize_toml_value(t)
+    serialize_toml_value(as.POSIXlt(t))
+    serialize_toml_value(as.Date("2025-10-31"))
+    serialize_toml_value(hms::hms(12, 30, 15))
+    serialize_toml_value(list(a = 1, b = 2))
+    serialize_toml_value(list(1, 2, 3))
+    serialize_toml_value(3.14)
+    serialize_toml_value("hello")
+    serialize_toml_value(42L)
+    serialize_toml_value(TRUE)
+  })
+})
+
+test_that("array of tables", {
+  expect_snapshot({
+    aot <- list(
+      people = list(
+        list(name = "Alice", age = 30L),
+        list(name = "Bob", age = 25L)
+      )
+    )
+    writeLines(serialize_toml(aot))
+  })
+
+  expect_snapshot({
+    aot2 <- list(
+      products = list(
+        list(
+          names = "Hammer",
+          sku = 738594937,
+          dimensions = list(list(length = 7.0, width = 0.5, height = 0.25))
+        ),
+        list(
+          names = "Nail",
+          sku = 284758393,
+          color = "gray",
+          dimensions = list(list(length = 0.5, width = 0.1, height = 0.1))
+        )
+      )
+    )
+    writeLines(serialize_toml(aot2))
+  })
+})
+
+test_that("float", {
+  expect_snapshot({
+    writeLines(serialize_toml(list(a = NaN, b = Inf, c = -Inf, d = 3.14)))
+  })
+})
