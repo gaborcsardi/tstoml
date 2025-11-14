@@ -227,7 +227,7 @@
 
     Code
       toml <- load_toml(text = toml_example_text())
-      delete_selected(toml)
+      delete_selected(select(toml, "nothing"))
     Output
       # toml (23 lines)
        1 | # This is a TOML document
@@ -242,6 +242,14 @@
       10 | enabled = true
       i 13 more lines
       i Use `print(n = ...)` to see more lines
+
+# delete_selected whole document
+
+    Code
+      toml <- load_toml(text = toml_example_text())
+      delete_selected(toml)
+    Output
+      # toml (0 lines)
 
 # delete_selected deleting from special arrays
 

@@ -1,7 +1,26 @@
+#' Delete selected elements from a tstoml object
+#'
+#' The formatting of the rest of TOML document is kept as is. Comments
+#' appearing inside the deleted elements are also deleted. Other comments
+#' are left as is.
+#'
+#' @details
+#' If `toml` has no selection then the the whole document is deleted.
+#' If `toml` has an empty selection, then nothing is delted.
+#'
+#' @param toml tstoml object.
+#' @return Modified tstoml object.
+#'
 #' @export
+#' @examples
+#' toml <- load_toml(text = toml_example_text())
+#' toml
+#'
+#' toml |> select("owner", "name") |> delete_selected()
+#' toml |> select("owner") |> delete_selected()
 
 delete_selected <- function(toml) {
-  select <- get_selected_nodes(toml, default = FALSE)
+  select <- get_selected_nodes(toml)
 
   if (length(select) == 0) {
     attr(toml, "selection") <- NULL
@@ -95,11 +114,12 @@ delete_selected <- function(toml) {
     trim_commas(obj, "{", "}")
   }
 
-  toml2 <- toml[-deleted, ]
+  # NA happens if the whole document is deleted, the parent of 1 is NA
+  toml2 <- toml[-na_omit(deleted), ]
 
   # update text
   parts <- c(rbind(toml2$code, toml2$tws))
-  text <- unlist(lapply(na_omit(parts), charToRaw))
+  text <- as.raw(unlist(lapply(na_omit(parts), charToRaw)))
 
   # TODO: update coordinates without reparsing
   new <- load_toml(text = text)

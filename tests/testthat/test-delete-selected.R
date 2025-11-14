@@ -77,6 +77,13 @@ test_that("delete_selected subtable in table", {
 test_that("delete_selected nothing to delete", {
   expect_snapshot({
     toml <- load_toml(text = toml_example_text())
+    toml |> select("nothing") |> delete_selected()
+  })
+})
+
+test_that("delete_selected whole document", {
+  expect_snapshot({
+    toml <- load_toml(text = toml_example_text())
     toml |> delete_selected()
   })
 })
