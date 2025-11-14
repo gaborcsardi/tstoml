@@ -16,6 +16,13 @@ update_selected <- function(toml, new, options = NULL) {
   ptr <- length(selection)
   select <- selection[[ptr]]$nodes
 
+  types <- toml$type[select]
+  if (any(!types %in% value_types)) {
+    stop(cnd(
+      "Can only update values ({collapse(value_types)})."
+    ))
+  }
+
   fmt <- replicate(
     length(select),
     serialize_toml_value(new, options = options),
@@ -57,3 +64,16 @@ update_selected <- function(toml, new, options = NULL) {
 
   new
 }
+
+value_types <- c(
+  "string",
+  "integer",
+  "float",
+  "boolean",
+  "offset_date_time",
+  "local_date_time",
+  "local_date",
+  "local_time",
+  "array",
+  "inline_table"
+)
