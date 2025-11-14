@@ -1,10 +1,13 @@
-get_print_n <- function(n) {
+get_print_n <- function(n, nc) {
+  if (!is.null(n)) {
+    return(min(n, nc))
+  }
   mx <- getOption("ts.print_max", getOption("pillar.print_max", 20L))
   mn <- getOption("ts.print_min", getOption("pillar.print_min", 10L))
-  if (n < mx) {
-    n
+  if (nc < mx) {
+    nc
   } else {
-    min(mn, n)
+    min(mn, nc)
   }
 }
 
@@ -29,7 +32,7 @@ format.tstoml <- function(x, n = NULL, ...) {
 format_tstoml_noselection <- function(x, n = NULL, ...) {
   lns <- strsplit(rawToChar(attr(x, "text")), "\r?\n")[[1]]
   nc <- length(lns)
-  sc <- get_print_n(nc)
+  sc <- get_print_n(n, nc)
   lns <- utils::head(lns, sc)
   num <- cli::col_grey(format(seq_len(sc)))
 
@@ -61,7 +64,7 @@ format_tstoml_selection <- function(x, n = NULL, context = 3, ...) {
   num <- seq_along(lns)
   sel <- get_selected_nodes(x, default = FALSE)
   nsel <- length(sel)
-  ssel <- get_print_n(nsel)
+  ssel <- get_print_n(n, nsel)
   sel <- utils::head(sel, ssel)
   isel <- interpret_selection(x, sel)
 
