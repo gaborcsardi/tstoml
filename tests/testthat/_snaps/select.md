@@ -873,8 +873,7 @@
       [90m 8[39m[90m | [39m  name = "Nail"
       [90m 9[39m[90m | [39m  sku = 284758393
       [90m10[39m[90m | [39m  color = "gray"
-      [90mi 1 more line[39m
-      [90mi Use `print(n = ...)` to see more lines[39m
+      [90m11[39m[90m | [39m  
 
 ---
 
