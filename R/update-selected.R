@@ -39,7 +39,10 @@ update_selected <- function(toml, new, options = NULL) {
     }
   }
 
-  subtrees <- lapply(select, get_subtree, toml = toml, with_root = FALSE)
+  subtrees <- lapply(select, get_dom_subtree, toml = toml, with_root = TRUE)
+  subtrees <- lapply(subtrees, function(st) {
+    unlist(lapply(st, get_subtree, toml = toml, with_root = TRUE))
+  })
   deleted <- unique(unlist(subtrees))
 
   # need to keep the trailing ws of the last element
