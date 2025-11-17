@@ -141,10 +141,10 @@ dom_toml <- function(
       l <- lengths[[ec]] <- (lengths[[ec]] %||% 0L) + 1L
       paste0("[", l, "]")
     } else {
-      if (is.na(dom$name[i])) {
+      if (is.na(dom$dom_name[i])) {
         paste0("<", dom$type[i], ">")
       } else {
-        dom$name[i]
+        dom$dom_name[i]
       }
     }
   })
@@ -168,7 +168,9 @@ encode_key <- function(key) {
 
 add_dom <- function(tab) {
   tab$dom_parent <- rep(NA_integer_, nrow(tab))
-  tab$name <- rep(NA_character_, nrow(tab))
+  tab$dom_type <- rep(NA_character_, nrow(tab))
+  tab$dom_type[1] <- "document"
+  tab$dom_name <- rep(NA_character_, nrow(tab))
   dict <- new.env(parent = emptyenv())
   current_table <- 1L
   current_prefix <- character()
@@ -181,7 +183,8 @@ add_dom <- function(tab) {
       if (is.null(rec)) {
         dict[[ec]] <- rec <- list(id = key$ids[[idx]], type = "subtable")
         tab$dom_parent[key$ids[[idx]]] <<- current_table
-        tab$name[key$ids[[idx]]] <<- key$key[idx]
+        tab$dom_name[key$ids[[idx]]] <<- key$key[idx]
+        tab$dom_type[key$ids[[idx]]] <<- "subtable"
       } else if (rec$type == "pair") {
         stop(cnd(
           "Cannot define subtable under pair: \\
@@ -213,8 +216,10 @@ add_dom <- function(tab) {
 
     # add pair to current table
     tab$dom_parent[id] <<- current_table
-    tab$name[id] <<- last(key$key)
+    tab$dom_name[id] <<- last(key$key)
+    tab$dom_type[id] <<- "pair"
     tab$dom_parent[tab$children[[id]][3]] <<- id
+    tab$dom_type[tab$children[[id]][3]] <<- "value"
     current_table <<- current_table_save
     current_prefix <<- current_prefix_save
   }
@@ -232,7 +237,8 @@ add_dom <- function(tab) {
     if (is.null(rec)) {
       dict[[ec]] <- rec <- list(id = id, type = "table")
       tab$dom_parent[id] <<- current_table
-      tab$name[id] <<- last(key$key)
+      tab$dom_name[id] <<- last(key$key)
+      tab$dom_type[id] <<- "table"
     } else if (rec$type == "subtable") {
       dict[[ec]] <- list(id = rec$id, type = "table")
     } else if (rec$type == "table") {
@@ -264,12 +270,15 @@ add_dom <- function(tab) {
     if (is.null(rec)) {
       dict[[ec]] <- rec <- list(id = element_id, type = "array_of_tables")
       tab$dom_parent[id] <<- current_table
+      tab$dom_name[id] <<- last(key$key)
+      tab$dom_type[id] <<- "array_of_tables"
       tab$dom_parent[element_id] <<- id
     } else if (rec$type == "array_of_tables") {
       nms <- ls(dict, all.names = TRUE)
       subs <- nms[startsWith(nms, paste0(ec, "."))]
       rm(list = subs, envir = dict)
       tab$dom_parent[element_id] <<- tab$dom_parent[rec$id]
+      tab$dom_type[id] <<- "table_array_element"
       rec$id <- element_id
       dict[[ec]] <- rec
     } else {
@@ -317,6 +326,8 @@ add_dom <- function(tab) {
         if (is.null(rec)) {
           dict[[ec]] <- rec <- list(id = key$ids[[idx]], type = "subtable")
           tab$dom_parent[key$ids[[idx]]] <<- parent
+          tab$dom_name[key$ids[[idx]]] <<- key$key[idx]
+          tab$dom_type[key$ids[[idx]]] <<- "subtable"
         } else if (rec$type == "pair") {
           stop(cnd(
             "Cannot define subtable under pair in inline table: \\
@@ -342,7 +353,10 @@ add_dom <- function(tab) {
         rec <- dict[[ec]] <- list(id = p, type = "pair")
       }
       tab$dom_parent[p] <<- parent
+      tab$dom_name[p] <<- last(key$key)
+      tab$dom_type[p] <<- "pair"
       tab$dom_parent[tab$children[[p]][3]] <<- p
+      tab$dom_type[tab$children[[p]][3]] <<- "value"
     }
   }
 
@@ -354,8 +368,10 @@ add_dom <- function(tab) {
   for (i in which(tab$type == "array")) {
     children <- tab$children[[i]]
     children <- children[!tab$type[children] %in% c("[", "]", ",", "comment")]
-    for (el in children) {
+    for (cx in seq_along(children)) {
+      el <- children[cx]
       tab$dom_parent[el] <- i
+      tab$dom_type[el] <- "array_element"
     }
   }
 

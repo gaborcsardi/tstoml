@@ -297,12 +297,3 @@ test_that("select1_numeric", {
     toml |> select("products", 1, "name")
   })
 })
-
-test_that("get_dotted_key_components", {
-  toml <- load_toml(text = "a.b.c = 1\n")
-  keyid <- toml$id[toml$type == "dotted_key"][1]
-  expect_equal(
-    get_dotted_key_components(toml, keyid),
-    toml$id[toml$type %in% c("bare_key", "quoted_key")]
-  )
-})

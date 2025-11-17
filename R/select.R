@@ -214,43 +214,13 @@ select1_key <- function(toml, idx, slt) {
   }
 
   chdn <- toml$dom_children[[idx]]
-  keys <- map_chr(chdn, get_element_key, toml = toml)
+  keys <- toml$dom_name[chdn]
   sel <- chdn[keys %in% slt]
   pairs <- toml$type[sel] == "pair"
   sel[pairs] <- map_int(sel[pairs], function(pair) {
     toml$children[[pair]][3]
   })
   sel
-}
-
-get_element_key <- function(toml, id) {
-  switch(
-    toml$type[id],
-    table = ,
-    table_array_element = {
-      last(unserialize_key(toml, toml$children[[id]][2]))
-    },
-    pair = {
-      last(unserialize_key(toml, toml$children[[id]][1]))
-    },
-    bare_key = ,
-    quoted_key = {
-      unserialize_key(toml, id)
-    },
-    NA_character_
-  )
-}
-
-get_dotted_key_components <- function(toml, keyid) {
-  type <- toml$type[keyid]
-  if (type == "dotted_key") {
-    unlist(c(
-      get_dotted_key_components(toml, toml$children[[keyid]][1]),
-      get_dotted_key_components(toml, toml$children[[keyid]][3])
-    ))
-  } else {
-    keyid
-  }
 }
 
 select1_numeric <- function(toml, idx, slt) {

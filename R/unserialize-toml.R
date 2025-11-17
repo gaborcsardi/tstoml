@@ -322,7 +322,7 @@ unserialize_array <- function(token_table, id) {
 unserialize_table <- function(token_table, id) {
   children <- token_table$dom_children[[id]]
   res <- named_list(length(children))
-  names(res) <- map_chr(children, get_element_key, toml = token_table)
+  names(res) <- token_table$dom_name[children]
   for (i in seq_along(children)) {
     res[[i]] <- unserialize_element(token_table, children[i])
   }
