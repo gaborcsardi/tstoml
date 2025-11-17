@@ -368,7 +368,7 @@
       txt <- "[a.b.c]\na=1\nb=2\n"
       print(load_toml(text = txt)[], n = Inf)
     Output
-      [38;5;246m# A data frame: 19 x 20[39m
+      [38;5;246m# A data frame: 19 x 21[39m
             id parent field_name type       code  start_byte end_byte start_row
          [3m[38;5;246m<int>[39m[23m  [3m[38;5;246m<int>[39m[23m [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<int>[39m[23m    [3m[38;5;246m<int>[39m[23m     [3m[38;5;246m<int>[39m[23m
       [38;5;250m 1[39m     1     [31mNA[39m [31mNA[39m         document   [31mNA[39m             0       16         0
@@ -390,10 +390,10 @@
       [38;5;250m17[39m    17     16 [31mNA[39m         bare_key   b             12       13         2
       [38;5;250m18[39m    18     16 [31mNA[39m         =          =             13       14         2
       [38;5;250m19[39m    19     16 [31mNA[39m         integer    2             14       15         2
-      [38;5;246m# i 12 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
+      [38;5;246m# i 13 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
       [38;5;246m#   is_missing <lgl>, has_error <lgl>, expected <list>, children <I<list>>,[39m
-      [38;5;246m#   dom_parent <int>, dom_children <I<list>>, tws <chr>, array_position <int>,[39m
-      [38;5;246m#   rev_array_position <int>[39m
+      [38;5;246m#   dom_parent <int>, name <chr>, dom_children <I<list>>, tws <chr>,[39m
+      [38;5;246m#   array_position <int>, rev_array_position <int>[39m
     Code
       select(load_toml(text = txt), "a", TRUE)
     Output
@@ -483,7 +483,7 @@
       txt <- "a.b.c = 1"
       print(load_toml(text = txt)[], n = Inf)
     Output
-      [38;5;246m# A data frame: 11 x 20[39m
+      [38;5;246m# A data frame: 11 x 21[39m
             id parent field_name type       code  start_byte end_byte start_row
          [3m[38;5;246m<int>[39m[23m  [3m[38;5;246m<int>[39m[23m [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<int>[39m[23m    [3m[38;5;246m<int>[39m[23m     [3m[38;5;246m<int>[39m[23m
       [38;5;250m 1[39m     1     [31mNA[39m [31mNA[39m         document   [31mNA[39m             0        9         0
@@ -497,10 +497,10 @@
       [38;5;250m 9[39m     9      3 [31mNA[39m         bare_key   c              4        5         0
       [38;5;250m10[39m    10      2 [31mNA[39m         =          =              6        7         0
       [38;5;250m11[39m    11      2 [31mNA[39m         integer    1              8        9         0
-      [38;5;246m# i 12 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
+      [38;5;246m# i 13 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
       [38;5;246m#   is_missing <lgl>, has_error <lgl>, expected <list>, children <I<list>>,[39m
-      [38;5;246m#   dom_parent <int>, dom_children <I<list>>, tws <chr>, array_position <int>,[39m
-      [38;5;246m#   rev_array_position <int>[39m
+      [38;5;246m#   dom_parent <int>, name <chr>, dom_children <I<list>>, tws <chr>,[39m
+      [38;5;246m#   array_position <int>, rev_array_position <int>[39m
     Code
       select(load_toml(text = txt), "a", TRUE)
     Output
@@ -586,7 +586,7 @@
       txt <- "a = { b = { c = 1, d = 2 }, e = 3 }"
       print(load_toml(text = txt)[], n = Inf)
     Output
-      [38;5;246m# A data frame: 27 x 20[39m
+      [38;5;246m# A data frame: 27 x 21[39m
             id parent field_name type         code  start_byte end_byte start_row
          [3m[38;5;246m<int>[39m[23m  [3m[38;5;246m<int>[39m[23m [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<chr>[39m[23m        [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<int>[39m[23m    [3m[38;5;246m<int>[39m[23m     [3m[38;5;246m<int>[39m[23m
       [38;5;250m 1[39m     1     [31mNA[39m [31mNA[39m         document     [31mNA[39m             0       35         0
@@ -616,10 +616,10 @@
       [38;5;250m25[39m    25     23 [31mNA[39m         =            =             30       31         0
       [38;5;250m26[39m    26     23 [31mNA[39m         integer      3             32       33         0
       [38;5;250m27[39m    27      5 [31mNA[39m         }            }             34       35         0
-      [38;5;246m# i 12 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
+      [38;5;246m# i 13 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
       [38;5;246m#   is_missing <lgl>, has_error <lgl>, expected <list>, children <I<list>>,[39m
-      [38;5;246m#   dom_parent <int>, dom_children <I<list>>, tws <chr>, array_position <int>,[39m
-      [38;5;246m#   rev_array_position <int>[39m
+      [38;5;246m#   dom_parent <int>, name <chr>, dom_children <I<list>>, tws <chr>,[39m
+      [38;5;246m#   array_position <int>, rev_array_position <int>[39m
     Code
       select(load_toml(text = txt), "a", TRUE)
     Output
@@ -705,7 +705,7 @@
       txt <- "a = { b.c.d = 1, d = 2 }"
       print(load_toml(text = txt)[], n = Inf)
     Output
-      [38;5;246m# A data frame: 22 x 20[39m
+      [38;5;246m# A data frame: 22 x 21[39m
             id parent field_name type         code  start_byte end_byte start_row
          [3m[38;5;246m<int>[39m[23m  [3m[38;5;246m<int>[39m[23m [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<chr>[39m[23m        [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<int>[39m[23m    [3m[38;5;246m<int>[39m[23m     [3m[38;5;246m<int>[39m[23m
       [38;5;250m 1[39m     1     [31mNA[39m [31mNA[39m         document     [31mNA[39m             0       24         0
@@ -730,10 +730,10 @@
       [38;5;250m20[39m    20     18 [31mNA[39m         =            =             19       20         0
       [38;5;250m21[39m    21     18 [31mNA[39m         integer      2             21       22         0
       [38;5;250m22[39m    22      5 [31mNA[39m         }            }             23       24         0
-      [38;5;246m# i 12 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
+      [38;5;246m# i 13 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
       [38;5;246m#   is_missing <lgl>, has_error <lgl>, expected <list>, children <I<list>>,[39m
-      [38;5;246m#   dom_parent <int>, dom_children <I<list>>, tws <chr>, array_position <int>,[39m
-      [38;5;246m#   rev_array_position <int>[39m
+      [38;5;246m#   dom_parent <int>, name <chr>, dom_children <I<list>>, tws <chr>,[39m
+      [38;5;246m#   array_position <int>, rev_array_position <int>[39m
     Code
       select(load_toml(text = txt), "a", TRUE)
     Output

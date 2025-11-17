@@ -140,16 +140,12 @@ dom_toml <- function(
       }
       l <- lengths[[ec]] <- (lengths[[ec]] %||% 0L) + 1L
       paste0("[", l, "]")
-    } else if (type == "table") {
-      last(unserialize_key(tokens, dom$children[[i]][2L]))
-    } else if (type == "pair") {
-      last(unserialize_key(tokens, dom$children[[i]][1L]))
-    } else if (type == "table_array_element") {
-      paste0(last(unserialize_key(tokens, dom$children[[i]][2L])), "[]")
-    } else if (type %in% c("bare_key", "quoted_key")) {
-      dom$code[i]
     } else {
-      paste0("<", dom$type[i], ">")
+      if (is.na(dom$name[i])) {
+        paste0("<", dom$type[i], ">")
+      } else {
+        dom$name[i]
+      }
     }
   })
 
@@ -172,6 +168,7 @@ encode_key <- function(key) {
 
 add_dom <- function(tab) {
   tab$dom_parent <- rep(NA_integer_, nrow(tab))
+  tab$name <- rep(NA_character_, nrow(tab))
   dict <- new.env(parent = emptyenv())
   current_table <- 1L
   current_prefix <- character()
@@ -184,6 +181,7 @@ add_dom <- function(tab) {
       if (is.null(rec)) {
         dict[[ec]] <- rec <- list(id = key$ids[[idx]], type = "subtable")
         tab$dom_parent[key$ids[[idx]]] <<- current_table
+        tab$name[key$ids[[idx]]] <<- key$key[idx]
       } else if (rec$type == "pair") {
         stop(cnd(
           "Cannot define subtable under pair: \\
@@ -215,6 +213,7 @@ add_dom <- function(tab) {
 
     # add pair to current table
     tab$dom_parent[id] <<- current_table
+    tab$name[id] <<- last(key$key)
     tab$dom_parent[tab$children[[id]][3]] <<- id
     current_table <<- current_table_save
     current_prefix <<- current_prefix_save
@@ -232,7 +231,8 @@ add_dom <- function(tab) {
     rec <- dict[[ec]]
     if (is.null(rec)) {
       dict[[ec]] <- rec <- list(id = id, type = "table")
-      tab$dom_parent[i] <<- current_table
+      tab$dom_parent[id] <<- current_table
+      tab$name[id] <<- last(key$key)
     } else if (rec$type == "subtable") {
       dict[[ec]] <- list(id = rec$id, type = "table")
     } else if (rec$type == "table") {
