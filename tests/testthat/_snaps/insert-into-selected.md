@@ -291,4 +291,22 @@
       # toml (2 lines)
       1 | a.b.c = 1
       2 | a.x = 100
+    Code
+      insert_into_selected(select(toml, "a"), list(x = 100L, y = 200L), key = "x")
+    Output
+      # toml (2 lines)
+      1 | a.b.c = 1
+      2 | a.x = { x = 100, y = 200 }
+    Code
+      insert_into_selected(select(toml, "a"), as.list(1:3), key = "x")
+    Output
+      # toml (2 lines)
+      1 | a.b.c = 1
+      2 | a.x = [ 1, 2, 3 ]
+    Code
+      insert_into_selected(select(toml, "a"), list(list(x = 100L, y = 200L)), key = "x")
+    Output
+      # toml (2 lines)
+      1 | a.b.c = 1
+      2 | a.x = [ { x = 100, y = 200 } ]
 

@@ -142,5 +142,12 @@ test_that("insert_into_subtable", {
   expect_snapshot({
     toml <- load_toml(text = "a.b.c = 1\n")
     toml |> select("a") |> insert_into_selected(100L, key = "x")
+    toml |>
+      select("a") |>
+      insert_into_selected(list(x = 100L, y = 200L), key = "x")
+    toml |> select("a") |> insert_into_selected(as.list(1:3), key = "x")
+    toml |>
+      select("a") |>
+      insert_into_selected(list(list(x = 100L, y = 200L)), key = "x")
   })
 })
