@@ -112,3 +112,10 @@ test_that("insert_into_inline_table", {
     toml2 |> select("it") |> insert_into_selected(13, key = "c", at = Inf)
   })
 })
+
+test_that("insert_into_table pair", {
+  toml <- load_toml(text = "[table]\na = 1\n\n[table2]\nc = 5\n")
+  expect_snapshot({
+    toml |> select("table") |> insert_into_selected(2, key = "b")
+  })
+})

@@ -232,3 +232,16 @@
       # toml (1 line)
       1 | it = {a = 1, b = 2,c=13.0}
 
+# insert_into_table pair
+
+    Code
+      insert_into_selected(select(toml, "table"), 2, key = "b")
+    Output
+      # toml (6 lines)
+      1 | [table]
+      2 | a = 1
+      3 | b = 2.0
+      4 | 
+      5 | [table2]
+      6 | c = 5
+

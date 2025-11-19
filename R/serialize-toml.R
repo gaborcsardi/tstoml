@@ -134,6 +134,12 @@ get_stl_type <- function(x) {
   }
 }
 
+stl_type_names <- c(
+  "pair" = "key-value pair",
+  "table" = "table",
+  "array_of_tables" = "array of tables"
+)
+
 stl_table <- function(
   name,
   obj,

@@ -45,11 +45,13 @@ insert_into_selected <- function(toml, new, key = NULL, at = Inf) {
     aft <- last_descendant(toml, ins$after)
     firstchld <- toml$children[[ins$select]][1]
     # mark first child for reformatting the whole array
+    before_tws <- isTRUE(ins$before_trailing_ws)
     toml$tws[firstchld] <- paste0(reformat_mark, toml$tws[firstchld])
     toml$tws[aft] <- paste0(
-      toml$tws[aft],
+      if (!before_tws) toml$tws[aft],
       ins$code,
       if (ins$trailing_comma) ",",
+      if (before_tws) toml$tws[aft],
       if (ins$trailing_newline) "\n"
     )
   }
@@ -76,11 +78,7 @@ reformat_mark <- ""
 
 insert_into_document <- function(toml, sel1, new, key = NULL) {
   newtype <- get_stl_type(new)
-  newtypename <- c(
-    "pair" = "key-value pair",
-    "table" = "table",
-    "array_of_tables" = "array of tables"
-  )[newtype]
+  newtypename <- stl_type_names[[newtype]]
   if (is.null(key)) {
     stop(cnd(
       "The `key` argument is required when inserting a {newtypename} \\
@@ -107,7 +105,10 @@ insert_into_document <- function(toml, sel1, new, key = NULL) {
     "array_of_tables" = {
       insert_into_document_aot(toml, sel1, new, key = key)
     },
-    stop(cnd("Can only insert key-value pairs into the document for now."))
+    stop(cnd(
+      "Cannot insert {newtypename} ({newtype)} into document. \\
+       This is an internal error in tstoml"
+    ))
   )
 }
 
@@ -247,6 +248,67 @@ insert_into_inline_table <- function(toml, sel1, new, key = key, at = at) {
 }
 
 insert_into_table <- function(toml, sel1, new, key = key, at = at) {
+  newtype <- get_stl_type(new)
+  newtypename <- stl_type_names[[newtype]]
+  if (is.null(key)) {
+    stop(cnd(
+      "The `key` argument is required when inserting a {newtypename} \\
+       into the document."
+    ))
+  }
+  if (length(key) != 1) {
+    stop(cnd("The `key` argument must be a single string for now."))
+  }
+  chdn <- toml$dom_children[[sel1]]
+  keys <- toml$dom_name[chdn]
+  if (key %in% keys) {
+    stop(cnd("Key `{key}` already exists in the document."))
+  }
+
+  switch(
+    newtype,
+    "pair" = {
+      insert_into_table_pair(toml, sel1, new, key = key)
+    },
+    "table" = {
+      insert_into_table_table(toml, sel1, new, key = key)
+    },
+    "array_of_tables" = {
+      insert_into_table_aot(toml, sel1, new, key = key)
+    },
+    stop(cnd(
+      "Cannot insert {newtypename} ({newtype)} into document. \\
+       This is an internal error in tstoml"
+    ))
+  )
+}
+
+insert_into_table_pair <- function(toml, sel1, new, key) {
+  # TODO: should put it before trailing whitespace / comments?
+  after <- last_descendant(toml, sel1)
+  code <- paste0(
+    "\n",
+    key,
+    " = ",
+    paste0(serialize_toml_value(new), collapse = "\n")
+  )
+  list(
+    select = sel1,
+    after = after,
+    code = code,
+    leading_comma = FALSE,
+    trailing_comma = FALSE,
+    # there must be a trailing newline after the table already
+    trailing_newline = FALSE,
+    before_trailing_ws = TRUE
+  )
+}
+
+insert_into_table_table <- function(toml, sel1, new, key) {
+  TODO
+}
+
+insert_into_table_aot <- function(toml, sel1, new, key) {
   TODO
 }
 
