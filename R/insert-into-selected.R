@@ -68,13 +68,15 @@ insert_into_selected <- function(toml, new, key = NULL, at = Inf) {
 
 last_descendant <- function(toml, node) {
   while (node != 1 && is.na(toml$code[node])) {
-    node <- tail(toml$children[[node]], 1)
+    node <- utils::tail(toml$children[[node]], 1)
   }
   node
 }
 
 # reformat_mark <- "\f"
 reformat_mark <- ""
+
+# ------------------------------------------------------------------------------
 
 insert_into_document <- function(toml, sel1, new, key = NULL) {
   newtype <- get_stl_type(new)
@@ -171,6 +173,8 @@ insert_into_document_aot <- function(toml, sel1, new, key) {
   )
 }
 
+# ------------------------------------------------------------------------------
+
 insert_into_subtable <- function(toml, sel1, new, key = key) {
   TODO
 }
@@ -247,6 +251,8 @@ insert_into_inline_table <- function(toml, sel1, new, key = key, at = at) {
   )
 }
 
+# ------------------------------------------------------------------------------
+
 insert_into_table <- function(toml, sel1, new, key = key, at = at) {
   newtype <- get_stl_type(new)
   newtypename <- stl_type_names[[newtype]]
@@ -284,7 +290,6 @@ insert_into_table <- function(toml, sel1, new, key = key, at = at) {
 }
 
 insert_into_table_pair <- function(toml, sel1, new, key) {
-  # TODO: should put it before trailing whitespace / comments?
   after <- last_descendant(toml, sel1)
   code <- paste0(
     "\n",
@@ -305,20 +310,62 @@ insert_into_table_pair <- function(toml, sel1, new, key) {
 }
 
 insert_into_table_table <- function(toml, sel1, new, key) {
-  TODO
+  after <- last_descendant(toml, sel1)
+  keyid <- toml$children[[sel1]][2]
+  newkey <- ts_toml_key(c(unserialize_key(toml, keyid), key))
+  code <- paste0(
+    "\n\n",
+    paste0(
+      serialize_toml(structure(list(new), names = newkey)),
+      collapse = "\n"
+    )
+  )
+  list(
+    select = sel1,
+    after = after,
+    code = code,
+    leading_comma = FALSE,
+    trailing_comma = FALSE,
+    trailing_newline = FALSE,
+    before_trailing_ws = TRUE
+  )
 }
 
 insert_into_table_aot <- function(toml, sel1, new, key) {
-  TODO
+  after <- last_descendant(toml, sel1)
+  keyid <- toml$children[[sel1]][2]
+  newkey <- ts_toml_key(c(unserialize_key(toml, keyid), key))
+  code <- paste0(
+    "\n\n",
+    paste0(
+      serialize_toml(structure(list(new), names = newkey)),
+      collapse = "\n"
+    )
+  )
+  list(
+    select = sel1,
+    after = after,
+    code = code,
+    leading_comma = FALSE,
+    trailing_comma = FALSE,
+    trailing_newline = FALSE,
+    before_trailing_ws = TRUE
+  )
 }
+
+# ------------------------------------------------------------------------------
 
 insert_into_aot <- function(toml, sel1, new, key = key, at = at) {
   TODO
 }
 
+# ------------------------------------------------------------------------------
+
 insert_into_aot_element <- function(toml, sel1, new, key = key, at = at) {
   TODO
 }
+
+# ------------------------------------------------------------------------------
 
 insert_into_array <- function(toml, sel1, new, key = key, at = at) {
   # this is complicated by comments inside the array

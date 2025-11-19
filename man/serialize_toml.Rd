@@ -28,6 +28,9 @@ scalar or a character vector.}
 
 \item{options}{A named list of \code{tstoml} options, see
 \code{\link[=tstoml_options]{tstoml_options()}}.}
+
+\item{...}{Elements of the TOML table, array, inline table or array
+of tables.}
 }
 \value{
 If \code{file} is \code{NULL} then a character scalar (\code{collapse} = TRUE)

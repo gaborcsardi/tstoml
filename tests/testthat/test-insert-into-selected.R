@@ -119,3 +119,21 @@ test_that("insert_into_table pair", {
     toml |> select("table") |> insert_into_selected(2, key = "b")
   })
 })
+
+test_that("insert_into_table table", {
+  toml <- load_toml(text = "[table]\na = 1\n\n[table2]\nc = 5\n")
+  expect_snapshot({
+    toml |>
+      select("table") |>
+      insert_into_selected(list(x = 10, y = 20), key = "subtable")
+  })
+})
+
+test_that("insert_into_table array of tables", {
+  expect_snapshot({
+    toml <- load_toml(text = "[table]\na = 1\n\n[table2]\nc = 5\n")
+    toml |>
+      select("table") |>
+      insert_into_selected(list(list(x = 10, y = 20), list(x = 5)), key = "aot")
+  })
+})

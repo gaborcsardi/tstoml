@@ -51,6 +51,8 @@ serialize_toml <- function(obj, file = NULL, collapse = FALSE, options = NULL) {
 
 #' @export
 #' @rdname serialize_toml
+#' @param ... Elements of the TOML table, array, inline table or array
+#'   of tables.
 #' @details Use `ts_toml_table()` to make a list to be serialized as a TOML
 #'   table. All named lists are serialized as TOML tables by default, so
 #'   this is only readability.
@@ -112,6 +114,13 @@ ts_toml_array_of_tables <- function(...) {
     aot,
     class = c("ts_toml_array_of_tables", "list")
   )
+}
+
+ts_toml_key <- function(...) {
+  key <- c(...)
+  # TODO: argument check
+  # TODO: escape keys, quote if needed
+  paste(key, collapse = ".")
 }
 
 get_stl_type <- function(x) {

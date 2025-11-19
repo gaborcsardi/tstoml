@@ -245,3 +245,40 @@
       5 | [table2]
       6 | c = 5
 
+# insert_into_table table
+
+    Code
+      insert_into_selected(select(toml, "table"), list(x = 10, y = 20), key = "subtable")
+    Output
+      # toml (9 lines)
+      1 | [table]
+      2 | a = 1
+      3 | 
+      4 | [table.subtable]
+      5 | x = 10.0
+      6 | y = 20.0
+      7 | 
+      8 | [table2]
+      9 | c = 5
+
+# insert_into_table array of tables
+
+    Code
+      toml <- load_toml(text = "[table]\na = 1\n\n[table2]\nc = 5\n")
+      insert_into_selected(select(toml, "table"), list(list(x = 10, y = 20), list(x = 5)),
+      key = "aot")
+    Output
+      # toml (12 lines)
+       1 | [table]
+       2 | a = 1
+       3 | 
+       4 | [[table.aot]]
+       5 | x = 10.0
+       6 | y = 20.0
+       7 | 
+       8 | [[table.aot]]
+       9 | x = 5.0
+      10 | 
+      11 | [table2]
+      12 | c = 5
+
