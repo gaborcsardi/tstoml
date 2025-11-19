@@ -50,7 +50,11 @@ serialize_toml <- function(obj, file = NULL, collapse = FALSE, options = NULL) {
 }
 
 get_stl_type <- function(x) {
-  if (!is.list(x)) {
+  if (inherits(x, "ts_toml_inline_table")) {
+    "pair"
+  } else if (inherits(x, "ts_toml_array")) {
+    "pair"
+  } else if (!is.list(x)) {
     "pair"
   } else if (is_named(x)) {
     "table"

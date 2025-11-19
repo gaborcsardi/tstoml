@@ -88,6 +88,9 @@ token_table <- function(
   tab$children <- I(unname(split(lvls, factor(tab$parent, levels = lvls))))
   attr(tab, "file") <- file
 
+  # this is a workarond for TS adding code to a non-terminal array/object node
+  tab$code[tab$type %in% c("array", "inline_table")] <- NA_character_
+
   tab <- add_dom(tab)
 
   if (fail_on_parse_error && (tab$has_error[1] || any(tab$is_missing))) {
@@ -144,7 +147,7 @@ dom_toml <- function(
       if (is.na(dom$dom_name[i])) {
         paste0("<", dom$type[i], ">")
       } else {
-        dom$dom_name[i]
+        paste0("<", dom$type[i], ">: ", dom$dom_name[i])
       }
     }
   })
@@ -361,17 +364,18 @@ add_dom <- function(tab) {
   }
 
   for (i in which(tab$type == "inline_table")) {
+    tab$dom_type[i] <- "inline_table"
     check_inline_table(i)
   }
 
   # wire up arrays as well
   for (i in which(tab$type == "array")) {
+    tab$dom_type[i] <- "array"
     children <- tab$children[[i]]
     children <- children[!tab$type[children] %in% c("[", "]", ",", "comment")]
     for (cx in seq_along(children)) {
       el <- children[cx]
       tab$dom_parent[el] <- i
-      tab$dom_type[el] <- "array_element"
     }
   }
 
