@@ -9,11 +9,13 @@ test_that("insert_into_document", {
       key = "d",
       structure(list(x = 10, y = 20), class = "ts_toml_inline_table")
     )
+    insert_into_selected(toml, key = "e", ts_toml_inline_table(x = 10, y = 20))
     insert_into_selected(
       toml,
-      key = "d",
+      key = "f",
       structure(list(list(x = 10, y = 20)), class = "ts_toml_array")
     )
+    insert_into_selected(toml, key = "g", ts_toml_array(10, 20))
   })
 })
 

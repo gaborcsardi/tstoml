@@ -49,11 +49,80 @@ serialize_toml <- function(obj, file = NULL, collapse = FALSE, options = NULL) {
   }
 }
 
+#' @export
+#' @rdname serialize_toml
+#' @details Use `ts_toml_table()` to make a list to be serialized as a TOML
+#'   table. All named lists are serialized as TOML tables by default, so
+#'   this is only readability.
+
+ts_toml_table <- function(...) {
+  structure(
+    list(...),
+    class = c("ts_toml_table", "list")
+  )
+}
+
+#' @export
+#' @rdname serialize_toml
+#' @details Use `ts_toml_inline_table()` to make a list to be serialized
+#'   as an inline TOML table. By default named lists are serialized as
+#'   regular TOML tables, if possible.
+
+ts_toml_inline_table <- function(...) {
+  tab <- list(...)
+  if (!is_named(tab)) {
+    stop(cnd("All elements of TOML tables must be named."))
+  }
+  structure(
+    tab,
+    class = c("ts_toml_inline_table", "list")
+  )
+}
+
+#' @export
+#' @rdname serialize_toml
+#' @details Use `ts_toml_array()` to make a list to be serialized as a TOML
+#'   array. By default un-named lists are serialized as arrays, unless they
+#'   are lists of named lists (which are serialized as arrays of tables).
+#'   Use this funtion to mark any list to be serialized as an array.
+
+ts_toml_array <- function(...) {
+  structure(
+    list(...),
+    class = c("ts_toml_array", "list")
+  )
+}
+
+#' @export
+#' @rdname serialize_toml
+#' @details Use `ts_toml_array_of_tables()` to make a list to be serialized
+#'   as a TOML array of tables. It must a list of named lists. By default
+#'   lists of named lists are serialized as arrays of tables, so this is
+#'   only for readability.
+
+ts_toml_array_of_tables <- function(...) {
+  aot <- list(...)
+  if (length(aot) == 0L) {
+    stop(cnd("TOML array of tables must have at least one element."))
+  }
+  if (!all(map_lgl(aot, is_named))) {
+    stop(cnd("All elements of a TOML array of tables must be named lists."))
+  }
+  structure(
+    aot,
+    class = c("ts_toml_array_of_tables", "list")
+  )
+}
+
 get_stl_type <- function(x) {
   if (inherits(x, "ts_toml_inline_table")) {
     "pair"
   } else if (inherits(x, "ts_toml_array")) {
     "pair"
+  } else if (inherits(x, "ts_toml_table")) {
+    "table"
+  } else if (inherits(x, "ts_toml_array_of_tables")) {
+    "array_of_tables"
   } else if (!is.list(x)) {
     "pair"
   } else if (is_named(x)) {

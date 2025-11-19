@@ -22,6 +22,48 @@ test_that("serialize_toml", {
   expect_equal(readLines(tmp), serialize_toml(tobj))
 })
 
+test_that("ts_toml_table", {
+  expect_snapshot({
+    tbl <- list(tab = ts_toml_table(a = 1L, b = 2.5, c = "hello"))
+    writeLines(serialize_toml(tbl))
+  })
+})
+
+test_that("ts_toml_inline_table", {
+  expect_snapshot({
+    tbl <- list(tab = ts_toml_inline_table(a = 1L, b = 2.5, c = "hello"))
+    writeLines(serialize_toml(tbl))
+  })
+  expect_snapshot(error = TRUE, {
+    ts_toml_inline_table(a = 1, 100)
+  })
+})
+
+test_that("ts_toml_array", {
+  expect_snapshot({
+    arr <- list(arr = ts_toml_array(1L, a = 2L, 3L, 4L))
+    writeLines(serialize_toml(arr))
+  })
+})
+
+test_that("ts_toml_array_of_tables", {
+  expect_snapshot({
+    aot <- list(
+      aot = ts_toml_array_of_tables(
+        list(name = "Alice", age = 30L),
+        list(name = "Bob", age = 25L)
+      )
+    )
+    writeLines(serialize_toml(aot))
+  })
+  expect_snapshot(error = TRUE, {
+    ts_toml_array_of_tables()
+  })
+  expect_snapshot(error = TRUE, {
+    ts_toml_array_of_tables(list(list(1, 2, 3)))
+  })
+})
+
 test_that("get_stl_type", {
   expect_equal(get_stl_type(1L), "pair")
   expect_equal(get_stl_type(list(list(1, 2, 3))), "pair")

@@ -51,6 +51,72 @@
       c = 2.5
       d = "hello"
 
+# ts_toml_table
+
+    Code
+      tbl <- list(tab = ts_toml_table(a = 1L, b = 2.5, c = "hello"))
+      writeLines(serialize_toml(tbl))
+    Output
+      [tab]
+      a = 1
+      b = 2.5
+      c = "hello"
+
+# ts_toml_inline_table
+
+    Code
+      tbl <- list(tab = ts_toml_inline_table(a = 1L, b = 2.5, c = "hello"))
+      writeLines(serialize_toml(tbl))
+    Output
+      tab = { a = 1, b = 2.5, c = "hello" }
+
+---
+
+    Code
+      ts_toml_inline_table(a = 1, 100)
+    Condition
+      Error in `ts_toml_inline_table()`:
+      ! All elements of TOML tables must be named.
+
+# ts_toml_array
+
+    Code
+      arr <- list(arr = ts_toml_array(1L, a = 2L, 3L, 4L))
+      writeLines(serialize_toml(arr))
+    Output
+      arr = [ 1, 2, 3, 4 ]
+
+# ts_toml_array_of_tables
+
+    Code
+      aot <- list(aot = ts_toml_array_of_tables(list(name = "Alice", age = 30L), list(
+        name = "Bob", age = 25L)))
+      writeLines(serialize_toml(aot))
+    Output
+      [[aot]]
+      name = "Alice"
+      age = 30
+      
+      [[aot]]
+      name = "Bob"
+      age = 25
+
+---
+
+    Code
+      ts_toml_array_of_tables()
+    Condition
+      Error in `ts_toml_array_of_tables()`:
+      ! TOML array of tables must have at least one element.
+
+---
+
+    Code
+      ts_toml_array_of_tables(list(list(1, 2, 3)))
+    Condition
+      Error in `ts_toml_array_of_tables()`:
+      ! All elements of a TOML array of tables must be named lists.
+
 # stl_inline
 
     Code

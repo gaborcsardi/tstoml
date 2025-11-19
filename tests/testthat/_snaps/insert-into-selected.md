@@ -21,11 +21,21 @@
       # toml (1 line)
       1 | d = { x = 10.0, y = 20.0 }
     Code
-      insert_into_selected(toml, key = "d", structure(list(list(x = 10, y = 20)),
+      insert_into_selected(toml, key = "e", ts_toml_inline_table(x = 10, y = 20))
+    Output
+      # toml (1 line)
+      1 | e = { x = 10.0, y = 20.0 }
+    Code
+      insert_into_selected(toml, key = "f", structure(list(list(x = 10, y = 20)),
       class = "ts_toml_array"))
     Output
       # toml (1 line)
-      1 | d = [ { x = 10.0, y = 20.0 } ]
+      1 | f = [ { x = 10.0, y = 20.0 } ]
+    Code
+      insert_into_selected(toml, key = "g", ts_toml_array(10, 20))
+    Output
+      # toml (1 line)
+      1 | g = [ 10.0, 20.0 ]
 
 # insert_into_document table
 

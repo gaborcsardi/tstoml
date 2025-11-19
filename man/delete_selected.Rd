@@ -2,24 +2,24 @@
 % Please edit documentation in R/delete-selected.R
 \name{delete_selected}
 \alias{delete_selected}
-\title{Delete selected elements from a tsjson object}
+\title{Delete selected elements from a tstoml object}
 \usage{
 delete_selected(toml)
 }
 \arguments{
-\item{json}{tsjson object.}
+\item{toml}{tstoml object.}
 }
 \value{
-Modified tsjson object.
+Modified tstoml object.
 }
 \description{
-The formatting of the rest of JSON document is kept as is. Comments
+The formatting of the rest of TOML document is kept as is. Comments
 appearing inside the deleted elements are also deleted. Other comments
 are left as is.
 }
 \details{
-If \code{json} has no selection then the the whole document is deleted.
-If \code{json} has an empty selection, then nothing is delted.
+If \code{toml} has no selection then the the whole document is deleted.
+If \code{toml} has an empty selection, then nothing is delted.
 }
 \examples{
 toml <- load_toml(text = toml_example_text())

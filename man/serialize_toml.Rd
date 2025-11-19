@@ -2,9 +2,21 @@
 % Please edit documentation in R/serialize-toml.R
 \name{serialize_toml}
 \alias{serialize_toml}
+\alias{ts_toml_table}
+\alias{ts_toml_inline_table}
+\alias{ts_toml_array}
+\alias{ts_toml_array_of_tables}
 \title{Serialize an R object to TOML}
 \usage{
 serialize_toml(obj, file = NULL, collapse = FALSE, options = NULL)
+
+ts_toml_table(...)
+
+ts_toml_inline_table(...)
+
+ts_toml_array(...)
+
+ts_toml_array_of_tables(...)
 }
 \arguments{
 \item{obj}{R object to serialize.}
@@ -30,6 +42,24 @@ will do the exact inverse of \code{\link[=serialize_toml]{serialize_toml()}}.
 \details{
 See the examples below on how to create all possible TOML elements with
 \code{\link[=serialize_toml]{serialize_toml()}}.
+
+Use \code{ts_toml_table()} to make a list to be serialized as a TOML
+table. All named lists are serialized as TOML tables by default, so
+this is only readability.
+
+Use \code{ts_toml_inline_table()} to make a list to be serialized
+as an inline TOML table. By default named lists are serialized as
+regular TOML tables, if possible.
+
+Use \code{ts_toml_array()} to make a list to be serialized as a TOML
+array. By default un-named lists are serialized as arrays, unless they
+are lists of named lists (which are serialized as arrays of tables).
+Use this funtion to mark any list to be serialized as an array.
+
+Use \code{ts_toml_array_of_tables()} to make a list to be serialized
+as a TOML array of tables. It must a list of named lists. By default
+lists of named lists are serialized as arrays of tables, so this is
+only for readability.
 }
 \seealso{
 \code{\link[=unserialize_toml]{unserialize_toml()}} for the opposite.
