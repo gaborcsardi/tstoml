@@ -276,12 +276,13 @@ add_dom <- function(tab) {
       tab$dom_name[id] <<- last(key$key)
       tab$dom_type[id] <<- "array_of_tables"
       tab$dom_parent[element_id] <<- id
+      tab$dom_type[element_id] <<- "table_array_element"
     } else if (rec$type == "array_of_tables") {
       nms <- ls(dict, all.names = TRUE)
       subs <- nms[startsWith(nms, paste0(ec, "."))]
       rm(list = subs, envir = dict)
       tab$dom_parent[element_id] <<- tab$dom_parent[rec$id]
-      tab$dom_type[id] <<- "table_array_element"
+      tab$dom_type[element_id] <<- "table_array_element"
       rec$id <- element_id
       dict[[ec]] <- rec
     } else {
