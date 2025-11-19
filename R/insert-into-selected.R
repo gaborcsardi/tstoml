@@ -73,6 +73,13 @@ last_descendant <- function(toml, node) {
   node
 }
 
+last_dom_descendant <- function(toml, node) {
+  while (length(toml$dom_children[[node]]) >= 1) {
+    node <- utils::tail(toml$dom_children[[node]], 1)
+  }
+  node
+}
+
 # reformat_mark <- "\f"
 reformat_mark <- ""
 
@@ -176,8 +183,52 @@ insert_into_document_aot <- function(toml, sel1, new, key) {
 # ------------------------------------------------------------------------------
 
 insert_into_subtable <- function(toml, sel1, new, key = key) {
-  TODO
+  newtype <- get_stl_type(new)
+  newtypename <- stl_type_names[[newtype]]
+  if (is.null(key)) {
+    stop(cnd(
+      "The `key` argument is required when inserting a {newtypename} \\
+       into the document."
+    ))
+  }
+  if (length(key) != 1) {
+    stop(cnd("The `key` argument must be a single string for now."))
+  }
+  chdn <- toml$dom_children[[sel1]]
+  keys <- toml$dom_name[chdn]
+  if (key %in% keys) {
+    stop(cnd("Key `{key}` already exists in the document."))
+  }
+
+  # the key is the key of the subtable plus the new key
+  newkey <- key
+  pkey <- sel1
+  while (toml$type[pkey] %in% key_types) {
+    newkey <- c(unserialize_key(toml, pkey), newkey)
+    pkey <- toml$dom_parent[pkey]
+  }
+
+  code <- paste0(
+    "\n",
+    ts_toml_key(newkey),
+    " = ",
+    paste0(serialize_toml_value(new), collapse = "\n")
+  )
+
+  after <- last_descendant(toml, last_dom_descendant(toml, chdn[length(chdn)]))
+  list(
+    select = sel1,
+    after = after,
+    code = code,
+    leading_comma = FALSE,
+    trailing_comma = FALSE,
+    # there must be a trailing newline after the table already
+    trailing_newline = FALSE,
+    before_trailing_ws = TRUE
+  )
 }
+
+# ------------------------------------------------------------------------------
 
 insert_into_inline_table <- function(toml, sel1, new, key = key, at = at) {
   chdn <- toml$children[[sel1]]
@@ -283,7 +334,7 @@ insert_into_table <- function(toml, sel1, new, key = key, at = at) {
       insert_into_table_aot(toml, sel1, new, key = key)
     },
     stop(cnd(
-      "Cannot insert {newtypename} ({newtype)} into document. \\
+      "Cannot insert {newtypename} ({newtype)} into table. \\
        This is an internal error in tstoml"
     ))
   )

@@ -282,3 +282,13 @@
       11 | [table2]
       12 | c = 5
 
+# insert_into_subtable
+
+    Code
+      toml <- load_toml(text = "a.b.c = 1\n")
+      insert_into_selected(select(toml, "a"), 100L, key = "x")
+    Output
+      # toml (2 lines)
+      1 | a.b.c = 1
+      2 | a.x = 100
+

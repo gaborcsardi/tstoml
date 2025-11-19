@@ -137,3 +137,10 @@ test_that("insert_into_table array of tables", {
       insert_into_selected(list(list(x = 10, y = 20), list(x = 5)), key = "aot")
   })
 })
+
+test_that("insert_into_subtable", {
+  expect_snapshot({
+    toml <- load_toml(text = "a.b.c = 1\n")
+    toml |> select("a") |> insert_into_selected(100L, key = "x")
+  })
+})
