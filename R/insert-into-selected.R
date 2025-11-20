@@ -123,10 +123,10 @@ insert_into_document <- function(toml, sel1, new, key = NULL) {
 
 insert_into_document_pair <- function(toml, sel1, new, key) {
   # need to put it before the first table or AOT
-  chdn <- toml$dom_children[[1]]
+  chdn <- toml$children[[1]]
   wtable <- which(toml$type[chdn] %in% c("table", "table_array_element"))[1]
   # if no table or AOT, append to the end
-  after <- if (is.na(wtable)) nrow(toml) else wtable - 1L
+  after <- if (is.na(wtable)) nrow(toml) else chdn[wtable] - 1L
   code <- paste0(
     if (nrow(toml) > 1) {
       "\n"
@@ -200,22 +200,50 @@ insert_into_subtable <- function(toml, sel1, new, key = key) {
     stop(cnd("Key `{key}` already exists in the document."))
   }
 
-  # the key is the key of the subtable plus the new key
-  newkey <- key
+  # check if the subtable was created from the key of a pair or table/AOT
   pkey <- sel1
   while (toml$type[pkey] %in% key_types) {
-    newkey <- c(unserialize_key(toml, pkey), newkey)
-    pkey <- toml$dom_parent[pkey]
+    pkey <- toml$parent[pkey]
+  }
+
+  # the key is the key of the subtable plus the new key
+  newkey <- key
+  dompkey <- sel1
+  while (toml$type[dompkey] %in% key_types) {
+    newkey <- c(unserialize_key(toml, dompkey), newkey)
+    dompkey <- toml$dom_parent[dompkey]
+  }
+
+  if (toml$type[pkey] == "pair") {
+    after <- last_descendant(
+      toml,
+      last_dom_descendant(toml, chdn[length(chdn)])
+    )
+    trailing_newline <- FALSE
+  } else {
+    # we cannot create a table with the key of sel1, and a bare key in that
+    # because the Rust parser might not parse that. E.g.
+    # a.y = 100
+    # [a]
+    # x = 100
+    # [a.b]
+    # c.d.e = 1
+    # does not parse (just insertd the [a] table here).
+    # So we create a dotted pair at the beginning of the document, before
+    # all tables and AOTs
+    dchdn <- toml$children[[1]]
+    wtable <- which(toml$type[dchdn] %in% c("table", "table_array_element"))[1]
+    after <- if (is.na(wtable)) nrow(toml) else dchdn[wtable] - 1L
+    trailing_newline <- TRUE
   }
 
   code <- paste0(
-    "\n",
+    if (after != 1L) "\n",
     ts_toml_key(newkey),
     " = ",
     paste0(serialize_toml_value(new), collapse = "\n")
   )
 
-  after <- last_descendant(toml, last_dom_descendant(toml, chdn[length(chdn)]))
   list(
     select = sel1,
     after = after,
@@ -223,7 +251,7 @@ insert_into_subtable <- function(toml, sel1, new, key = key) {
     leading_comma = FALSE,
     trailing_comma = FALSE,
     # there must be a trailing newline after the table already
-    trailing_newline = FALSE,
+    trailing_newline = trailing_newline,
     before_trailing_ws = TRUE
   )
 }
@@ -341,7 +369,13 @@ insert_into_table <- function(toml, sel1, new, key = key, at = at) {
 }
 
 insert_into_table_pair <- function(toml, sel1, new, key) {
-  after <- last_descendant(toml, sel1)
+  #  we also this for aot elements
+  tid <- if (toml$type[sel1] == "table") {
+    sel1
+  } else {
+    toml$parent[sel1]
+  }
+  after <- last_descendant(toml, tid)
   code <- paste0(
     "\n",
     key,
@@ -361,8 +395,14 @@ insert_into_table_pair <- function(toml, sel1, new, key) {
 }
 
 insert_into_table_table <- function(toml, sel1, new, key) {
-  after <- last_descendant(toml, sel1)
-  keyid <- toml$children[[sel1]][2]
+  #  we also this for aot elements
+  tid <- if (toml$type[sel1] == "table") {
+    sel1
+  } else {
+    toml$parent[sel1]
+  }
+  after <- last_descendant(toml, tid)
+  keyid <- toml$children[[tid]][2]
   newkey <- ts_toml_key(c(unserialize_key(toml, keyid), key))
   code <- paste0(
     "\n\n",
@@ -383,8 +423,14 @@ insert_into_table_table <- function(toml, sel1, new, key) {
 }
 
 insert_into_table_aot <- function(toml, sel1, new, key) {
-  after <- last_descendant(toml, sel1)
-  keyid <- toml$children[[sel1]][2]
+  #  we also this for aot elements
+  tid <- if (toml$type[sel1] == "table") {
+    sel1
+  } else {
+    toml$parent[sel1]
+  }
+  after <- last_descendant(toml, tid)
+  keyid <- toml$children[[tid]][2]
   newkey <- ts_toml_key(c(unserialize_key(toml, keyid), key))
   code <- paste0(
     "\n\n",
@@ -413,7 +459,7 @@ insert_into_aot <- function(toml, sel1, new, key = key, at = at) {
 # ------------------------------------------------------------------------------
 
 insert_into_aot_element <- function(toml, sel1, new, key = key, at = at) {
-  TODO
+  insert_into_table(toml, sel1, new, key = key, at = at)
 }
 
 # ------------------------------------------------------------------------------

@@ -310,3 +310,92 @@
       1 | a.b.c = 1
       2 | a.x = [ { x = 100, y = 200 } ]
 
+---
+
+    Code
+      toml <- load_toml(text = "[a.b]\nc.d.e = 1\n")
+      insert_into_selected(select(toml, "a", "b", "c"), 100L, key = "x")
+    Output
+      # toml (3 lines)
+      1 | [a.b]
+      2 | c.d.e = 1
+      3 | c.x = 100
+
+---
+
+    Code
+      toml <- load_toml(text = "[a.b]\nc.d.e = 1\n")
+      insert_into_selected(select(toml, "a"), 100L, key = "x")
+    Output
+      # toml (3 lines)
+      1 | a.x = 100
+      2 | [a.b]
+      3 | c.d.e = 1
+
+---
+
+    Code
+      toml <- load_toml(text = "[[a.b]]\nc.d.e = 1\n")
+      insert_into_selected(select(toml, "a"), 100L, key = "x")
+    Output
+      # toml (3 lines)
+      1 | a.x = 100
+      2 | [[a.b]]
+      3 | c.d.e = 1
+
+# insert_into_aot_element
+
+    Code
+      toml <- load_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
+      insert_into_selected(select(toml, "a", 1), key = "c", 100L)
+    Output
+      # toml (6 lines)
+      1 | [[a]]
+      2 | b=1
+      3 | c = 100
+      4 | 
+      5 | [[a]]
+      6 | b=2
+    Code
+      insert_into_selected(select(toml, "a", 2), key = "c", 100L)
+    Output
+      # toml (6 lines)
+      1 | [[a]]
+      2 | b=1
+      3 | 
+      4 | [[a]]
+      5 | b=2
+      6 | c = 100
+    Code
+      insert_into_selected(select(toml, "a", 1:2), key = "c", 100L)
+    Output
+      # toml (7 lines)
+      1 | [[a]]
+      2 | b=1
+      3 | c = 100
+      4 | 
+      5 | [[a]]
+      6 | b=2
+      7 | c = 100
+    Code
+      insert_into_selected(select(toml, "a", 2), key = "c", list(1, 2, 3))
+    Output
+      # toml (6 lines)
+      1 | [[a]]
+      2 | b=1
+      3 | 
+      4 | [[a]]
+      5 | b=2
+      6 | c = [ 1.0, 2.0, 3.0 ]
+    Code
+      insert_into_selected(select(toml, "a", 2), key = "d", structure(list(x = 10, y = 20),
+      class = "ts_toml_inline_table"))
+    Output
+      # toml (6 lines)
+      1 | [[a]]
+      2 | b=1
+      3 | 
+      4 | [[a]]
+      5 | b=2
+      6 | d = { x = 10.0, y = 20.0 }
+

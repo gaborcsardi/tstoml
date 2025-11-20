@@ -150,4 +150,37 @@ test_that("insert_into_subtable", {
       select("a") |>
       insert_into_selected(list(list(x = 100L, y = 200L)), key = "x")
   })
+
+  expect_snapshot({
+    toml <- load_toml(text = "[a.b]\nc.d.e = 1\n")
+    toml |> select("a", "b", "c") |> insert_into_selected(100L, key = "x")
+  })
+
+  expect_snapshot({
+    toml <- load_toml(text = "[a.b]\nc.d.e = 1\n")
+    toml |> select("a") |> insert_into_selected(100L, key = "x")
+  })
+
+  expect_snapshot({
+    toml <- load_toml(text = "[[a.b]]\nc.d.e = 1\n")
+    toml |> select("a") |> insert_into_selected(100L, key = "x")
+  })
+})
+
+test_that("insert_into_aot_element", {
+  expect_snapshot({
+    toml <- load_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
+    toml |> select("a", 1) |> insert_into_selected(key = "c", 100L)
+    toml |> select("a", 2) |> insert_into_selected(key = "c", 100L)
+    toml |> select("a", 1:2) |> insert_into_selected(key = "c", 100L)
+    toml |>
+      select("a", 2) |>
+      insert_into_selected(key = "c", list(1, 2, 3))
+    toml |>
+      select("a", 2) |>
+      insert_into_selected(
+        key = "d",
+        structure(list(x = 10, y = 20), class = "ts_toml_inline_table")
+      )
+  })
 })
