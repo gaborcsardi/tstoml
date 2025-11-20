@@ -22,7 +22,7 @@ insert_into_selected <- function(toml, new, key = NULL, at = Inf) {
         insert_into_table(toml, sel1, new, key = key, at = at)
       },
       array_of_tables = {
-        insert_into_aot(toml, sel1, new, key = key, at = at)
+        insert_into_aot(toml, sel1, new, at = at)
       },
       table_array_element = {
         insert_into_aot_element(toml, sel1, new, key = key, at = at)
@@ -452,8 +452,37 @@ insert_into_table_aot <- function(toml, sel1, new, key) {
 
 # ------------------------------------------------------------------------------
 
-insert_into_aot <- function(toml, sel1, new, key = key, at = at) {
-  TODO
+insert_into_aot <- function(toml, sel1, new, at = Inf) {
+  chdn <- toml$dom_children[[sel1]]
+  after <- if (at < 1) {
+    leading_newline <- FALSE
+    sel1 - 1L
+  } else if (at >= length(chdn)) {
+    leading_newline <- TRUE
+    last_descendant(toml, toml$parent[chdn[length(chdn)]])
+  } else {
+    leading_newline <- FALSE
+    last_descendant(toml, toml$parent[chdn[at]])
+  }
+
+  key <- unserialize_key(toml, toml$children[[sel1]][2])
+  code <- paste0(
+    if (leading_newline) "\n",
+    "[[",
+    key,
+    "]]\n",
+    stl_table_body(new),
+    "\n"
+  )
+
+  list(
+    select = sel1,
+    after = after,
+    code = code,
+    leading_comma = FALSE,
+    trailing_comma = FALSE,
+    trailing_newline = after != nrow(toml)
+  )
 }
 
 # ------------------------------------------------------------------------------

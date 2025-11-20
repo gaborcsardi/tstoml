@@ -399,3 +399,89 @@
       5 | b=2
       6 | d = { x = 10.0, y = 20.0 }
 
+# insert_into_aot
+
+    Code
+      toml <- load_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
+      insert_into_selected(select(toml, "a"), list(b = 3), at = 0)
+    Output
+      # toml (8 lines)
+      1 | [[a]]
+      2 | b = 3.0
+      3 | 
+      4 | [[a]]
+      5 | b=1
+      6 | 
+      7 | [[a]]
+      8 | b=2
+    Code
+      insert_into_selected(select(toml, "a"), list(b = 3), at = 1)
+    Output
+      # toml (8 lines)
+      1 | [[a]]
+      2 | b=1
+      3 | 
+      4 | [[a]]
+      5 | b = 3.0
+      6 | 
+      7 | [[a]]
+      8 | b=2
+    Code
+      insert_into_selected(select(toml, "a"), list(b = 3))
+    Output
+      # toml (8 lines)
+      1 | [[a]]
+      2 | b=1
+      3 | 
+      4 | [[a]]
+      5 | b=2
+      6 | 
+      7 | [[a]]
+      8 | b = 3.0
+
+---
+
+    Code
+      toml <- load_toml(text = "# prefix\n[[a]]\nb=1\n\n[[a]]\nb=2\n#postfix\n")
+      insert_into_selected(select(toml, "a"), list(b = 3), at = 0)
+    Output
+      # toml (10 lines)
+       1 | # prefix
+       2 | [[a]]
+       3 | b = 3.0
+       4 | 
+       5 | [[a]]
+       6 | b=1
+       7 | 
+       8 | [[a]]
+       9 | b=2
+      10 | #postfix
+    Code
+      insert_into_selected(select(toml, "a"), list(b = 3), at = 1)
+    Output
+      # toml (10 lines)
+       1 | # prefix
+       2 | [[a]]
+       3 | b=1
+       4 | 
+       5 | [[a]]
+       6 | b = 3.0
+       7 | 
+       8 | [[a]]
+       9 | b=2
+      10 | #postfix
+    Code
+      insert_into_selected(select(toml, "a"), list(b = 3))
+    Output
+      # toml (10 lines)
+       1 | # prefix
+       2 | [[a]]
+       3 | b=1
+       4 | 
+       5 | [[a]]
+       6 | b=2
+       7 | #postfix
+       8 | 
+       9 | [[a]]
+      10 | b = 3.0
+

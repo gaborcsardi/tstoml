@@ -184,3 +184,18 @@ test_that("insert_into_aot_element", {
       )
   })
 })
+
+test_that("insert_into_aot", {
+  expect_snapshot({
+    toml <- load_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
+    toml |> select("a") |> insert_into_selected(list(b = 3), at = 0)
+    toml |> select("a") |> insert_into_selected(list(b = 3), at = 1)
+    toml |> select("a") |> insert_into_selected(list(b = 3))
+  })
+  expect_snapshot({
+    toml <- load_toml(text = "# prefix\n[[a]]\nb=1\n\n[[a]]\nb=2\n#postfix\n")
+    toml |> select("a") |> insert_into_selected(list(b = 3), at = 0)
+    toml |> select("a") |> insert_into_selected(list(b = 3), at = 1)
+    toml |> select("a") |> insert_into_selected(list(b = 3))
+  })
+})
