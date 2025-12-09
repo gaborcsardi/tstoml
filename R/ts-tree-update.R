@@ -4,11 +4,12 @@
 #' selection then the whole document is replaced. If `toml` has an empty
 #' selection, then nothing happens.
 #'
-#' @param toml A tstoml object
+#' @param tree A tstoml object
 #' @param new A R object to be converted to TOML using [serialize_toml_value()]
 #'  and used as the new value.
 #' @param options A named list of `tstoml` options, see
 #'   [tstoml_options()]. Passed to [serialize_toml_value()].
+#' @param ... Reserved for future use.
 #' @export
 
 ts_tree_update.ts_tree_toml <- function(tree, new, options = NULL, ...) {

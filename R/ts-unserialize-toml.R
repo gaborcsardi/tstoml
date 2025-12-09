@@ -1,6 +1,6 @@
 #' Unserialize TOML to R objects
 #'
-#' @inheritParams token_table
+#' @inheritParams ts_parse_toml
 #' @export
 
 unserialize_toml <- function(
@@ -93,88 +93,88 @@ unserialize_element <- function(tree, id) {
   elt
 }
 
-unserialize_pair <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "pair")
-  unserialize_element(token_table, token_table$dom_children[[id]])
+unserialize_pair <- function(tree, id) {
+  stopifnot(tree$type[id] == "pair")
+  unserialize_element(tree, tree$dom_children[[id]])
 }
 
-unserialize_key <- function(token_table, id) {
+unserialize_key <- function(tree, id) {
   switch(
-    token_table$type[id],
+    tree$type[id],
     bare_key = {
-      unserialize_bare_key(token_table, id)
+      unserialize_bare_key(tree, id)
     },
     quoted_key = {
-      unserialize_quoted_key(token_table, id)
+      unserialize_quoted_key(tree, id)
     },
     dotted_key = {
-      unserialize_dotted_key(token_table, id)
+      unserialize_dotted_key(tree, id)
     },
-    stop("Unsupported key type in pair: ", token_table$type[id])
+    stop("Unsupported key type in pair: ", tree$type[id])
   )
 }
 
-unserialize_bare_key <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "bare_key")
-  token_table$code[id]
+unserialize_bare_key <- function(tree, id) {
+  stopifnot(tree$type[id] == "bare_key")
+  tree$code[id]
 }
 
-unserialize_quoted_key <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "quoted_key")
-  unserialize_element(token_table, token_table$children[[id]][1])
+unserialize_quoted_key <- function(tree, id) {
+  stopifnot(tree$type[id] == "quoted_key")
+  unserialize_element(tree, tree$children[[id]][1])
 }
 
-unserialize_dotted_key <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "dotted_key")
-  children <- token_table$children[[id]]
+unserialize_dotted_key <- function(tree, id) {
+  stopifnot(tree$type[id] == "dotted_key")
+  children <- tree$children[[id]]
   c(
-    unserialize_key(token_table, children[1]),
-    unserialize_key(token_table, children[3])
+    unserialize_key(tree, children[1]),
+    unserialize_key(tree, children[3])
   )
 }
 
-unserialize_key_with_ids <- function(token_table, id) {
+unserialize_key_with_ids <- function(tree, id) {
   switch(
-    token_table$type[id],
+    tree$type[id],
     bare_key = {
-      unserialize_bare_key_with_ids(token_table, id)
+      unserialize_bare_key_with_ids(tree, id)
     },
     quoted_key = {
-      unserialize_quoted_key_with_ids(token_table, id)
+      unserialize_quoted_key_with_ids(tree, id)
     },
     dotted_key = {
-      unserialize_dotted_key_with_ids(token_table, id)
+      unserialize_dotted_key_with_ids(tree, id)
     },
-    stop("Unsupported key type in pair: ", token_table$type[id])
+    stop("Unsupported key type in pair: ", tree$type[id])
   )
 }
 
-unserialize_bare_key_with_ids <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "bare_key")
-  list(key = token_table$code[id], ids = id)
+unserialize_bare_key_with_ids <- function(tree, id) {
+  stopifnot(tree$type[id] == "bare_key")
+  list(key = tree$code[id], ids = id)
 }
 
-unserialize_quoted_key_with_ids <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "quoted_key")
+unserialize_quoted_key_with_ids <- function(tree, id) {
+  stopifnot(tree$type[id] == "quoted_key")
   list(
-    key = unserialize_element(token_table, token_table$children[[id]][1]),
+    key = unserialize_element(tree, tree$children[[id]][1]),
     ids = id
   )
 }
 
-unserialize_dotted_key_with_ids <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "dotted_key")
-  children <- token_table$children[[id]]
-  ki1 <- unserialize_key_with_ids(token_table, children[1])
-  ki2 <- unserialize_key_with_ids(token_table, children[3])
+unserialize_dotted_key_with_ids <- function(tree, id) {
+  stopifnot(tree$type[id] == "dotted_key")
+  children <- tree$children[[id]]
+  ki1 <- unserialize_key_with_ids(tree, children[1])
+  ki2 <- unserialize_key_with_ids(tree, children[3])
   list(key = c(ki1$key, ki2$key), ids = c(ki1$ids, ki2$ids))
 }
 
 
 # TODO: support 64 bit integers
-unserialize_integer <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "integer")
-  code <- token_table$code[id]
+unserialize_integer <- function(tree, id) {
+  stopifnot(tree$type[id] == "integer")
+  code <- tree$code[id]
   base <- if (startsWith(code, "0x")) {
     16L
   } else if (startsWith(code, "0o")) {
@@ -190,45 +190,45 @@ unserialize_integer <- function(token_table, id) {
   strtoi(code, base = base)
 }
 
-unserialize_float <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "float")
-  code <- token_table$code[id]
+unserialize_float <- function(tree, id) {
+  stopifnot(tree$type[id] == "float")
+  code <- tree$code[id]
   code <- gsub("_", "", code, fixed = TRUE)
   as.numeric(code)
 }
 
-unserialize_boolean <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "boolean")
-  if (token_table$code[id] == "true") {
+unserialize_boolean <- function(tree, id) {
+  stopifnot(tree$type[id] == "boolean")
+  if (tree$code[id] == "true") {
     TRUE
   } else {
     FALSE
   }
 }
 
-unserialize_offset_date_time <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "offset_date_time")
-  code <- token_table$code[id]
+unserialize_offset_date_time <- function(tree, id) {
+  stopifnot(tree$type[id] == "offset_date_time")
+  code <- tree$code[id]
   parse_iso_8601(code)
 }
 
-unserialize_local_date_time <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "local_date_time")
-  code <- token_table$code[id]
+unserialize_local_date_time <- function(tree, id) {
+  stopifnot(tree$type[id] == "local_date_time")
+  code <- tree$code[id]
   # parse it as a local time
   t <- parse_iso_8601(code, "")
   as.POSIXlt(.POSIXct(t, tz = ""))
 }
 
-unserialize_local_date <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "local_date")
-  code <- token_table$code[id]
+unserialize_local_date <- function(tree, id) {
+  stopifnot(tree$type[id] == "local_date")
+  code <- tree$code[id]
   as.Date(code, tryFormats = "%Y-%m-%d")
 }
 
-unserialize_local_time <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "local_time")
-  code <- token_table$code[id]
+unserialize_local_time <- function(tree, id) {
+  stopifnot(tree$type[id] == "local_time")
+  code <- tree$code[id]
   hms <- strsplit(code, ":", fixed = TRUE)[[1]]
   structure(
     as.difftime(
@@ -241,10 +241,10 @@ unserialize_local_time <- function(token_table, id) {
 
 # TODO: embedded NULL not supported
 
-unserialize_string <- function(token_table, id, type = "string") {
-  stopifnot(token_table$type[id] == type)
-  chdn <- token_table$children[[id]]
-  unserialize_element(token_table, chdn[1])
+unserialize_string <- function(tree, id, type = "string") {
+  stopifnot(tree$type[id] == type)
+  chdn <- tree$children[[id]]
+  unserialize_element(tree, chdn[1])
 }
 
 # - Embedded zero is not supported in R, so \u0000 will error.
@@ -253,18 +253,18 @@ unserialize_string <- function(token_table, id, type = "string") {
 # - The parser will error for the escapes that are not supported by TOML,
 #   even if they are supported by R.
 
-unserialize_basic_string <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "basic_string")
+unserialize_basic_string <- function(tree, id) {
+  stopifnot(tree$type[id] == "basic_string")
   # also has " delimiters
-  chdn <- token_table$children[[id]]
-  str <- paste(token_table$code[chdn], collapse = "")
+  chdn <- tree$children[[id]]
+  str <- paste(tree$code[chdn], collapse = "")
   eval(parse(text = str, keep.source = FALSE))
 }
 
-unserialize_multiline_basic_string <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "multiline_basic_string")
-  chdn <- token_table$children[[id]]
-  str <- paste(token_table$code[chdn], collapse = "")
+unserialize_multiline_basic_string <- function(tree, id) {
+  stopifnot(tree$type[id] == "multiline_basic_string")
+  chdn <- tree$children[[id]]
+  str <- paste(tree$code[chdn], collapse = "")
   # trim delimiters first
   str <- substr(str, 4L, nchar(str) - 3L)
   # remove leading newline if present
@@ -278,19 +278,19 @@ unserialize_multiline_basic_string <- function(token_table, id) {
   eval(parse(text = paste0("'", str, "'"), keep.source = FALSE))
 }
 
-unserialize_literal_string <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "literal_string")
-  chdn <- token_table$children[[id]]
-  str <- paste(token_table$code[chdn], collapse = "")
+unserialize_literal_string <- function(tree, id) {
+  stopifnot(tree$type[id] == "literal_string")
+  chdn <- tree$children[[id]]
+  str <- paste(tree$code[chdn], collapse = "")
   # trim delimiters first
   str <- substr(str, 2L, nchar(str) - 1L)
   str
 }
 
-unserialize_multiline_literal_string <- function(token_table, id) {
-  stopifnot(token_table$type[id] == "multiline_literal_string")
-  chdn <- token_table$children[[id]]
-  str <- paste(token_table$code[chdn], collapse = "")
+unserialize_multiline_literal_string <- function(tree, id) {
+  stopifnot(tree$type[id] == "multiline_literal_string")
+  chdn <- tree$children[[id]]
+  str <- paste(tree$code[chdn], collapse = "")
   # trim delimiters first
   str <- substr(str, 4L, nchar(str) - 3L)
   # remove leading newline if present
@@ -300,21 +300,21 @@ unserialize_multiline_literal_string <- function(token_table, id) {
   str
 }
 
-unserialize_array <- function(token_table, id) {
-  children <- token_table$dom_children[[id]]
+unserialize_array <- function(tree, id) {
+  children <- tree$dom_children[[id]]
   result <- vector("list", length(children))
   for (i in seq_along(children)) {
-    result[[i]] <- unserialize_element(token_table, children[i])
+    result[[i]] <- unserialize_element(tree, children[i])
   }
   result
 }
 
-unserialize_table <- function(token_table, id) {
-  children <- token_table$dom_children[[id]]
+unserialize_table <- function(tree, id) {
+  children <- tree$dom_children[[id]]
   res <- named_list(length(children))
-  names(res) <- token_table$dom_name[children]
+  names(res) <- tree$dom_name[children]
   for (i in seq_along(children)) {
-    res[[i]] <- unserialize_element(token_table, children[i])
+    res[[i]] <- unserialize_element(tree, children[i])
   }
   res
 }

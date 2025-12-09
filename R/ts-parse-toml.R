@@ -1,4 +1,9 @@
-#' TODO
+#' Parse a TOML file or string into a ts_tree_toml object
+#'
+#' @inheritParams ts::ts_tree_new
+#' @param options Named list of parsing options, see
+#'   [tstoml options][tstoml_options].
+#' @return A `ts_tree_toml` object.
 #' @export
 
 ts_parse_toml <- function(

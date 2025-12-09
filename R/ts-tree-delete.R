@@ -8,16 +8,18 @@
 #' If `toml` has no selection then the the whole document is deleted.
 #' If `toml` has an empty selection, then nothing is delted.
 #'
-#' @param toml tstoml object.
+#' @param tree tstoml object.
+#' @param ... Reserved for future use.
 #' @return Modified tstoml object.
 #'
 #' @export
 #' @examples
+#' library(ts)
 #' toml <- ts_parse_toml(text = toml_example_text())
 #' toml
 #'
-#' toml |> select("owner", "name") |> delete_selected()
-#' toml |> select("owner") |> delete_selected()
+#' toml |> ts_tree_select("owner", "name") |> ts_tree_delete()
+#' toml |> ts_tree_select("owner") |> ts_tree_delete()
 
 ts_tree_delete.ts_tree_toml <- function(tree, ...) {
   select <- ts_tree_selected_nodes(tree)

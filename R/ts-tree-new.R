@@ -1,3 +1,5 @@
+#' @export
+
 ts_tree_new.ts_language_toml <- function(
   language,
   file = NULL,

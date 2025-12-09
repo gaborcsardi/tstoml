@@ -7,13 +7,15 @@
 \method{ts_tree_update}{ts_tree_toml}(tree, new, options = NULL, ...)
 }
 \arguments{
+\item{tree}{A tstoml object}
+
 \item{new}{A R object to be converted to TOML using \code{\link[=serialize_toml_value]{serialize_toml_value()}}
 and used as the new value.}
 
 \item{options}{A named list of \code{tstoml} options, see
 \code{\link[=tstoml_options]{tstoml_options()}}. Passed to \code{\link[=serialize_toml_value]{serialize_toml_value()}}.}
 
-\item{toml}{A tstoml object}
+\item{...}{Reserved for future use.}
 }
 \description{
 Replace all selected elements with a new element. If \code{toml} has no
