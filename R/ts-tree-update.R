@@ -11,15 +11,15 @@
 #'   [tstoml_options()]. Passed to [serialize_toml_value()].
 #' @export
 
-update_selected <- function(toml, new, options = NULL) {
-  selection <- get_selection(toml)
+ts_tree_update.ts_tree_toml <- function(tree, new, options = NULL, ...) {
+  selection <- ts_tree_selection(tree)
   ptr <- length(selection)
   select <- selection[[ptr]]$nodes
 
-  types <- toml$type[select]
+  types <- tree$type[select]
   if (any(!types %in% value_types)) {
     stop(ts_cnd(
-      "Can only update values ({collapse(value_types)})."
+      "Can only update values ({ts_collapse(value_types)})."
     ))
   }
 
@@ -32,38 +32,38 @@ update_selected <- function(toml, new, options = NULL) {
   # keep original indentation at the start row
   for (i in seq_along(select)) {
     sel1 <- select[i]
-    prevline <- rev(which(toml$end_row == toml$start_row[sel1] - 1))[1]
-    ind0 <- sub("^.*\n", "", toml$tws[prevline])
+    prevline <- rev(which(tree$end_row == tree$start_row[sel1] - 1))[1]
+    ind0 <- sub("^.*\n", "", tree$tws[prevline])
     if (!is.na(prevline)) {
       fmt[[i]] <- paste0(c("", rep(ind0, length(fmt[[i]]) - 1L)), fmt[[i]])
     }
   }
 
-  subtrees <- lapply(select, get_dom_subtree, toml = toml, with_root = TRUE)
+  subtrees <- lapply(select, get_dom_subtree, tree = tree, with_root = TRUE)
   subtrees <- lapply(subtrees, function(st) {
-    unlist(lapply(st, get_subtree, toml = toml, with_root = TRUE))
+    unlist(lapply(st, get_subtree, tree = tree, with_root = TRUE))
   })
   deleted <- unique(unlist(subtrees))
 
   # need to keep the trailing ws of the last element
   lasts <- map_int(subtrees, max_or_na)
-  tws <- toml$tws[lasts]
-  toml$code[deleted] <- NA_character_
-  toml$tws[deleted] <- NA_character_
+  tws <- tree$tws[lasts]
+  tree$code[deleted] <- NA_character_
+  tree$tws[deleted] <- NA_character_
 
   # keep select nodes to inject the new elements
-  toml$code[select] <- paste0(
+  tree$code[select] <- paste0(
     map_chr(fmt, paste, collapse = "\n"),
     ifelse(is.na(tws), "", tws)
   )
-  toml$tws[select] <- NA_character_
+  tree$tws[select] <- NA_character_
 
-  parts <- c(rbind(toml$code, toml$tws))
+  parts <- c(rbind(tree$code, tree$tws))
   text <- unlist(lapply(na_omit(parts), charToRaw))
 
   # TODO: update coordinates without reparsing
   new <- ts_parse_toml(text = text)
-  attr(new, "file") <- attr(toml, "file")
+  attr(new, "file") <- attr(tree, "file")
 
   new
 }
