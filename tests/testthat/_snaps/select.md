@@ -1,32 +1,32 @@
 # get_selection
 
     Code
-      get_selection(toml, default = FALSE)
+      ts_tree_selection(toml, default = FALSE)
     Output
       NULL
     Code
-      get_selection(toml)
+      ts_tree_selection(toml)
     Output
       [[1]]
       [[1]]$selector
       list()
       attr(,"class")
-      [1] "tstoml_selector_default" "tstoml_selector"        
-      [3] "list"                   
+      [1] "ts_tree_selector_default" "ts_tree_selector"        
+      [3] "list"                    
       
       [[1]]$nodes
       [1] 1
       
       
     Code
-      get_selection(select(toml, "owner"))
+      ts_tree_selection(ts_tree_select(toml, "owner"))
     Output
       [[1]]
       [[1]]$selector
       list()
       attr(,"class")
-      [1] "tstoml_selector_default" "tstoml_selector"        
-      [3] "list"                   
+      [1] "ts_tree_selector_default" "ts_tree_selector"        
+      [3] "list"                    
       
       [[1]]$nodes
       [1] 1
@@ -44,26 +44,22 @@
 # get_selected_nodes
 
     Code
-      get_selected_nodes(toml, default = FALSE)
+      ts_tree_selected_nodes(toml, default = FALSE)
     Output
       integer(0)
     Code
-      get_selected_nodes(toml)
+      ts_tree_selected_nodes(toml)
     Output
       [1] 1
     Code
-      get_selected_nodes(select(toml, "owner"))
+      ts_tree_selected_nodes(ts_tree_select(toml, "owner"))
     Output
       [1] 11
-    Code
-      get_selected_nodes(select(toml, "owner", 1))
-    Output
-      [1] 18
 
 # select 1
 
     Code
-      select(toml, "owner")
+      ts_tree_select(toml, "owner")
     Output
       # toml (23 lines, 1 selected element)
          2  | 
@@ -78,7 +74,7 @@
         11  | ports = [ 8000, 8001, 8002 ]
         ...   
     Code
-      select(toml, "servers", "alpha", "ip")
+      ts_tree_select(toml, "servers", "alpha", "ip")
     Output
       # toml (23 lines, 1 selected element)
         ...   
@@ -91,7 +87,7 @@
         21  | [servers.beta]
         ...   
     Code
-      select(toml, "servers", "beta", 2)
+      ts_tree_select(toml, "servers", "beta", 2)
     Output
       # toml (23 lines, 1 selected element)
         ...   
@@ -140,18 +136,10 @@
       
       
 
-# sel_ids
+# I()
 
     Code
-      sel_ids(11)
-    Output
-      $ids
-      [1] 11
-      
-      attr(,"class")
-      [1] "tstoml_selector_ids" "tstoml_selector"     "list"               
-    Code
-      select(toml, sel_ids(11))
+      ts_tree_select(toml, I(11))
     Output
       # toml (23 lines, 1 selected element)
          2  | 
@@ -169,7 +157,7 @@
 # select_query
 
     Code
-      select_query(toml, "(float) @float")
+      ts_tree_select(toml, query = "(float) @float")
     Output
       # toml (23 lines, 3 selected elements)
         ...   
@@ -186,8 +174,8 @@
 ---
 
     Code
-      select_query(toml, "((pair (bare_key) @key (string) @str) (#eq? @key \"ip\"))",
-        "str")
+      ts_tree_select(toml, query = list(
+        "((pair (bare_key) @key (string) @str) (#eq? @key \"ip\"))", "str"))
     Output
       # toml (23 lines, 2 selected elements)
         ...   
@@ -204,7 +192,7 @@
 ---
 
     Code
-      select_query(toml, "(float) @float", "bad")
+      ts_tree_select(toml, query = list("(float) @float", "bad"))
     Condition
       Error in `select_query()`:
       ! Invalid capture names in `select_query()`: bad.
@@ -212,7 +200,7 @@
 ---
 
     Code
-      select_query(toml, "(table_array_element) @aot")
+      ts_tree_select(toml, query = "(table_array_element) @aot")
     Output
       # toml (23 lines, 0 selected elements)
        1 | # This is a TOML document
@@ -228,10 +216,10 @@
       i 13 more lines
       i Use `print(n = ...)` to see more lines
 
-# select_refine
+# select refine = TRUE
 
     Code
-      select_refine(select(toml, "owner"), "name")
+      ts_tree_select(ts_tree_select(toml, "owner"), refine = TRUE, "name")
     Output
       # toml (23 lines, 1 selected element)
         ...   
@@ -247,7 +235,7 @@
 # select1
 
     Code
-      select(toml, sel_ids(11))
+      ts_tree_select(toml, I(11))
     Output
       # toml (23 lines, 1 selected element)
          2  | 
@@ -262,7 +250,7 @@
         11  | ports = [ 8000, 8001, 8002 ]
         ...   
     Code
-      select(toml, "owner", TRUE)
+      ts_tree_select(toml, "owner", TRUE)
     Output
       # toml (23 lines, 2 selected elements)
         ...   
@@ -279,15 +267,15 @@
 ---
 
     Code
-      select(toml, "owner", FALSE)
+      ts_tree_select(toml, "owner", FALSE)
     Condition
-      Error in `select1()`:
-      ! Invalid TOML selector, it is `FALSE`. See `?select` for valid selectors.
+      Error in `ts_tree_select1.ts_tree.logical()`:
+      ! Invalid logical selector in `ts_tree_select()`: only scalar `TRUE` is supported.
 
 # select1_true
 
     Code
-      select(toml, "products")
+      ts_tree_select(toml, "products")
     Output
       [90m# toml (11 lines, 1 selected element)[39m
         [90m 1[39m[90m | [39m# A TOML document with all types of arrays of tables
@@ -302,7 +290,7 @@
       [46m>[49m [90m10[39m[90m | [39m[36m  color = "gray"[39m
         [90m11[39m[90m | [39m  
     Code
-      select(toml, "products", TRUE)
+      ts_tree_select(toml, "products", TRUE)
     Output
       [90m# toml (11 lines, 2 selected elements)[39m
         [90m 1[39m[90m | [39m# A TOML document with all types of arrays of tables
@@ -317,7 +305,7 @@
       [46m>[49m [90m10[39m[90m | [39m  [36mcolor = "gray"[39m
         [90m11[39m[90m | [39m  
     Code
-      select(toml, "products", TRUE, TRUE)
+      ts_tree_select(toml, "products", TRUE, TRUE)
     Output
       [90m# toml (11 lines, 5 selected elements)[39m
         [90m 1[39m[90m | [39m# A TOML document with all types of arrays of tables
@@ -335,7 +323,7 @@
 ---
 
     Code
-      select(load_toml(text = "a=1\nb=2\n[tab]\nc=3\n"), TRUE)
+      ts_tree_select(ts_parse_toml("a=1\nb=2\n[tab]\nc=3\n"), TRUE)
     Output
       [90m# toml (4 lines, 3 selected elements)[39m
       [46m>[49m [90m1[39m[90m | [39ma=[36m1[39m
@@ -346,7 +334,7 @@
 ---
 
     Code
-      select(load_toml(text = "[a.b.c]\nx=1\n"), TRUE)
+      ts_tree_select(ts_parse_toml("[a.b.c]\nx=1\n"), TRUE)
     Output
       [90m# toml (2 lines, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39m[36m[a.[36mb[36m.c][39m
@@ -355,10 +343,10 @@
 ---
 
     Code
-      select(load_toml(text = "a.b.c=1\nb=2\nc=3"), TRUE)
+      ts_tree_select(ts_parse_toml("a.b.c=1\nb=2\nc=3"), TRUE)
     Output
       [90m# toml (3 lines, 3 selected elements)[39m
-      [46m>[49m [90m1[39m[90m | [39m[36ma.b.c=[39m[36m[36m1[36m[39m
+      [46m>[49m [90m1[39m[90m | [39ma.[36mb[39m.c=[36m1[39m
       [46m>[49m [90m2[39m[90m | [39mb=[36m2[39m
       [46m>[49m [90m3[39m[90m | [39mc=[36m3[39m
 
@@ -366,9 +354,9 @@
 
     Code
       txt <- "[a.b.c]\na=1\nb=2\n"
-      print(load_toml(text = txt)[], n = Inf)
+      print(ts_parse_toml(txt)[], n = Inf)
     Output
-      [38;5;246m# A data frame: 19 x 22[39m
+      [38;5;246m# A data frame: 19 x 20[39m
             id parent field_name type       code  start_byte end_byte start_row
          [3m[38;5;246m<int>[39m[23m  [3m[38;5;246m<int>[39m[23m [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<int>[39m[23m    [3m[38;5;246m<int>[39m[23m     [3m[38;5;246m<int>[39m[23m
       [38;5;250m 1[39m     1     [31mNA[39m [31mNA[39m         document   [31mNA[39m             0       16         0
@@ -390,26 +378,26 @@
       [38;5;250m17[39m    17     16 [31mNA[39m         bare_key   b             12       13         2
       [38;5;250m18[39m    18     16 [31mNA[39m         =          =             13       14         2
       [38;5;250m19[39m    19     16 [31mNA[39m         integer    2             14       15         2
-      [38;5;246m# i 14 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
+      [38;5;246m# i 12 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
       [38;5;246m#   is_missing <lgl>, has_error <lgl>, expected <list>, children <I<list>>,[39m
-      [38;5;246m#   dom_parent <int>, dom_type <chr>, dom_name <chr>, dom_children <I<list>>,[39m
-      [38;5;246m#   tws <chr>, array_position <int>, rev_array_position <int>[39m
+      [38;5;246m#   tws <chr>, dom_parent <int>, dom_type <chr>, dom_name <chr>,[39m
+      [38;5;246m#   dom_children <I<list>>[39m
     Code
-      select(load_toml(text = txt), "a", TRUE)
+      ts_tree_select(ts_parse_toml(txt), "a", TRUE)
     Output
       [90m# toml (3 lines, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39m[36m[a.b.c][39m
       [46m>[49m [90m2[39m[90m | [39m[36ma=[39m[36m[36m1[36m[39m
       [46m>[49m [90m3[39m[90m | [39m[36mb=[39m[36m[36m2[36m[39m
     Code
-      get_selection(select(load_toml(text = txt), "a", TRUE))
+      ts_tree_selection(ts_tree_select(ts_parse_toml(txt), "a", TRUE))
     Output
       [[1]]
       [[1]]$selector
       list()
       attr(,"class")
-      [1] "tstoml_selector_default" "tstoml_selector"        
-      [3] "list"                   
+      [1] "ts_tree_selector_default" "ts_tree_selector"        
+      [3] "list"                    
       
       [[1]]$nodes
       [1] 1
@@ -432,21 +420,21 @@
       
       
     Code
-      select(load_toml(text = txt), "a", TRUE, TRUE)
+      ts_tree_select(ts_parse_toml(txt), "a", TRUE, TRUE)
     Output
       [90m# toml (3 lines, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39m[36m[a.b.c][39m
       [46m>[49m [90m2[39m[90m | [39m[36ma=1[39m
       [46m>[49m [90m3[39m[90m | [39m[36mb=2[39m
     Code
-      get_selection(select(load_toml(text = txt), "a", TRUE, TRUE))
+      ts_tree_selection(ts_tree_select(ts_parse_toml(txt), "a", TRUE, TRUE))
     Output
       [[1]]
       [[1]]$selector
       list()
       attr(,"class")
-      [1] "tstoml_selector_default" "tstoml_selector"        
-      [3] "list"                   
+      [1] "ts_tree_selector_default" "ts_tree_selector"        
+      [3] "list"                    
       
       [[1]]$nodes
       [1] 1
@@ -481,9 +469,9 @@
 
     Code
       txt <- "a.b.c = 1"
-      print(load_toml(text = txt)[], n = Inf)
+      print(ts_parse_toml(txt)[], n = Inf)
     Output
-      [38;5;246m# A data frame: 11 x 22[39m
+      [38;5;246m# A data frame: 11 x 20[39m
             id parent field_name type       code  start_byte end_byte start_row
          [3m[38;5;246m<int>[39m[23m  [3m[38;5;246m<int>[39m[23m [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<int>[39m[23m    [3m[38;5;246m<int>[39m[23m     [3m[38;5;246m<int>[39m[23m
       [38;5;250m 1[39m     1     [31mNA[39m [31mNA[39m         document   [31mNA[39m             0        9         0
@@ -497,24 +485,24 @@
       [38;5;250m 9[39m     9      3 [31mNA[39m         bare_key   c              4        5         0
       [38;5;250m10[39m    10      2 [31mNA[39m         =          =              6        7         0
       [38;5;250m11[39m    11      2 [31mNA[39m         integer    1              8        9         0
-      [38;5;246m# i 14 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
+      [38;5;246m# i 12 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
       [38;5;246m#   is_missing <lgl>, has_error <lgl>, expected <list>, children <I<list>>,[39m
-      [38;5;246m#   dom_parent <int>, dom_type <chr>, dom_name <chr>, dom_children <I<list>>,[39m
-      [38;5;246m#   tws <chr>, array_position <int>, rev_array_position <int>[39m
+      [38;5;246m#   tws <chr>, dom_parent <int>, dom_type <chr>, dom_name <chr>,[39m
+      [38;5;246m#   dom_children <I<list>>[39m
     Code
-      select(load_toml(text = txt), "a", TRUE)
+      ts_tree_select(ts_parse_toml(txt), "a", TRUE)
     Output
       [90m# toml (1 line, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39m[36ma.b.c = [39m[36m[36m1[36m[39m
+      [46m>[49m [90m1[39m[90m | [39ma.b.c = [36m1[39m
     Code
-      get_selection(select(load_toml(text = txt), "a", TRUE))
+      ts_tree_selection(ts_tree_select(ts_parse_toml(txt), "a", TRUE))
     Output
       [[1]]
       [[1]]$selector
       list()
       attr(,"class")
-      [1] "tstoml_selector_default" "tstoml_selector"        
-      [3] "list"                   
+      [1] "ts_tree_selector_default" "ts_tree_selector"        
+      [3] "list"                    
       
       [[1]]$nodes
       [1] 1
@@ -537,19 +525,19 @@
       
       
     Code
-      select(load_toml(text = txt), "a", TRUE, TRUE)
+      ts_tree_select(ts_parse_toml(txt), "a", TRUE, TRUE)
     Output
       [90m# toml (1 line, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39ma.b.c = [36m1[39m
     Code
-      get_selection(select(load_toml(text = txt), "a", TRUE, TRUE))
+      ts_tree_selection(ts_tree_select(ts_parse_toml(txt), "a", TRUE, TRUE))
     Output
       [[1]]
       [[1]]$selector
       list()
       attr(,"class")
-      [1] "tstoml_selector_default" "tstoml_selector"        
-      [3] "list"                   
+      [1] "ts_tree_selector_default" "ts_tree_selector"        
+      [3] "list"                    
       
       [[1]]$nodes
       [1] 1
@@ -584,9 +572,9 @@
 
     Code
       txt <- "a = { b = { c = 1, d = 2 }, e = 3 }"
-      print(load_toml(text = txt)[], n = Inf)
+      print(ts_parse_toml(txt)[], n = Inf)
     Output
-      [38;5;246m# A data frame: 27 x 22[39m
+      [38;5;246m# A data frame: 27 x 20[39m
             id parent field_name type         code  start_byte end_byte start_row
          [3m[38;5;246m<int>[39m[23m  [3m[38;5;246m<int>[39m[23m [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<chr>[39m[23m        [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<int>[39m[23m    [3m[38;5;246m<int>[39m[23m     [3m[38;5;246m<int>[39m[23m
       [38;5;250m 1[39m     1     [31mNA[39m [31mNA[39m         document     [31mNA[39m             0       35         0
@@ -616,24 +604,24 @@
       [38;5;250m25[39m    25     23 [31mNA[39m         =            =             30       31         0
       [38;5;250m26[39m    26     23 [31mNA[39m         integer      3             32       33         0
       [38;5;250m27[39m    27      5 [31mNA[39m         }            }             34       35         0
-      [38;5;246m# i 14 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
+      [38;5;246m# i 12 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
       [38;5;246m#   is_missing <lgl>, has_error <lgl>, expected <list>, children <I<list>>,[39m
-      [38;5;246m#   dom_parent <int>, dom_type <chr>, dom_name <chr>, dom_children <I<list>>,[39m
-      [38;5;246m#   tws <chr>, array_position <int>, rev_array_position <int>[39m
+      [38;5;246m#   tws <chr>, dom_parent <int>, dom_type <chr>, dom_name <chr>,[39m
+      [38;5;246m#   dom_children <I<list>>[39m
     Code
-      select(load_toml(text = txt), "a", TRUE)
+      ts_tree_select(ts_parse_toml(txt), "a", TRUE)
     Output
       [90m# toml (1 line, 2 selected elements)[39m
       [46m>[49m [90m1[39m[90m | [39ma = { b = [36m{ c = 1, d = 2 }[39m, e = [36m3[39m }
     Code
-      get_selection(select(load_toml(text = txt), "a", TRUE))
+      ts_tree_selection(ts_tree_select(ts_parse_toml(txt), "a", TRUE))
     Output
       [[1]]
       [[1]]$selector
       list()
       attr(,"class")
-      [1] "tstoml_selector_default" "tstoml_selector"        
-      [3] "list"                   
+      [1] "ts_tree_selector_default" "ts_tree_selector"        
+      [3] "list"                    
       
       [[1]]$nodes
       [1] 1
@@ -656,19 +644,19 @@
       
       
     Code
-      select(load_toml(text = txt), "a", TRUE, TRUE)
+      ts_tree_select(ts_parse_toml(txt), "a", TRUE, TRUE)
     Output
       [90m# toml (1 line, 2 selected elements)[39m
       [46m>[49m [90m1[39m[90m | [39ma = { b = { c = [36m1[39m, d = [36m2[39m }, e = 3 }
     Code
-      get_selection(select(load_toml(text = txt), "a", TRUE, TRUE))
+      ts_tree_selection(ts_tree_select(ts_parse_toml(txt), "a", TRUE, TRUE))
     Output
       [[1]]
       [[1]]$selector
       list()
       attr(,"class")
-      [1] "tstoml_selector_default" "tstoml_selector"        
-      [3] "list"                   
+      [1] "ts_tree_selector_default" "ts_tree_selector"        
+      [3] "list"                    
       
       [[1]]$nodes
       [1] 1
@@ -703,9 +691,9 @@
 
     Code
       txt <- "a = { b.c.d = 1, d = 2 }"
-      print(load_toml(text = txt)[], n = Inf)
+      print(ts_parse_toml(txt)[], n = Inf)
     Output
-      [38;5;246m# A data frame: 22 x 22[39m
+      [38;5;246m# A data frame: 22 x 20[39m
             id parent field_name type         code  start_byte end_byte start_row
          [3m[38;5;246m<int>[39m[23m  [3m[38;5;246m<int>[39m[23m [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<chr>[39m[23m        [3m[38;5;246m<chr>[39m[23m      [3m[38;5;246m<int>[39m[23m    [3m[38;5;246m<int>[39m[23m     [3m[38;5;246m<int>[39m[23m
       [38;5;250m 1[39m     1     [31mNA[39m [31mNA[39m         document     [31mNA[39m             0       24         0
@@ -730,22 +718,22 @@
       [38;5;250m20[39m    20     18 [31mNA[39m         =            =             19       20         0
       [38;5;250m21[39m    21     18 [31mNA[39m         integer      2             21       22         0
       [38;5;250m22[39m    22      5 [31mNA[39m         }            }             23       24         0
-      [38;5;246m# i 14 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
+      [38;5;246m# i 12 more variables: start_column <int>, end_row <int>, end_column <int>,[39m
       [38;5;246m#   is_missing <lgl>, has_error <lgl>, expected <list>, children <I<list>>,[39m
-      [38;5;246m#   dom_parent <int>, dom_type <chr>, dom_name <chr>, dom_children <I<list>>,[39m
-      [38;5;246m#   tws <chr>, array_position <int>, rev_array_position <int>[39m
+      [38;5;246m#   tws <chr>, dom_parent <int>, dom_type <chr>, dom_name <chr>,[39m
+      [38;5;246m#   dom_children <I<list>>[39m
     Code
-      select(load_toml(text = txt), "a", TRUE)
+      ts_tree_select(ts_parse_toml(txt), "a", TRUE)
     Output
       [90m# toml (1 line, 2 selected elements)[39m
-      [46m>[49m [90m1[39m[90m | [39ma = { [36mb.c.d = 1[39m, d = [36m2[39m }
+      [46m>[49m [90m1[39m[90m | [39ma = { b.[36mc[39m.d = [36m1[39m, d = [36m2[39m }
     Code
-      select(load_toml(text = txt), "a", TRUE, TRUE)
+      ts_tree_select(ts_parse_toml(txt), "a", TRUE, TRUE)
     Output
       [90m# toml (1 line, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39ma = { [36mb.c.d = [39m[36m[36m1[36m[39m, d = 2 }
+      [46m>[49m [90m1[39m[90m | [39ma = { b.c.d = [36m1[39m, d = 2 }
     Code
-      select(load_toml(text = txt), "a", TRUE, TRUE, TRUE)
+      ts_tree_select(ts_parse_toml(txt), "a", TRUE, TRUE, TRUE)
     Output
       [90m# toml (1 line, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39ma = { b.c.d = [36m1[39m, d = 2 }
@@ -754,12 +742,12 @@
 
     Code
       txt <- "a = [ 1, 2, 3 ]"
-      select(load_toml(text = txt), "a", TRUE)
+      ts_tree_select(ts_parse_toml(txt), "a", TRUE)
     Output
       [90m# toml (1 line, 3 selected elements)[39m
       [46m>[49m [90m1[39m[90m | [39ma = [ [36m1[39m, [36m2[39m, [36m3[39m ]
     Code
-      select(load_toml(text = txt), "a", TRUE, TRUE)
+      ts_tree_select(ts_parse_toml(txt), "a", TRUE, TRUE)
     Output
       [90m# toml (1 line, 0 selected elements)[39m
       [90m1[39m[90m | [39ma = [ 1, 2, 3 ]
@@ -767,7 +755,7 @@
 # select1_key
 
     Code
-      select(toml, "owner")
+      ts_tree_select(toml, "owner")
     Output
       [90m# toml (23 lines, 1 selected element)[39m
         [90m 2 [39m[90m | [39m
@@ -782,7 +770,7 @@
         [90m11 [39m[90m | [39mports = [ 8000, 8001, 8002 ]
         [90m...[39m   
     Code
-      select(toml, "owner", "name")
+      ts_tree_select(toml, "owner", "name")
     Output
       [90m# toml (23 lines, 1 selected element)[39m
         [90m...[39m   
@@ -795,7 +783,7 @@
         [90m 9 [39m[90m | [39m[database]
         [90m...[39m   
     Code
-      select(toml, "nothere")
+      ts_tree_select(toml, "nothere")
     Output
       [90m# toml (23 lines, 0 selected elements)[39m
       [90m 1[39m[90m | [39m# This is a TOML document
@@ -811,7 +799,7 @@
       [90mi 13 more lines[39m
       [90mi Use `print(n = ...)` to see more lines[39m
     Code
-      select(toml, "owner", "nothere")
+      ts_tree_select(toml, "owner", "nothere")
     Output
       [90m# toml (23 lines, 0 selected elements)[39m
       [90m 1[39m[90m | [39m# This is a TOML document
@@ -830,7 +818,7 @@
 ---
 
     Code
-      select(toml, "products")
+      ts_tree_select(toml, "products")
     Output
       [90m# toml (11 lines, 1 selected element)[39m
         [90m 1[39m[90m | [39m# A TOML document with all types of arrays of tables
@@ -845,7 +833,7 @@
       [46m>[49m [90m10[39m[90m | [39m[36m  color = "gray"[39m
         [90m11[39m[90m | [39m  
     Code
-      select(toml, "products", TRUE, "name")
+      ts_tree_select(toml, "products", TRUE, "name")
     Output
       [90m# toml (11 lines, 2 selected elements)[39m
         [90m 1[39m[90m | [39m# A TOML document with all types of arrays of tables
@@ -860,7 +848,7 @@
         [90m10[39m[90m | [39m  color = "gray"
         [90m11[39m[90m | [39m  
     Code
-      select(toml, "products", TRUE, "notthere")
+      ts_tree_select(toml, "products", TRUE, "notthere")
     Output
       [90m# toml (11 lines, 0 selected elements)[39m
       [90m 1[39m[90m | [39m# A TOML document with all types of arrays of tables
@@ -873,33 +861,34 @@
       [90m 8[39m[90m | [39m  name = "Nail"
       [90m 9[39m[90m | [39m  sku = 284758393
       [90m10[39m[90m | [39m  color = "gray"
-      [90m11[39m[90m | [39m  
+      [90mi 1 more line[39m
+      [90mi Use `print(n = ...)` to see more lines[39m
 
 ---
 
     Code
-      select(toml, "a")
+      ts_tree_select(toml, "a")
     Output
       [90m# toml (3 lines, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39m[36m[a.[36mb[36m.c][39m
       [46m>[49m [90m2[39m[90m | [39m[36mx=[39m[36m[36m1[36m[39m
       [46m>[49m [90m3[39m[90m | [39m[36my=[39m[36m[36m2[36m[39m
     Code
-      select(toml, "a", "b")
+      ts_tree_select(toml, "a", "b")
     Output
       [90m# toml (3 lines, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39m[36m[a.b.c][39m
       [46m>[49m [90m2[39m[90m | [39m[36mx=[39m[36m[36m1[36m[39m
       [46m>[49m [90m3[39m[90m | [39m[36my=[39m[36m[36m2[36m[39m
     Code
-      select(toml, "a", "b", "c")
+      ts_tree_select(toml, "a", "b", "c")
     Output
       [90m# toml (3 lines, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39m[36m[a.b.c][39m
       [46m>[49m [90m2[39m[90m | [39m[36mx=1[39m
       [46m>[49m [90m3[39m[90m | [39m[36my=2[39m
     Code
-      select(toml, "a", "b", "notthere")
+      ts_tree_select(toml, "a", "b", "notthere")
     Output
       [90m# toml (3 lines, 0 selected elements)[39m
       [90m1[39m[90m | [39m[a.b.c]
@@ -909,25 +898,25 @@
 ---
 
     Code
-      select(toml, "a")
+      ts_tree_select(toml, "a")
     Output
       [90m# toml (2 lines, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39m[36ma.b.c=[39m[36m[36m1[36m[39m
+      [46m>[49m [90m1[39m[90m | [39ma.[36mb[39m.c=[36m1[39m
         [90m2[39m[90m | [39md=2
     Code
-      select(toml, "a", "b")
-    Output
-      [90m# toml (2 lines, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39m[36ma.b.c=[39m[36m[36m1[36m[39m
-        [90m2[39m[90m | [39md=2
-    Code
-      select(toml, "a", "b", "c")
+      ts_tree_select(toml, "a", "b")
     Output
       [90m# toml (2 lines, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39ma.b.c=[36m1[39m
         [90m2[39m[90m | [39md=2
     Code
-      select(toml, "a", "b", "notthere")
+      ts_tree_select(toml, "a", "b", "c")
+    Output
+      [90m# toml (2 lines, 1 selected element)[39m
+      [46m>[49m [90m1[39m[90m | [39ma.b.c=[36m1[39m
+        [90m2[39m[90m | [39md=2
+    Code
+      ts_tree_select(toml, "a", "b", "notthere")
     Output
       [90m# toml (2 lines, 0 selected elements)[39m
       [90m1[39m[90m | [39ma.b.c=1
@@ -936,22 +925,22 @@
 ---
 
     Code
-      select(toml, "a")
+      ts_tree_select(toml, "a")
     Output
       [90m# toml (1 line, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39ma = [36m{ b = { c = 1, d = 2 }, e = 3 }[39m
     Code
-      select(toml, "a", "b")
+      ts_tree_select(toml, "a", "b")
     Output
       [90m# toml (1 line, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39ma = { b = [36m{ c = 1, d = 2 }[39m, e = 3 }
     Code
-      select(toml, "a", "b", "c")
+      ts_tree_select(toml, "a", "b", "c")
     Output
       [90m# toml (1 line, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39ma = { b = { c = [36m1[39m, d = 2 }, e = 3 }
     Code
-      select(toml, "a", "b", "notthere")
+      ts_tree_select(toml, "a", "b", "notthere")
     Output
       [90m# toml (1 line, 0 selected elements)[39m
       [90m1[39m[90m | [39ma = { b = { c = 1, d = 2 }, e = 3 }
@@ -959,22 +948,22 @@
 ---
 
     Code
-      select(toml, "a")
+      ts_tree_select(toml, "a")
     Output
       [90m# toml (1 line, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39ma = [36m{ b.c = 1, d = 2 }[39m
     Code
-      select(toml, "a", "b")
-    Output
-      [90m# toml (1 line, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39ma = { [36mb.c = [39m[36m[36m1[36m[39m, d = 2 }
-    Code
-      select(toml, "a", "b", "c")
+      ts_tree_select(toml, "a", "b")
     Output
       [90m# toml (1 line, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39ma = { b.c = [36m1[39m, d = 2 }
     Code
-      select(toml, "a", "b", "notthere")
+      ts_tree_select(toml, "a", "b", "c")
+    Output
+      [90m# toml (1 line, 1 selected element)[39m
+      [46m>[49m [90m1[39m[90m | [39ma = { b.c = [36m1[39m, d = 2 }
+    Code
+      ts_tree_select(toml, "a", "b", "notthere")
     Output
       [90m# toml (1 line, 0 selected elements)[39m
       [90m1[39m[90m | [39ma = { b.c = 1, d = 2 }
@@ -982,22 +971,22 @@
 ---
 
     Code
-      select(toml, "a")
+      ts_tree_select(toml, "a")
     Output
       [90m# toml (1 line, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39ma = [36m[ 1, 2, 3 ][39m
     Code
-      select(toml, "a", "notthere")
+      ts_tree_select(toml, "a", "notthere")
     Output
       [90m# toml (1 line, 0 selected elements)[39m
       [90m1[39m[90m | [39ma = [ 1, 2, 3 ]
     Code
-      select(toml, "a", 1)
+      ts_tree_select(toml, "a", 1)
     Output
       [90m# toml (1 line, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39ma = [ [36m1[39m, 2, 3 ]
     Code
-      select(toml, "a", 1, "notthere")
+      ts_tree_select(toml, "a", 1, "notthere")
     Output
       [90m# toml (1 line, 0 selected elements)[39m
       [90m1[39m[90m | [39ma = [ 1, 2, 3 ]
@@ -1005,15 +994,15 @@
 # select1_numeric
 
     Code
-      select(toml, 0)
+      ts_tree_select(toml, 0)
     Condition
-      [1m[33mError[39m in `select1_numeric()`:[22m
-      [33m![39m Zero indices are not allowed in TOML selectors.
+      [1m[33mError[39m in `ts_tree_select1.ts_tree.integer()`:[22m
+      [33m![39m Zero indices are not allowed in ts selectors.
 
 ---
 
     Code
-      select(toml, "products")
+      ts_tree_select(toml, "products")
     Output
       [90m# toml (11 lines, 1 selected element)[39m
         [90m 1[39m[90m | [39m# A TOML document with all types of arrays of tables
@@ -1028,7 +1017,7 @@
       [46m>[49m [90m10[39m[90m | [39m[36m  color = "gray"[39m
         [90m11[39m[90m | [39m  
     Code
-      select(toml, "products", TRUE, 1)
+      ts_tree_select(toml, "products", TRUE, 1)
     Output
       [90m# toml (11 lines, 2 selected elements)[39m
         [90m 1[39m[90m | [39m# A TOML document with all types of arrays of tables
@@ -1043,7 +1032,7 @@
         [90m10[39m[90m | [39m  color = "gray"
         [90m11[39m[90m | [39m  
     Code
-      select(toml, "products", TRUE, -1)
+      ts_tree_select(toml, "products", TRUE, -1)
     Output
       [90m# toml (11 lines, 2 selected elements)[39m
         [90m 2[39m[90m | [39m
@@ -1057,7 +1046,7 @@
       [46m>[49m [90m10[39m[90m | [39m  color = [36m"gray"[39m
         [90m11[39m[90m | [39m  
     Code
-      select(toml, "products", TRUE, c(1, -1))
+      ts_tree_select(toml, "products", TRUE, c(1, -1))
     Output
       [90m# toml (11 lines, 4 selected elements)[39m
         [90m 1[39m[90m | [39m# A TOML document with all types of arrays of tables
@@ -1075,7 +1064,7 @@
 ---
 
     Code
-      select(toml, "products", 1)
+      ts_tree_select(toml, "products", 1)
     Output
       [90m# toml (11 lines, 1 selected element)[39m
         [90m1  [39m[90m | [39m# A TOML document with all types of arrays of tables
@@ -1088,7 +1077,7 @@
         [90m8  [39m[90m | [39m  name = "Nail"
         [90m...[39m   
     Code
-      select(toml, "products", -1)
+      ts_tree_select(toml, "products", -1)
     Output
       [90m# toml (11 lines, 1 selected element)[39m
         [90m...[39m   
@@ -1104,28 +1093,28 @@
 ---
 
     Code
-      select(toml, "a")
+      ts_tree_select(toml, "a")
     Output
       [90m# toml (3 lines, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39m[36m[a.[36mb[36m.c][39m
       [46m>[49m [90m2[39m[90m | [39m[36mx=[39m[36m[36m1[36m[39m
       [46m>[49m [90m3[39m[90m | [39m[36my=[39m[36m[36m2[36m[39m
     Code
-      select(toml, "a", 1)
+      ts_tree_select(toml, "a", 1)
     Output
       [90m# toml (3 lines, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39m[36m[a.b.c][39m
       [46m>[49m [90m2[39m[90m | [39m[36mx=[39m[36m[36m1[36m[39m
       [46m>[49m [90m3[39m[90m | [39m[36my=[39m[36m[36m2[36m[39m
     Code
-      select(toml, "a", 1, 1)
+      ts_tree_select(toml, "a", 1, 1)
     Output
       [90m# toml (3 lines, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39m[36m[a.b.c][39m
       [46m>[49m [90m2[39m[90m | [39m[36mx=1[39m
       [46m>[49m [90m3[39m[90m | [39m[36my=2[39m
     Code
-      select(toml, "a", 1, 2)
+      ts_tree_select(toml, "a", 1, 2)
     Output
       [90m# toml (3 lines, 0 selected elements)[39m
       [90m1[39m[90m | [39m[a.b.c]
@@ -1135,25 +1124,25 @@
 ---
 
     Code
-      select(toml, "a")
+      ts_tree_select(toml, "a")
     Output
       [90m# toml (2 lines, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39m[36ma.b.c=[39m[36m[36m1[36m[39m
+      [46m>[49m [90m1[39m[90m | [39ma.[36mb[39m.c=[36m1[39m
         [90m2[39m[90m | [39md=2
     Code
-      select(toml, "a", 1)
-    Output
-      [90m# toml (2 lines, 1 selected element)[39m
-      [46m>[49m [90m1[39m[90m | [39m[36ma.b.c=[39m[36m[36m1[36m[39m
-        [90m2[39m[90m | [39md=2
-    Code
-      select(toml, "a", 1, 1)
+      ts_tree_select(toml, "a", 1)
     Output
       [90m# toml (2 lines, 1 selected element)[39m
       [46m>[49m [90m1[39m[90m | [39ma.b.c=[36m1[39m
         [90m2[39m[90m | [39md=2
     Code
-      select(toml, "a", 1, 2)
+      ts_tree_select(toml, "a", 1, 1)
+    Output
+      [90m# toml (2 lines, 1 selected element)[39m
+      [46m>[49m [90m1[39m[90m | [39ma.b.c=[36m1[39m
+        [90m2[39m[90m | [39md=2
+    Code
+      ts_tree_select(toml, "a", 1, 2)
     Output
       [90m# toml (2 lines, 0 selected elements)[39m
       [90m1[39m[90m | [39ma.b.c=1
@@ -1162,7 +1151,7 @@
 ---
 
     Code
-      select(toml, "products", 1)
+      ts_tree_select(toml, "products", 1)
     Output
       [90m# toml (11 lines, 1 selected element)[39m
         [90m1  [39m[90m | [39m# A TOML document with all types of arrays of tables
@@ -1175,7 +1164,7 @@
         [90m8  [39m[90m | [39m  name = "Nail"
         [90m...[39m   
     Code
-      select(toml, "products", -1)
+      ts_tree_select(toml, "products", -1)
     Output
       [90m# toml (11 lines, 1 selected element)[39m
         [90m...[39m   
@@ -1188,7 +1177,7 @@
       [46m>[49m [90m10 [39m[90m | [39m  [36mcolor = "gray"[39m
         [90m11 [39m[90m | [39m  
     Code
-      select(toml, "products", 1, "name")
+      ts_tree_select(toml, "products", 1, "name")
     Output
       [90m# toml (11 lines, 1 selected element)[39m
         [90m1  [39m[90m | [39m# A TOML document with all types of arrays of tables

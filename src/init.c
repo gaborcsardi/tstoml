@@ -2,24 +2,28 @@
 #include <R.h>
 #include <Rinternals.h>
 
-#include "cleancall.h"
+#include "tree-sitter/toml/tree_sitter/parser.h"
+extern const TSLanguage *tree_sitter_toml(void);
 
-SEXP code_query(SEXP input, SEXP pattern, SEXP rlanguage, SEXP ranges);
-SEXP code_query_path(SEXP path, SEXP pattern, SEXP rlanguage, SEXP ranges);
-SEXP s_expr(SEXP input, SEXP rlanguage, SEXP ranges);
-SEXP token_table(SEXP input, SEXP rlanguage, SEXP rranges);
+static const TSLanguage *toml_lang = NULL;
 
-SEXP glue(SEXP x, SEXP f, SEXP open_arg, SEXP close_arg, SEXP cli_arg);
-SEXP trim(SEXP x);
+SEXP ts_language_toml() {
+  if (toml_lang == NULL) {
+    toml_lang = tree_sitter_toml();
+  }
+  SEXP res = Rf_protect(
+    R_MakeExternalPtr((void *)toml_lang, R_NilValue, R_NilValue)
+  );
+  SEXP cls = Rf_protect(Rf_allocVector(STRSXP, 2));
+  SET_STRING_ELT(cls, 0, Rf_mkChar("ts_language_toml"));
+  SET_STRING_ELT(cls, 1, Rf_mkChar("ts_language"));
+  Rf_setAttrib(res, R_ClassSymbol, cls);
+  Rf_unprotect(2);
+  return res;
+}
 
 static const R_CallMethodDef callMethods[]  = {
-  CLEANCALL_METHOD_RECORD,
-  { "code_query",        (DL_FUNC) &code_query,        4 },
-  { "code_query_path",   (DL_FUNC) &code_query_path,   4 },
-  { "s_expr",            (DL_FUNC) &s_expr,            3 },
-  { "token_table",       (DL_FUNC) &token_table,       3 },
-  { "glue",              (DL_FUNC) &glue,              5 },
-  { "trim",              (DL_FUNC) &trim,              1 },
+  { "ts_language_toml", (DL_FUNC) &ts_language_toml, 0 },
   { NULL, NULL, 0 }
 };
 
@@ -27,5 +31,4 @@ void R_init_tstoml(DllInfo *dll) {
   R_registerRoutines(dll, NULL, callMethods, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
-  cleancall_init();
 }

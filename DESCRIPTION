@@ -15,13 +15,14 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Depends: R (>= 4.1.0)
 Imports:
-    cli (>= 3.6.0),
-    utils
+    ts
 Suggests:
     asciicast,
     hms,
     pillar,
     testthat (>= 3.0.0)
+Remotes:
+    gaborcsardi/ts
 Config/Needs/website:
     r-lib/asciicast
 Config/testthat/edition: 3

@@ -23,23 +23,12 @@ unserialize_toml <- function(
   unserialize_element(tab, 1L)
 }
 
-#' Unserialize selected elements from a tstoml object
-#'
-#' @param toml tstoml object.
-#'
-#' @export
-
-unserialize_selected <- function(toml) {
-  sel <- get_selected_nodes(toml)
-  as.list(lapply(sel, unserialize_element, token_table = toml))
-}
-
-unserialize_element <- function(token_table, id) {
-  type <- token_table$type[id]
-  parent <- token_table$parent[id]
+unserialize_element <- function(tree, id) {
+  type <- tree$type[id]
+  parent <- tree$parent[id]
   if (
     !is.na(parent) &&
-      token_table$type[parent] == "table_array_element" &&
+      tree$type[parent] == "table_array_element" &&
       type %in% c("bare_key", "quoted_key", "dotted_key")
   ) {
     # this is an AOT _element_, unserialize like a table
@@ -53,52 +42,52 @@ unserialize_element <- function(token_table, id) {
     inline_table = ,
     bare_key = ,
     quoted_key = {
-      unserialize_table(token_table, id)
+      unserialize_table(tree, id)
     },
     array = ,
     table_array_element = {
-      unserialize_array(token_table, id)
+      unserialize_array(tree, id)
     },
     pair = {
-      unserialize_pair(token_table, id)
+      unserialize_pair(tree, id)
     },
     integer = {
-      unserialize_integer(token_table, id)
+      unserialize_integer(tree, id)
     },
     float = {
-      unserialize_float(token_table, id)
+      unserialize_float(tree, id)
     },
     boolean = {
-      unserialize_boolean(token_table, id)
+      unserialize_boolean(tree, id)
     },
     offset_date_time = {
-      unserialize_offset_date_time(token_table, id)
+      unserialize_offset_date_time(tree, id)
     },
     local_date_time = {
-      unserialize_local_date_time(token_table, id)
+      unserialize_local_date_time(tree, id)
     },
     local_date = {
-      unserialize_local_date(token_table, id)
+      unserialize_local_date(tree, id)
     },
     local_time = {
-      unserialize_local_time(token_table, id)
+      unserialize_local_time(tree, id)
     },
     string = {
-      unserialize_string(token_table, id)
+      unserialize_string(tree, id)
     },
     basic_string = {
-      unserialize_basic_string(token_table, id)
+      unserialize_basic_string(tree, id)
     },
     multiline_basic_string = {
-      unserialize_multiline_basic_string(token_table, id)
+      unserialize_multiline_basic_string(tree, id)
     },
     literal_string = {
-      unserialize_literal_string(token_table, id)
+      unserialize_literal_string(tree, id)
     },
     multiline_literal_string = {
-      unserialize_multiline_literal_string(token_table, id)
+      unserialize_multiline_literal_string(tree, id)
     },
-    stop("Unsupported token type: ", token_table$type[id])
+    stop("Unsupported token type: ", tree$type[id])
   )
   elt
 }
