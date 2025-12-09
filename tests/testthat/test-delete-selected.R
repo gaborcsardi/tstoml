@@ -1,123 +1,125 @@
-test_that("delete_selected", {
+test_that("ts_tree_delete", {
   expect_snapshot({
-    toml <- load_toml(text = toml_example_text())
-    toml |> select("owner", "name") |> delete_selected()
+    toml <- ts_parse_toml(text = toml_example_text())
+    toml |> ts_tree_select("owner", "name") |> ts_tree_delete()
   })
   expect_snapshot({
-    toml <- load_toml(text = toml_example_text())
+    toml <- ts_parse_toml(text = toml_example_text())
     toml |>
-      select("database", "ports", 2) |>
-      delete_selected() |>
+      ts_tree_select("database", "ports", 2) |>
+      ts_tree_delete() |>
       print(n = Inf)
   })
   expect_snapshot({
-    toml <- load_toml(text = toml_example_text())
+    toml <- ts_parse_toml(text = toml_example_text())
     toml |>
-      select("servers", "alpha", "role") |>
-      delete_selected() |>
-      print(n = Inf)
-  })
-})
-
-test_that("delete_selected table", {
-  expect_snapshot({
-    toml <- load_toml(text = toml_example_text())
-    toml |> select("owner") |> delete_selected()
-  })
-  expect_snapshot({
-    toml <- load_toml(text = toml_example_text())
-    toml |>
-      select("servers", "beta") |>
-      delete_selected() |>
+      ts_tree_select("servers", "alpha", "role") |>
+      ts_tree_delete() |>
       print(n = Inf)
   })
 })
 
-test_that("delete_selected pair from inline table", {
+test_that("ts_tree_delete table", {
   expect_snapshot({
-    toml <- load_toml(text = "a = { x = 1, y = 2, z = 3 }\nb = 2\n")
-    toml |> select("a", "y") |> delete_selected()
+    toml <- ts_parse_toml(text = toml_example_text())
+    toml |> ts_tree_select("owner") |> ts_tree_delete()
+  })
+  expect_snapshot({
+    toml <- ts_parse_toml(text = toml_example_text())
+    toml |>
+      ts_tree_select("servers", "beta") |>
+      ts_tree_delete() |>
+      print(n = Inf)
   })
 })
 
-test_that("delete_selected AOT element", {
+test_that("ts_tree_delete pair from inline table", {
   expect_snapshot({
-    toml <- load_toml(text = toml_aot_example2())
-    toml |> select("products", 2) |> delete_selected()
-  })
-  expect_snapshot({
-    toml <- load_toml(text = toml_aot_example2())
-    toml |> select("products", TRUE, "dimensions", 1) |> delete_selected()
+    toml <- ts_parse_toml(text = "a = { x = 1, y = 2, z = 3 }\nb = 2\n")
+    toml |> ts_tree_select("a", "y") |> ts_tree_delete()
   })
 })
 
-test_that("delete_selected whole AOT", {
+test_that("ts_tree_delete AOT element", {
   expect_snapshot({
-    toml <- load_toml(text = toml_aot_example2())
-    toml |> select("products") |> delete_selected()
+    toml <- ts_parse_toml(text = toml_aot_example2())
+    toml |> ts_tree_select("products", 2) |> ts_tree_delete()
+  })
+  expect_snapshot({
+    toml <- ts_parse_toml(text = toml_aot_example2())
+    toml |>
+      ts_tree_select("products", TRUE, "dimensions", 1) |>
+      ts_tree_delete()
   })
 })
 
-test_that("delete_selected subtable in pair", {
+test_that("ts_tree_delete whole AOT", {
   expect_snapshot({
-    toml <- load_toml(text = "a.b.c = 1\na.b.d = 2\na.e.f = 3\n")
-    toml |> select("a", "b") |> delete_selected()
-    toml |> select("a") |> delete_selected()
+    toml <- ts_parse_toml(text = toml_aot_example2())
+    toml |> ts_tree_select("products") |> ts_tree_delete()
   })
 })
 
-test_that("delete_selected subtable in table", {
+test_that("ts_tree_delete subtable in pair", {
   expect_snapshot({
-    toml <- load_toml(text = "x = 1\n[a.b]\nc = 1\nd = 2\n[a.c]\ng = 3\n")
-    toml |> select("a", "b") |> delete_selected()
-    toml |> select("a") |> delete_selected()
+    toml <- ts_parse_toml(text = "a.b.c = 1\na.b.d = 2\na.e.f = 3\n")
+    toml |> ts_tree_select("a", "b") |> ts_tree_delete()
+    toml |> ts_tree_select("a") |> ts_tree_delete()
   })
 })
 
-test_that("delete_selected nothing to delete", {
+test_that("ts_tree_delete subtable in table", {
   expect_snapshot({
-    toml <- load_toml(text = toml_example_text())
-    toml |> select("nothing") |> delete_selected()
+    toml <- ts_parse_toml(text = "x = 1\n[a.b]\nc = 1\nd = 2\n[a.c]\ng = 3\n")
+    toml |> ts_tree_select("a", "b") |> ts_tree_delete()
+    toml |> ts_tree_select("a") |> ts_tree_delete()
   })
 })
 
-test_that("delete_selected whole document", {
+test_that("ts_tree_delete nothing to delete", {
   expect_snapshot({
-    toml <- load_toml(text = toml_example_text())
-    toml |> delete_selected()
+    toml <- ts_parse_toml(text = toml_example_text())
+    toml |> ts_tree_select("nothing") |> ts_tree_delete()
   })
 })
 
-test_that("delete_selected deleting from special arrays", {
+test_that("ts_tree_delete whole document", {
+  expect_snapshot({
+    toml <- ts_parse_toml(text = toml_example_text())
+    toml |> ts_tree_delete()
+  })
+})
+
+test_that("ts_tree_delete deleting from special arrays", {
   # one element
   expect_snapshot({
-    toml <- load_toml(text = "arr = [1]\n")
-    toml |> select("arr", 1) |> delete_selected()
+    toml <- ts_parse_toml(text = "arr = [1]\n")
+    toml |> ts_tree_select("arr", 1) |> ts_tree_delete()
   })
   # empty
   expect_snapshot({
-    toml <- load_toml(text = "arr = []\n")
-    toml |> select("arr", TRUE) |> delete_selected()
+    toml <- ts_parse_toml(text = "arr = []\n")
+    toml |> ts_tree_select("arr", TRUE) |> ts_tree_delete()
   })
   # delete first element
   expect_snapshot({
-    toml <- load_toml(text = "arr = [1, 2, 3]\n")
-    toml |> select("arr", 1) |> delete_selected()
+    toml <- ts_parse_toml(text = "arr = [1, 2, 3]\n")
+    toml |> ts_tree_select("arr", 1) |> ts_tree_delete()
   })
   # delete last element
   expect_snapshot({
-    toml <- load_toml(text = "arr = [1, 2, 3]\n")
-    toml |> select("arr", 3) |> delete_selected()
+    toml <- ts_parse_toml(text = "arr = [1, 2, 3]\n")
+    toml |> ts_tree_select("arr", 3) |> ts_tree_delete()
   })
 })
 
-test_that("delete_selected, keep trailing ws after the last array element", {
+test_that("ts_tree_delete, keep trailing ws after the last array element", {
   expect_snapshot({
-    toml <- load_toml(text = "arr = [1, 2, 3  \n]\n")
-    toml |> select("arr", 3) |> delete_selected()
+    toml <- ts_parse_toml(text = "arr = [1, 2, 3  \n]\n")
+    toml |> ts_tree_select("arr", 3) |> ts_tree_delete()
   })
   expect_snapshot({
-    toml <- load_toml(text = "arr = [1, [1,2,3], [1,2,3]  \n]\n")
-    toml |> select("arr", 3) |> delete_selected()
+    toml <- ts_parse_toml(text = "arr = [1, [1,2,3], [1,2,3]  \n]\n")
+    toml |> ts_tree_select("arr", 3) |> ts_tree_delete()
   })
 })

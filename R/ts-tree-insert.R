@@ -30,7 +30,7 @@ insert_into_selected <- function(toml, new, key = NULL, at = Inf) {
       array = {
         insert_into_array(toml, sel1, new, key = key, at = at)
       },
-      stop(cnd("Cannot insert into a `{dom_type}` TOML element."))
+      stop(ts_cnd("Cannot insert into a `{dom_type}` TOML element."))
     )
   })
 
@@ -60,7 +60,7 @@ insert_into_selected <- function(toml, new, key = NULL, at = Inf) {
   text <- unlist(lapply(na_omit(parts), charToRaw))
 
   # TODO: update coordinates without reparsing
-  new <- load_toml(text = text)
+  new <- ts_parse_toml(text = text)
   attr(new, "file") <- attr(toml, "file")
 
   new
@@ -89,18 +89,18 @@ insert_into_document <- function(toml, sel1, new, key = NULL) {
   newtype <- get_stl_type(new)
   newtypename <- stl_type_names[[newtype]]
   if (is.null(key)) {
-    stop(cnd(
+    stop(ts_cnd(
       "The `key` argument is required when inserting a {newtypename} \\
        into the document."
     ))
   }
   if (length(key) != 1) {
-    stop(cnd("The `key` argument must be a single string for now."))
+    stop(ts_cnd("The `key` argument must be a single string for now."))
   }
   chdn <- toml$dom_children[[1]]
   keys <- toml$dom_name[chdn]
   if (key %in% keys) {
-    stop(cnd("Key `{key}` already exists in the document."))
+    stop(ts_cnd("Key `{key}` already exists in the document."))
   }
 
   switch(
@@ -114,7 +114,7 @@ insert_into_document <- function(toml, sel1, new, key = NULL) {
     "array_of_tables" = {
       insert_into_document_aot(toml, sel1, new, key = key)
     },
-    stop(cnd(
+    stop(ts_cnd(
       "Cannot insert {newtypename} ({newtype)} into document. \\
        This is an internal error in tstoml"
     ))
@@ -186,18 +186,18 @@ insert_into_subtable <- function(toml, sel1, new, key = key) {
   newtype <- get_stl_type(new)
   newtypename <- stl_type_names[[newtype]]
   if (is.null(key)) {
-    stop(cnd(
+    stop(ts_cnd(
       "The `key` argument is required when inserting a {newtypename} \\
        into the document."
     ))
   }
   if (length(key) != 1) {
-    stop(cnd("The `key` argument must be a single string for now."))
+    stop(ts_cnd("The `key` argument must be a single string for now."))
   }
   chdn <- toml$dom_children[[sel1]]
   keys <- toml$dom_name[chdn]
   if (key %in% keys) {
-    stop(cnd("Key `{key}` already exists in the document."))
+    stop(ts_cnd("Key `{key}` already exists in the document."))
   }
 
   # check if the subtable was created from the key of a pair or table/AOT
@@ -336,18 +336,18 @@ insert_into_table <- function(toml, sel1, new, key = key, at = at) {
   newtype <- get_stl_type(new)
   newtypename <- stl_type_names[[newtype]]
   if (is.null(key)) {
-    stop(cnd(
+    stop(ts_cnd(
       "The `key` argument is required when inserting a {newtypename} \\
        into the document."
     ))
   }
   if (length(key) != 1) {
-    stop(cnd("The `key` argument must be a single string for now."))
+    stop(ts_cnd("The `key` argument must be a single string for now."))
   }
   chdn <- toml$dom_children[[sel1]]
   keys <- toml$dom_name[chdn]
   if (key %in% keys) {
-    stop(cnd("Key `{key}` already exists in the document."))
+    stop(ts_cnd("Key `{key}` already exists in the document."))
   }
 
   switch(
@@ -361,7 +361,7 @@ insert_into_table <- function(toml, sel1, new, key = key, at = at) {
     "array_of_tables" = {
       insert_into_table_aot(toml, sel1, new, key = key)
     },
-    stop(cnd(
+    stop(ts_cnd(
       "Cannot insert {newtypename} ({newtype)} into table. \\
        This is an internal error in tstoml"
     ))

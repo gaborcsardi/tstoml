@@ -36,7 +36,7 @@ role = "frontend"
 ip = "10.0.0.2"
 role = "backend"
 )"
-toml <- load_toml(text = txt)
+toml <- ts_parse_toml(text = txt)
 }\if{html}{\out{</div>}}
 
 Pretty print a tstoml object:

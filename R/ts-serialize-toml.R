@@ -28,8 +28,8 @@ serialize_toml <- function(obj, file = NULL, collapse = FALSE, options = NULL) {
     NULL,
     obj,
     options = options,
-    arg = caller_arg(obj),
-    call = caller_env()
+    arg = ts_caller_arg(obj),
+    call = ts_caller_env()
   )
 
   # if it starts with a table or array of tables, there is an empty line
@@ -73,7 +73,7 @@ ts_toml_table <- function(...) {
 ts_toml_inline_table <- function(...) {
   tab <- list(...)
   if (!is_named(tab)) {
-    stop(cnd("All elements of TOML tables must be named."))
+    stop(ts_cnd("All elements of TOML tables must be named."))
   }
   structure(
     tab,
@@ -105,10 +105,10 @@ ts_toml_array <- function(...) {
 ts_toml_array_of_tables <- function(...) {
   aot <- list(...)
   if (length(aot) == 0L) {
-    stop(cnd("TOML array of tables must have at least one element."))
+    stop(ts_cnd("TOML array of tables must have at least one element."))
   }
   if (!all(map_lgl(aot, is_named))) {
-    stop(cnd("All elements of a TOML array of tables must be named lists."))
+    stop(ts_cnd("All elements of a TOML array of tables must be named lists."))
   }
   structure(
     aot,
@@ -154,8 +154,8 @@ stl_table <- function(
   obj,
   options = NULL,
   path = NULL,
-  arg = caller_arg(obj),
-  call = caller_env()
+  arg = ts_caller_arg(obj),
+  call = ts_caller_env()
 ) {
   stopifnot(is_named(obj))
   c(
@@ -175,8 +175,8 @@ stl_table <- function(
 stl_inline <- function(
   obj,
   options = NULL,
-  arg = caller_arg(obj),
-  call = caller_env()
+  arg = ts_caller_arg(obj),
+  call = ts_caller_env()
 ) {
   if (inherits(obj, "POSIXct")) {
     stl_offset_date_time(obj, options = options, arg = arg, call = call)
@@ -199,7 +199,7 @@ stl_inline <- function(
   } else if (is.logical(obj)) {
     stl_boolean(obj, options = options, arg = arg, call = call)
   } else {
-    stop(cnd(
+    stop(ts_cnd(
       "Invalid argument: `{arg}`. Cannot convert {typename(obj)} to TOML.",
       call = call
     ))
@@ -222,8 +222,8 @@ stl_table_body <- function(
   options = NULL,
   inline = FALSE,
   path = NULL,
-  arg = caller_arg(obj),
-  call = caller_env()
+  arg = ts_caller_arg(obj),
+  call = ts_caller_env()
 ) {
   types <- map_chr(obj, get_stl_type)
   wpairs <- which(types == "pair")
@@ -275,8 +275,8 @@ stl_array_of_tables <- function(
   obj,
   options = options,
   path = path,
-  arg = caller_arg(obj),
-  call = caller_env()
+  arg = ts_caller_arg(obj),
+  call = ts_caller_env()
 ) {
   unlist(lapply(seq_along(obj), function(i) {
     c(
@@ -296,8 +296,8 @@ stl_array_of_tables <- function(
 stl_float <- function(
   obj,
   options = NULL,
-  arg = caller_arg(obj),
-  call = caller_env()
+  arg = ts_caller_arg(obj),
+  call = ts_caller_env()
 ) {
   obj <- as_toml_float(obj, arg = arg, call = call)
   if (is.nan(obj)) {
@@ -316,8 +316,8 @@ stl_float <- function(
 stl_string <- function(
   obj,
   options = NULL,
-  arg = caller_arg(obj),
-  call = caller_env()
+  arg = ts_caller_arg(obj),
+  call = ts_caller_env()
 ) {
   encodeString(obj, quote = "\"")
 }
@@ -325,8 +325,8 @@ stl_string <- function(
 stl_integer <- function(
   obj,
   options = NULL,
-  arg = caller_arg(obj),
-  call = caller_env()
+  arg = ts_caller_arg(obj),
+  call = ts_caller_env()
 ) {
   obj <- as_toml_integer(obj, arg = arg, call = call)
   as.character(obj)
@@ -335,8 +335,8 @@ stl_integer <- function(
 stl_boolean <- function(
   obj,
   options = NULL,
-  arg = caller_arg(obj),
-  call = caller_env()
+  arg = ts_caller_arg(obj),
+  call = ts_caller_env()
 ) {
   obj <- as_toml_boolean(obj, arg = arg, call = call)
   if (obj) "true" else "false"
@@ -346,8 +346,8 @@ stl_boolean <- function(
 stl_offset_date_time <- function(
   obj,
   options = NULL,
-  arg = caller_arg(obj),
-  call = caller_env()
+  arg = ts_caller_arg(obj),
+  call = ts_caller_env()
 ) {
   z <- format(obj, "%z")
   paste0(
@@ -362,8 +362,8 @@ stl_offset_date_time <- function(
 stl_local_date_time <- function(
   obj,
   options = NULL,
-  arg = caller_arg(obj),
-  call = caller_env()
+  arg = ts_caller_arg(obj),
+  call = ts_caller_env()
 ) {
   format(obj, "%Y-%m-%dT%H:%M:%S")
 }
@@ -372,8 +372,8 @@ stl_local_date_time <- function(
 stl_local_date <- function(
   obj,
   options = NULL,
-  arg = caller_arg(obj),
-  call = caller_env()
+  arg = ts_caller_arg(obj),
+  call = ts_caller_env()
 ) {
   format(obj, "%Y-%m-%d")
 }
@@ -382,8 +382,8 @@ stl_local_date <- function(
 stl_local_time <- function(
   obj,
   options = NULL,
-  arg = caller_arg(obj),
-  call = caller_env()
+  arg = ts_caller_arg(obj),
+  call = ts_caller_env()
 ) {
   secs <- as.double(obj, units = "secs")
   tics_per_second <- 1e+06
@@ -410,8 +410,8 @@ stl_local_time <- function(
 stl_inline_table <- function(
   obj,
   options = options,
-  arg = caller_arg(obj),
-  call = caller_env()
+  arg = ts_caller_arg(obj),
+  call = ts_caller_env()
 ) {
   paste0(
     "{ ",
@@ -428,8 +428,8 @@ stl_inline_table <- function(
 stl_inline_array <- function(
   obj,
   options = options,
-  arg = caller_arg(obj),
-  call = caller_env()
+  arg = ts_caller_arg(obj),
+  call = ts_caller_env()
 ) {
   paste0(
     "[ ",

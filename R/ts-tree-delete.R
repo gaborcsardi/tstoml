@@ -13,55 +13,63 @@
 #'
 #' @export
 #' @examples
-#' toml <- load_toml(text = toml_example_text())
+#' toml <- ts_parse_toml(text = toml_example_text())
 #' toml
 #'
 #' toml |> select("owner", "name") |> delete_selected()
 #' toml |> select("owner") |> delete_selected()
 
-delete_selected <- function(toml) {
-  select <- get_selected_nodes(toml)
+ts_tree_delete.ts_tree_toml <- function(tree, ...) {
+  select <- ts_tree_selected_nodes(tree)
 
   if (length(select) == 0) {
-    attr(toml, "selection") <- NULL
-    return(toml)
+    attr(tree, "selection") <- NULL
+    return(tree)
   }
 
   # if deleting from an array, then we need to look at the array and
   # remove some commas, probably
-  pares <- toml$parent[select]
-  ptypes <- toml$type[pares]
+  pares <- tree$parent[select]
+  ptypes <- tree$type[pares]
   trimmed_arrays <- unique(pares[ptypes == "array"])
   trimmed_pairs <- pares[ptypes == "pair"]
   select <- c(select, trimmed_pairs)
-  trimmed_objects <- unique(toml$parent[trimmed_pairs])
+  trimmed_objects <- unique(tree$parent[trimmed_pairs])
   trimmed_objects <- trimmed_objects[
-    toml$type[trimmed_objects] == "inline_table"
+    tree$type[trimmed_objects] == "inline_table"
   ]
 
   # get the full subtree of nodes to delete
-  subtrees <- lapply(select, get_dom_subtree, toml = toml, with_root = TRUE)
+  subtrees <- lapply(select, get_dom_subtree, tree = tree, with_root = TRUE)
   subtrees <- lapply(subtrees, function(st) {
-    unlist(lapply(st, get_subtree, toml = toml, with_root = TRUE))
+    # when deleting values, we are deleting their keys as well
+    # which to remove NA coming from the document node
+    is_pair_value <- which(tree$type[tree$parent[st]] == "pair")
+
+    st[is_pair_value] <- tree$parent[st[is_pair_value]]
+    st
+  })
+  subtrees <- lapply(subtrees, function(st) {
+    unlist(lapply(st, get_subtree, tree = tree, with_root = TRUE))
   })
   deleted <- unique(unlist(subtrees))
 
   # if deleting an AOT element, remove the whole element
-  del_pares <- toml$parent[deleted]
-  aot_elements <- (toml$type[deleted] %in% key_types) &
-    toml$type[del_pares] == "table_array_element"
-  deleted <- unique(c(deleted, unlist(toml$children[del_pares[aot_elements]])))
+  del_pares <- tree$parent[deleted]
+  aot_elements <- (tree$type[deleted] %in% key_types) &
+    tree$type[del_pares] == "table_array_element"
+  deleted <- unique(c(deleted, unlist(tree$children[del_pares[aot_elements]])))
 
   trim_commas <- function(id, open, close) {
     # remove deleted children and see what is left
-    allchld <- toml$children[[id]]
+    allchld <- tree$children[[id]]
     chld <- setdiff(allchld, deleted)
     nc <- length(chld)
     # if nothing left, then nothing to do
     if (nc == 2) {
       return()
     }
-    ctypes <- toml$type[chld]
+    ctypes <- tree$type[chld]
     todel <- rep(FALSE, length(chld))
     # this is hard to write in a vectorized form, it is easier iteratively
     # leading commas
@@ -92,13 +100,13 @@ delete_selected <- function(toml) {
     last_deld <- chdeld[length(chdeld)]
     last_kept <- chkept[length(chkept) - 1L]
     if (last_deld > last_kept) {
-      while (is.na(toml$code[last_deld])) {
-        last_deld <- utils::tail(toml$children[[last_deld]], 1)
+      while (is.na(tree$code[last_deld])) {
+        last_deld <- utils::tail(tree$children[[last_deld]], 1)
       }
-      while (is.na(toml$code[last_kept])) {
-        last_kept <- utils::tail(toml$children[[last_kept]], 1)
+      while (is.na(tree$code[last_kept])) {
+        last_kept <- utils::tail(tree$children[[last_kept]], 1)
       }
-      toml$tws[last_kept] <<- toml$tws[last_deld]
+      tree$tws[last_kept] <<- tree$tws[last_deld]
     }
   }
 
@@ -115,15 +123,15 @@ delete_selected <- function(toml) {
   }
 
   # NA happens if the whole document is deleted, the parent of 1 is NA
-  toml2 <- toml[-na_omit(deleted), ]
+  tree2 <- tree[-na_omit(deleted), ]
 
   # update text
-  parts <- c(rbind(toml2$code, toml2$tws))
+  parts <- c(rbind(tree2$code, tree2$tws))
   text <- as.raw(unlist(lapply(na_omit(parts), charToRaw)))
 
   # TODO: update coordinates without reparsing
-  new <- load_toml(text = text)
-  attr(new, "file") <- attr(toml, "file")
+  new <- ts_parse_toml(text = text)
+  attr(new, "file") <- attr(tree, "file")
 
   new
 }

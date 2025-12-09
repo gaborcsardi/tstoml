@@ -14,7 +14,8 @@ unserialize_toml <- function(
   # }
   # options <- as_tstoml_options(options)
 
-  tab <- token_table(
+  tab <- ts_tree_new(
+    language = ts_language_toml(),
     file = file,
     text = text,
     ranges = ranges,

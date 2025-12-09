@@ -68,16 +68,16 @@ format_selected <- function(
   text <- unlist(lapply(na_omit(parts), charToRaw))
 
   # TODO: update coordinates without reparsing
-  new <- load_toml(text = text)
+  new <- ts_parse_toml(text = text)
   attr(new, "file") <- attr(toml, "file")
 
   new
 }
 
-get_subtree <- function(toml, id, with_root = FALSE) {
-  sel <- c(if (with_root) id, toml$children[[id]])
+get_subtree <- function(tree, id, with_root = FALSE) {
+  sel <- c(if (with_root) id, tree$children[[id]])
   while (TRUE) {
-    sel2 <- unique(c(sel, unlist(toml$children[sel])))
+    sel2 <- unique(c(sel, unlist(tree$children[sel])))
     if (length(sel2) == length(sel)) {
       return(sel)
     }
@@ -134,7 +134,7 @@ format_element <- function(toml, id, options) {
     comment = {
       format_comment(toml, id, options)
     },
-    stop(cnd("Internal tstoml error, unknown TOML node type: {type}."))
+    stop(ts_cnd("Internal tstoml error, unknown TOML node type: {type}."))
   )
 }
 

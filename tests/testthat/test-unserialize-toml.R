@@ -141,8 +141,7 @@ orange.color = "orange"
 test_that("integers", {
   expect_equal(
     unserialize_toml(
-      text = glue(
-        "
+      text = "
           int1 = +99
           int2 = 42
           int3 = 0
@@ -165,7 +164,6 @@ test_that("integers", {
           # binary with prefix `0b`
           bin1 = 0b11010110
     "
-      )
     ),
     list(
       int1 = 99L,
@@ -189,8 +187,7 @@ test_that("integers", {
 test_that("float", {
   expect_equal(
     unserialize_toml(
-      text = glue(
-        "
+      text = "
         # fractional
         flt1 = +1.0
         flt2 = 3.1415
@@ -216,7 +213,6 @@ test_that("float", {
         sf5 = +nan # same as `nan`
         sf6 = -nan # valid, actual encoding is implementation-specific
       "
-      )
     ),
     list(
       flt1 = 1.0,
@@ -251,14 +247,12 @@ test_that("boolean", {
 test_that("offset date-time", {
   expect_snapshot({
     unserialize_toml(
-      text = glue(
-        "
+      text = "
           odt1 = 1979-05-27T07:32:00Z
           odt2 = 1979-05-27T00:32:00-07:00
           odt3 = 1979-05-27T00:32:00.999999-07:00
           odt4 = 1979-05-27 07:32:00Z
         "
-      )
     )
   })
 })
@@ -266,12 +260,10 @@ test_that("offset date-time", {
 test_that("local date-time", {
   expect_snapshot({
     unserialize_toml(
-      text = glue(
-        "
+      text = "
           ldt1 = 1979-05-27T07:32:00
           ldt2 = 1979-05-27 07:32:00.999999
         "
-      )
     )
   })
 })
@@ -279,12 +271,10 @@ test_that("local date-time", {
 test_that("local date", {
   expect_snapshot({
     unserialize_toml(
-      text = glue(
-        "
+      text = "
           ld1 = 1979-05-27
           ld2 = 2000-01-01
         "
-      )
     )
   })
   expect_equal(
@@ -297,12 +287,10 @@ test_that("local time", {
   loadNamespace("hms")
   expect_snapshot({
     unserialize_toml(
-      text = glue(
-        "
+      text = "
           lt1 = 07:32:00
           lt2 = 00:32:00.999999
         "
-      )
     )
   })
   expect_equal(

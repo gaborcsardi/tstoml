@@ -18,7 +18,7 @@ update_selected <- function(toml, new, options = NULL) {
 
   types <- toml$type[select]
   if (any(!types %in% value_types)) {
-    stop(cnd(
+    stop(ts_cnd(
       "Can only update values ({collapse(value_types)})."
     ))
   }
@@ -62,7 +62,7 @@ update_selected <- function(toml, new, options = NULL) {
   text <- unlist(lapply(na_omit(parts), charToRaw))
 
   # TODO: update coordinates without reparsing
-  new <- load_toml(text = text)
+  new <- ts_parse_toml(text = text)
   attr(new, "file") <- attr(toml, "file")
 
   new

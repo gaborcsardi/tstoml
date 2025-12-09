@@ -1,5 +1,5 @@
 test_that("insert_into_document", {
-  toml <- load_toml(text = "")
+  toml <- ts_parse_toml(text = "")
   expect_snapshot({
     insert_into_selected(toml, key = "a", 1)
     insert_into_selected(toml, key = "b", "foobar")
@@ -20,19 +20,19 @@ test_that("insert_into_document", {
 })
 
 test_that("insert_into_document table", {
-  toml <- load_toml(text = "")
+  toml <- ts_parse_toml(text = "")
   expect_snapshot({
     insert_into_selected(toml, key = "table", list(a = 1, b = 2))
   })
 
-  toml2 <- load_toml(text = "a = 1\n\n[table]\nb = 2\n")
+  toml2 <- ts_parse_toml(text = "a = 1\n\n[table]\nb = 2\n")
   expect_snapshot({
     insert_into_selected(toml2, key = "table2", list(x = 10, y = 20))
   })
 })
 
 test_that("insert_into_document array of tables", {
-  toml <- load_toml(text = "")
+  toml <- ts_parse_toml(text = "")
   expect_snapshot({
     insert_into_selected(
       toml,
@@ -43,7 +43,7 @@ test_that("insert_into_document array of tables", {
 })
 
 test_that("insert_into_array", {
-  toml <- load_toml(text = "arr = []")
+  toml <- ts_parse_toml(text = "arr = []")
   expect_snapshot({
     toml |> select("arr") |> insert_into_selected(0)
     toml |> select("arr") |> insert_into_selected("foobar")
@@ -55,7 +55,7 @@ test_that("insert_into_array", {
       )
   })
 
-  toml2 <- load_toml(text = "arr = [1, 2, 3]")
+  toml2 <- ts_parse_toml(text = "arr = [1, 2, 3]")
   expect_snapshot({
     toml2 |> select("arr") |> insert_into_selected(100)
     toml2 |> select("arr") |> insert_into_selected(100, at = 0)
@@ -63,26 +63,26 @@ test_that("insert_into_array", {
     toml2 |> select("arr") |> insert_into_selected(100, at = Inf)
   })
 
-  toml3 <- load_toml(text = "arr = [0]")
+  toml3 <- ts_parse_toml(text = "arr = [0]")
   expect_snapshot({
     toml3 |> select("arr") |> insert_into_selected(100, at = 0)
     toml3 |> select("arr") |> insert_into_selected(100, at = 1)
   })
 
-  toml4 <- load_toml(text = "arr = [1,2]")
+  toml4 <- ts_parse_toml(text = "arr = [1,2]")
   expect_snapshot({
     toml4 |> select("arr") |> insert_into_selected(100, at = 0)
     toml4 |> select("arr") |> insert_into_selected(100, at = 1)
     toml4 |> select("arr") |> insert_into_selected(100, at = 2)
   })
 
-  toml5 <- load_toml(text = "arr = [0,]")
+  toml5 <- ts_parse_toml(text = "arr = [0,]")
   expect_snapshot({
     toml5 |> select("arr") |> insert_into_selected(100, at = 0)
     toml5 |> select("arr") |> insert_into_selected(100, at = 1)
   })
 
-  toml6 <- load_toml(text = "arr = [1,2,]")
+  toml6 <- ts_parse_toml(text = "arr = [1,2,]")
   expect_snapshot({
     toml6 |> select("arr") |> insert_into_selected(100, at = 0)
     toml6 |> select("arr") |> insert_into_selected(100, at = 1)
@@ -91,7 +91,7 @@ test_that("insert_into_array", {
 })
 
 test_that("insert_into_inline_table", {
-  toml <- load_toml(text = "it = {}")
+  toml <- ts_parse_toml(text = "it = {}")
   expect_snapshot({
     toml |> select("it") |> insert_into_selected(13, key = "a")
     toml |> select("it") |> insert_into_selected("foobar", key = "b")
@@ -104,7 +104,7 @@ test_that("insert_into_inline_table", {
       )
   })
 
-  toml2 <- load_toml(text = "it = {a = 1, b = 2}")
+  toml2 <- ts_parse_toml(text = "it = {a = 1, b = 2}")
   expect_snapshot({
     toml2 |> select("it") |> insert_into_selected(13, key = "c")
     toml2 |> select("it") |> insert_into_selected(13, key = "c", at = 0)
@@ -114,14 +114,14 @@ test_that("insert_into_inline_table", {
 })
 
 test_that("insert_into_table pair", {
-  toml <- load_toml(text = "[table]\na = 1\n\n[table2]\nc = 5\n")
+  toml <- ts_parse_toml(text = "[table]\na = 1\n\n[table2]\nc = 5\n")
   expect_snapshot({
     toml |> select("table") |> insert_into_selected(2, key = "b")
   })
 })
 
 test_that("insert_into_table table", {
-  toml <- load_toml(text = "[table]\na = 1\n\n[table2]\nc = 5\n")
+  toml <- ts_parse_toml(text = "[table]\na = 1\n\n[table2]\nc = 5\n")
   expect_snapshot({
     toml |>
       select("table") |>
@@ -131,7 +131,7 @@ test_that("insert_into_table table", {
 
 test_that("insert_into_table array of tables", {
   expect_snapshot({
-    toml <- load_toml(text = "[table]\na = 1\n\n[table2]\nc = 5\n")
+    toml <- ts_parse_toml(text = "[table]\na = 1\n\n[table2]\nc = 5\n")
     toml |>
       select("table") |>
       insert_into_selected(list(list(x = 10, y = 20), list(x = 5)), key = "aot")
@@ -140,7 +140,7 @@ test_that("insert_into_table array of tables", {
 
 test_that("insert_into_subtable", {
   expect_snapshot({
-    toml <- load_toml(text = "a.b.c = 1\n")
+    toml <- ts_parse_toml(text = "a.b.c = 1\n")
     toml |> select("a") |> insert_into_selected(100L, key = "x")
     toml |>
       select("a") |>
@@ -152,24 +152,24 @@ test_that("insert_into_subtable", {
   })
 
   expect_snapshot({
-    toml <- load_toml(text = "[a.b]\nc.d.e = 1\n")
+    toml <- ts_parse_toml(text = "[a.b]\nc.d.e = 1\n")
     toml |> select("a", "b", "c") |> insert_into_selected(100L, key = "x")
   })
 
   expect_snapshot({
-    toml <- load_toml(text = "[a.b]\nc.d.e = 1\n")
+    toml <- ts_parse_toml(text = "[a.b]\nc.d.e = 1\n")
     toml |> select("a") |> insert_into_selected(100L, key = "x")
   })
 
   expect_snapshot({
-    toml <- load_toml(text = "[[a.b]]\nc.d.e = 1\n")
+    toml <- ts_parse_toml(text = "[[a.b]]\nc.d.e = 1\n")
     toml |> select("a") |> insert_into_selected(100L, key = "x")
   })
 })
 
 test_that("insert_into_aot_element", {
   expect_snapshot({
-    toml <- load_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
+    toml <- ts_parse_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
     toml |> select("a", 1) |> insert_into_selected(key = "c", 100L)
     toml |> select("a", 2) |> insert_into_selected(key = "c", 100L)
     toml |> select("a", 1:2) |> insert_into_selected(key = "c", 100L)
@@ -187,13 +187,15 @@ test_that("insert_into_aot_element", {
 
 test_that("insert_into_aot", {
   expect_snapshot({
-    toml <- load_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
+    toml <- ts_parse_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
     toml |> select("a") |> insert_into_selected(list(b = 3), at = 0)
     toml |> select("a") |> insert_into_selected(list(b = 3), at = 1)
     toml |> select("a") |> insert_into_selected(list(b = 3))
   })
   expect_snapshot({
-    toml <- load_toml(text = "# prefix\n[[a]]\nb=1\n\n[[a]]\nb=2\n#postfix\n")
+    toml <- ts_parse_toml(
+      text = "# prefix\n[[a]]\nb=1\n\n[[a]]\nb=2\n#postfix\n"
+    )
     toml |> select("a") |> insert_into_selected(list(b = 3), at = 0)
     toml |> select("a") |> insert_into_selected(list(b = 3), at = 1)
     toml |> select("a") |> insert_into_selected(list(b = 3))

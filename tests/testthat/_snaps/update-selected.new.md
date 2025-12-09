@@ -1,11 +1,7 @@
 # update_selected errors
 
     Code
-      toml <- load_toml(text = toml_example_text())
-    Condition
-      Error in `load_toml()`:
-      ! could not find function "load_toml"
-    Code
+      toml <- ts_parse_toml(text = toml_example_text())
       update_selected(select(toml, "owner"), list(name = "new_name"))
     Condition
       Error in `get_selection()`:

@@ -54,10 +54,10 @@
     Output
       # toml (8 lines)
       1 | a = 1
-      2 | 
+      2 |
       3 | [table]
       4 | b = 2
-      5 | 
+      5 |
       6 | [table2]
       7 | x = 10.0
       8 | y = 20.0
@@ -72,7 +72,7 @@
       1 | [[array_of_tables]]
       2 | a = 1.0
       3 | b = 2.0
-      4 | 
+      4 |
       5 | [[array_of_tables]]
       6 | a = 3.0
 
@@ -241,7 +241,7 @@
       1 | [table]
       2 | a = 1
       3 | b = 2.0
-      4 | 
+      4 |
       5 | [table2]
       6 | c = 5
 
@@ -253,39 +253,39 @@
       # toml (9 lines)
       1 | [table]
       2 | a = 1
-      3 | 
+      3 |
       4 | [table.subtable]
       5 | x = 10.0
       6 | y = 20.0
-      7 | 
+      7 |
       8 | [table2]
       9 | c = 5
 
 # insert_into_table array of tables
 
     Code
-      toml <- load_toml(text = "[table]\na = 1\n\n[table2]\nc = 5\n")
+      toml <- ts_parse_toml(text = "[table]\na = 1\n\n[table2]\nc = 5\n")
       insert_into_selected(select(toml, "table"), list(list(x = 10, y = 20), list(x = 5)),
       key = "aot")
     Output
       # toml (12 lines)
        1 | [table]
        2 | a = 1
-       3 | 
+       3 |
        4 | [[table.aot]]
        5 | x = 10.0
        6 | y = 20.0
-       7 | 
+       7 |
        8 | [[table.aot]]
        9 | x = 5.0
-      10 | 
+      10 |
       11 | [table2]
       12 | c = 5
 
 # insert_into_subtable
 
     Code
-      toml <- load_toml(text = "a.b.c = 1\n")
+      toml <- ts_parse_toml(text = "a.b.c = 1\n")
       insert_into_selected(select(toml, "a"), 100L, key = "x")
     Output
       # toml (2 lines)
@@ -313,7 +313,7 @@
 ---
 
     Code
-      toml <- load_toml(text = "[a.b]\nc.d.e = 1\n")
+      toml <- ts_parse_toml(text = "[a.b]\nc.d.e = 1\n")
       insert_into_selected(select(toml, "a", "b", "c"), 100L, key = "x")
     Output
       # toml (3 lines)
@@ -324,7 +324,7 @@
 ---
 
     Code
-      toml <- load_toml(text = "[a.b]\nc.d.e = 1\n")
+      toml <- ts_parse_toml(text = "[a.b]\nc.d.e = 1\n")
       insert_into_selected(select(toml, "a"), 100L, key = "x")
     Output
       # toml (3 lines)
@@ -335,7 +335,7 @@
 ---
 
     Code
-      toml <- load_toml(text = "[[a.b]]\nc.d.e = 1\n")
+      toml <- ts_parse_toml(text = "[[a.b]]\nc.d.e = 1\n")
       insert_into_selected(select(toml, "a"), 100L, key = "x")
     Output
       # toml (3 lines)
@@ -346,14 +346,14 @@
 # insert_into_aot_element
 
     Code
-      toml <- load_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
+      toml <- ts_parse_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
       insert_into_selected(select(toml, "a", 1), key = "c", 100L)
     Output
       # toml (6 lines)
       1 | [[a]]
       2 | b=1
       3 | c = 100
-      4 | 
+      4 |
       5 | [[a]]
       6 | b=2
     Code
@@ -362,7 +362,7 @@
       # toml (6 lines)
       1 | [[a]]
       2 | b=1
-      3 | 
+      3 |
       4 | [[a]]
       5 | b=2
       6 | c = 100
@@ -373,7 +373,7 @@
       1 | [[a]]
       2 | b=1
       3 | c = 100
-      4 | 
+      4 |
       5 | [[a]]
       6 | b=2
       7 | c = 100
@@ -383,7 +383,7 @@
       # toml (6 lines)
       1 | [[a]]
       2 | b=1
-      3 | 
+      3 |
       4 | [[a]]
       5 | b=2
       6 | c = [ 1.0, 2.0, 3.0 ]
@@ -394,7 +394,7 @@
       # toml (6 lines)
       1 | [[a]]
       2 | b=1
-      3 | 
+      3 |
       4 | [[a]]
       5 | b=2
       6 | d = { x = 10.0, y = 20.0 }
@@ -402,16 +402,16 @@
 # insert_into_aot
 
     Code
-      toml <- load_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
+      toml <- ts_parse_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
       insert_into_selected(select(toml, "a"), list(b = 3), at = 0)
     Output
       # toml (8 lines)
       1 | [[a]]
       2 | b = 3.0
-      3 | 
+      3 |
       4 | [[a]]
       5 | b=1
-      6 | 
+      6 |
       7 | [[a]]
       8 | b=2
     Code
@@ -420,10 +420,10 @@
       # toml (8 lines)
       1 | [[a]]
       2 | b=1
-      3 | 
+      3 |
       4 | [[a]]
       5 | b = 3.0
-      6 | 
+      6 |
       7 | [[a]]
       8 | b=2
     Code
@@ -432,27 +432,27 @@
       # toml (8 lines)
       1 | [[a]]
       2 | b=1
-      3 | 
+      3 |
       4 | [[a]]
       5 | b=2
-      6 | 
+      6 |
       7 | [[a]]
       8 | b = 3.0
 
 ---
 
     Code
-      toml <- load_toml(text = "# prefix\n[[a]]\nb=1\n\n[[a]]\nb=2\n#postfix\n")
+      toml <- ts_parse_toml(text = "# prefix\n[[a]]\nb=1\n\n[[a]]\nb=2\n#postfix\n")
       insert_into_selected(select(toml, "a"), list(b = 3), at = 0)
     Output
       # toml (10 lines)
        1 | # prefix
        2 | [[a]]
        3 | b = 3.0
-       4 | 
+       4 |
        5 | [[a]]
        6 | b=1
-       7 | 
+       7 |
        8 | [[a]]
        9 | b=2
       10 | #postfix
@@ -463,10 +463,10 @@
        1 | # prefix
        2 | [[a]]
        3 | b=1
-       4 | 
+       4 |
        5 | [[a]]
        6 | b = 3.0
-       7 | 
+       7 |
        8 | [[a]]
        9 | b=2
       10 | #postfix
@@ -477,11 +477,11 @@
        1 | # prefix
        2 | [[a]]
        3 | b=1
-       4 | 
+       4 |
        5 | [[a]]
        6 | b=2
        7 | #postfix
-       8 | 
+       8 |
        9 | [[a]]
       10 | b = 3.0
 
