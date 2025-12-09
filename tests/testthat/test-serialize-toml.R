@@ -122,7 +122,7 @@ test_that("stl_inline", {
 
 test_that("serialize_toml_value", {
   expect_snapshot({
-    t <- structure(1763104922, class = c("POSIXct", "POSIXt"))
+    t <- structure(1763104922, class = c("POSIXct", "POSIXt"), tzone = "UTC")
     serialize_toml_value(t)
     serialize_toml_value(as.POSIXlt(t))
     serialize_toml_value(as.Date("2025-10-31"))

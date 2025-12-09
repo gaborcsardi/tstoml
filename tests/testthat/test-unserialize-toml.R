@@ -258,6 +258,7 @@ test_that("offset date-time", {
 })
 
 test_that("local date-time", {
+  withr::local_timezone("UTC")
   expect_snapshot({
     unserialize_toml(
       text = "
