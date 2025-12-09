@@ -20,7 +20,8 @@ Suggests:
     asciicast,
     hms,
     pillar,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    withr
 Remotes:
     gaborcsardi/ts
 Config/Needs/website:
