@@ -1,34 +1,43 @@
-insert_into_selected <- function(toml, new, key = NULL, at = Inf) {
-  select <- get_selected_nodes(toml)
+#' @export
+
+ts_tree_insert.ts_tree_toml <- function(
+  tree,
+  new,
+  key = NULL,
+  at = Inf,
+  options = NULL,
+  ...
+) {
+  select <- ts_tree_selected_nodes(tree)
 
   if (length(select) == 0) {
-    return(toml)
+    return(tree)
   }
 
   insertions <- lapply(select, function(sel1) {
-    dom_type <- toml$dom_type[sel1]
+    dom_type <- tree$dom_type[sel1]
     switch(
       dom_type,
       document = {
-        insert_into_document(toml, sel1, new, key = key)
+        insert_into_document(tree, sel1, new, key = key)
       },
       subtable = {
-        insert_into_subtable(toml, sel1, new, key = key)
+        insert_into_subtable(tree, sel1, new, key = key)
       },
       inline_table = {
-        insert_into_inline_table(toml, sel1, new, key = key, at = at)
+        insert_into_inline_table(tree, sel1, new, key = key, at = at)
       },
       table = {
-        insert_into_table(toml, sel1, new, key = key, at = at)
+        insert_into_table(tree, sel1, new, key = key, at = at)
       },
       array_of_tables = {
-        insert_into_aot(toml, sel1, new, at = at)
+        insert_into_aot(tree, sel1, new, at = at)
       },
       table_array_element = {
-        insert_into_aot_element(toml, sel1, new, key = key, at = at)
+        insert_into_aot_element(tree, sel1, new, key = key, at = at)
       },
       array = {
-        insert_into_array(toml, sel1, new, key = key, at = at)
+        insert_into_array(tree, sel1, new, key = key, at = at)
       },
       stop(ts_cnd("Cannot insert into a `{dom_type}` TOML element."))
     )
@@ -38,30 +47,30 @@ insert_into_selected <- function(toml, new, key = NULL, at = Inf) {
 
   for (ins in insertions) {
     if (!isFALSE(ins$leading_comma)) {
-      aft <- last_descendant(toml, ins$leading_comma)
-      toml$tws[aft] <- paste0(",", toml$tws[aft])
+      aft <- last_descendant(tree, ins$leading_comma)
+      tree$tws[aft] <- paste0(",", tree$tws[aft])
     }
 
-    aft <- last_descendant(toml, ins$after)
-    firstchld <- toml$children[[ins$select]][1]
+    aft <- last_descendant(tree, ins$after)
+    firstchld <- tree$children[[ins$select]][1]
     # mark first child for reformatting the whole array
     before_tws <- isTRUE(ins$before_trailing_ws)
-    toml$tws[firstchld] <- paste0(reformat_mark, toml$tws[firstchld])
-    toml$tws[aft] <- paste0(
-      if (!before_tws) toml$tws[aft],
+    tree$tws[firstchld] <- paste0(reformat_mark, tree$tws[firstchld])
+    tree$tws[aft] <- paste0(
+      if (!before_tws) tree$tws[aft],
       ins$code,
       if (ins$trailing_comma) ",",
-      if (before_tws) toml$tws[aft],
+      if (before_tws) tree$tws[aft],
       if (ins$trailing_newline) "\n"
     )
   }
 
-  parts <- c(rbind(toml$code, toml$tws))
+  parts <- c(rbind(tree$code, tree$tws))
   text <- unlist(lapply(na_omit(parts), charToRaw))
 
   # TODO: update coordinates without reparsing
   new <- ts_parse_toml(text = text)
-  attr(new, "file") <- attr(toml, "file")
+  attr(new, "file") <- attr(tree, "file")
 
   new
 }
