@@ -2,14 +2,15 @@
 #'
 #' Create TOML from an R object.
 #' Note that this function is not a generic serializer that can represent
-#' any R object in TOML. Also, you cannot expect that [unserialize_toml()]
-#' will do the exact inverse of [serialize_toml()].
+#' any R object in TOML. Also, you cannot expect that
+#' [ts_unserialize_toml()] will do the exact inverse of
+#' [ts_serialize_toml()].
 #'
 #  tstoml functions [update_selected()] and [insert_into_selected()] use
-# [serialize_toml()] to create new TOML code.
+# [ts_serialize_toml()] to create new TOML code.
 #'
 #' See the examples below on how to create all possible TOML elements with
-#' [serialize_toml()].
+#' [ts_serialize_toml()].
 #'
 #' @param obj R object to serialize.
 #' @param file If not `NULL` then the result if written to this file.
@@ -21,9 +22,14 @@
 #'   or vector (`collapse` = FALSE). If `file` is not `NULL` then nothing.
 #'
 #' @export
-#' @seealso [unserialize_toml()] for the opposite.
+#' @seealso [ts_unserialize_toml()] for the opposite.
 
-serialize_toml <- function(obj, file = NULL, collapse = FALSE, options = NULL) {
+ts_serialize_toml <- function(
+  obj,
+  file = NULL,
+  collapse = FALSE,
+  options = NULL
+) {
   lns <- stl_table(
     NULL,
     obj,
@@ -50,7 +56,7 @@ serialize_toml <- function(obj, file = NULL, collapse = FALSE, options = NULL) {
 }
 
 #' @export
-#' @rdname serialize_toml
+#' @rdname ts_serialize_toml
 #' @param ... Elements of the TOML table, array, inline table or array
 #'   of tables.
 #' @details Use `ts_toml_table()` to make a list to be serialized as a TOML
@@ -65,7 +71,7 @@ ts_toml_table <- function(...) {
 }
 
 #' @export
-#' @rdname serialize_toml
+#' @rdname ts_serialize_toml
 #' @details Use `ts_toml_inline_table()` to make a list to be serialized
 #'   as an inline TOML table. By default named lists are serialized as
 #'   regular TOML tables, if possible.
@@ -82,7 +88,7 @@ ts_toml_inline_table <- function(...) {
 }
 
 #' @export
-#' @rdname serialize_toml
+#' @rdname ts_serialize_toml
 #' @details Use `ts_toml_array()` to make a list to be serialized as a TOML
 #'   array. By default un-named lists are serialized as arrays, unless they
 #'   are lists of named lists (which are serialized as arrays of tables).
@@ -96,7 +102,7 @@ ts_toml_array <- function(...) {
 }
 
 #' @export
-#' @rdname serialize_toml
+#' @rdname ts_serialize_toml
 #' @details Use `ts_toml_array_of_tables()` to make a list to be serialized
 #'   as a TOML array of tables. It must a list of named lists. By default
 #'   lists of named lists are serialized as arrays of tables, so this is
@@ -213,7 +219,7 @@ stl_inline <- function(
 #'   [tstoml_options()].
 # '@export
 
-serialize_toml_value <- function(obj, options = NULL) {
+ts_serialize_toml_value <- function(obj, options = NULL) {
   stl_inline(obj, options = options)
 }
 

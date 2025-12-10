@@ -18,7 +18,7 @@
       [1] TRUE
       
     Code
-      writeLines(serialize_toml(tobj))
+      writeLines(ts_serialize_toml(tobj))
     Output
       e = true
       
@@ -44,7 +44,7 @@
       
       
     Code
-      writeLines(serialize_toml(tobj2))
+      writeLines(ts_serialize_toml(tobj2))
     Output
       [a]
       b = 1
@@ -55,7 +55,7 @@
 
     Code
       tbl <- list(tab = ts_toml_table(a = 1L, b = 2.5, c = "hello"))
-      writeLines(serialize_toml(tbl))
+      writeLines(ts_serialize_toml(tbl))
     Output
       [tab]
       a = 1
@@ -66,7 +66,7 @@
 
     Code
       tbl <- list(tab = ts_toml_inline_table(a = 1L, b = 2.5, c = "hello"))
-      writeLines(serialize_toml(tbl))
+      writeLines(ts_serialize_toml(tbl))
     Output
       tab = { a = 1, b = 2.5, c = "hello" }
 
@@ -82,7 +82,7 @@
 
     Code
       arr <- list(arr = ts_toml_array(1L, a = 2L, 3L, 4L))
-      writeLines(serialize_toml(arr))
+      writeLines(ts_serialize_toml(arr))
     Output
       arr = [ 1, 2, 3, 4 ]
 
@@ -91,7 +91,7 @@
     Code
       aot <- list(aot = ts_toml_array_of_tables(list(name = "Alice", age = 30L), list(
         name = "Bob", age = 25L)))
-      writeLines(serialize_toml(aot))
+      writeLines(ts_serialize_toml(aot))
     Output
       [[aot]]
       name = "Alice"
@@ -201,43 +201,43 @@
 
     Code
       t <- structure(1763104922, class = c("POSIXct", "POSIXt"), tzone = "UTC")
-      serialize_toml_value(t)
+      ts_serialize_toml_value(t)
     Output
       [1] "2025-11-14T07:22:02+00:00"
     Code
-      serialize_toml_value(as.POSIXlt(t))
+      ts_serialize_toml_value(as.POSIXlt(t))
     Output
       [1] "2025-11-14T07:22:02"
     Code
-      serialize_toml_value(as.Date("2025-10-31"))
+      ts_serialize_toml_value(as.Date("2025-10-31"))
     Output
       [1] "2025-10-31"
     Code
-      serialize_toml_value(hms::hms(12, 30, 15))
+      ts_serialize_toml_value(hms::hms(12, 30, 15))
     Output
       [1] "15:30:12.000000"
     Code
-      serialize_toml_value(list(a = 1, b = 2))
+      ts_serialize_toml_value(list(a = 1, b = 2))
     Output
       [1] "{ a = 1.0, b = 2.0 }"
     Code
-      serialize_toml_value(list(1, 2, 3))
+      ts_serialize_toml_value(list(1, 2, 3))
     Output
       [1] "[ 1.0, 2.0, 3.0 ]"
     Code
-      serialize_toml_value(3.14)
+      ts_serialize_toml_value(3.14)
     Output
       [1] "3.14"
     Code
-      serialize_toml_value("hello")
+      ts_serialize_toml_value("hello")
     Output
       [1] "\"hello\""
     Code
-      serialize_toml_value(42L)
+      ts_serialize_toml_value(42L)
     Output
       [1] "42"
     Code
-      serialize_toml_value(TRUE)
+      ts_serialize_toml_value(TRUE)
     Output
       [1] "true"
 
@@ -246,7 +246,7 @@
     Code
       aot <- list(people = list(list(name = "Alice", age = 30L), list(name = "Bob",
         age = 25L)))
-      writeLines(serialize_toml(aot))
+      writeLines(ts_serialize_toml(aot))
     Output
       [[people]]
       name = "Alice"
@@ -263,7 +263,7 @@
         dimensions = list(list(length = 7, width = 0.5, height = 0.25))), list(names = "Nail",
         sku = 284758393, color = "gray", dimensions = list(list(length = 0.5, width = 0.1,
           height = 0.1)))))
-      writeLines(serialize_toml(aot2))
+      writeLines(ts_serialize_toml(aot2))
     Output
       [[products]]
       names = "Hammer"
@@ -287,7 +287,7 @@
 # float
 
     Code
-      writeLines(serialize_toml(list(a = NaN, b = Inf, c = -Inf, d = 3.14)))
+      writeLines(ts_serialize_toml(list(a = NaN, b = Inf, c = -Inf, d = 3.14)))
     Output
       a = nan
       b = inf

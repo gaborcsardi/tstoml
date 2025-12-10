@@ -3,7 +3,7 @@
 #' @inheritParams ts_parse_toml
 #' @export
 
-unserialize_toml <- function(
+ts_unserialize_toml <- function(
   file = NULL,
   text = NULL,
   ranges = NULL,

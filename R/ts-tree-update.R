@@ -5,10 +5,10 @@
 #' selection, then nothing happens.
 #'
 #' @param tree A tstoml object
-#' @param new A R object to be converted to TOML using [serialize_toml_value()]
+#' @param new A R object to be converted to TOML using [ts_serialize_toml_value()]
 #'  and used as the new value.
 #' @param options A named list of `tstoml` options, see
-#'   [tstoml_options()]. Passed to [serialize_toml_value()].
+#'   [tstoml_options()]. Passed to [ts_serialize_toml_value()].
 #' @param ... Reserved for future use.
 #' @export
 
@@ -26,7 +26,7 @@ ts_tree_update.ts_tree_toml <- function(tree, new, options = NULL, ...) {
 
   fmt <- replicate(
     length(select),
-    serialize_toml_value(new, options = options),
+    ts_serialize_toml_value(new, options = options),
     simplify = FALSE
   )
 

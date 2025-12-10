@@ -1,7 +1,7 @@
 # quoted key UTF-8
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Output
       $`127.0.0.1`
       [1] "value"
@@ -22,7 +22,7 @@
 # dotted key
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Output
       $name
       [1] "Orange"
@@ -44,7 +44,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt2)
+      ts_unserialize_toml(text = txt2)
     Output
       $fruit
       $fruit$name
@@ -61,7 +61,7 @@
 # key errors
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Condition
       Error in `add_dom_pair()`:
       ! Duplicate key definition: name.
@@ -69,7 +69,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt2)
+      ts_unserialize_toml(text = txt2)
     Condition
       Error in `add_dom_pair()`:
       ! Duplicate key definition: spelling.
@@ -77,7 +77,7 @@
 # more keys
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Output
       $fruit
       $fruit$apple
@@ -93,7 +93,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Output
       $apple
       $apple$type
@@ -121,7 +121,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt2)
+      ts_unserialize_toml(text = txt2)
     Output
       $apple
       $apple$type
@@ -149,7 +149,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt3)
+      ts_unserialize_toml(text = txt3)
     Output
       $`3`
       $`3`$`14159`
@@ -160,7 +160,7 @@
 # key errors 2
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Condition
       Error in `check_sub_keys()`:
       ! Cannot define subtable under pair: fruit.apple.
@@ -168,7 +168,7 @@
 # offset date-time
 
     Code
-      unserialize_toml(text = "\n          odt1 = 1979-05-27T07:32:00Z\n          odt2 = 1979-05-27T00:32:00-07:00\n          odt3 = 1979-05-27T00:32:00.999999-07:00\n          odt4 = 1979-05-27 07:32:00Z\n        ")
+      ts_unserialize_toml(text = "\n          odt1 = 1979-05-27T07:32:00Z\n          odt2 = 1979-05-27T00:32:00-07:00\n          odt3 = 1979-05-27T00:32:00.999999-07:00\n          odt4 = 1979-05-27 07:32:00Z\n        ")
     Output
       $odt1
       [1] "1979-05-27 07:32:00 UTC"
@@ -186,7 +186,7 @@
 # local date-time
 
     Code
-      unserialize_toml(text = "\n          ldt1 = 1979-05-27T07:32:00\n          ldt2 = 1979-05-27 07:32:00.999999\n        ")
+      ts_unserialize_toml(text = "\n          ldt1 = 1979-05-27T07:32:00\n          ldt2 = 1979-05-27 07:32:00.999999\n        ")
     Output
       $ldt1
       [1] "1979-05-27 07:32:00 UTC"
@@ -198,7 +198,7 @@
 # local date
 
     Code
-      unserialize_toml(text = "\n          ld1 = 1979-05-27\n          ld2 = 2000-01-01\n        ")
+      ts_unserialize_toml(text = "\n          ld1 = 1979-05-27\n          ld2 = 2000-01-01\n        ")
     Output
       $ld1
       [1] "1979-05-27"
@@ -210,7 +210,7 @@
 # local time
 
     Code
-      unserialize_toml(text = "\n          lt1 = 07:32:00\n          lt2 = 00:32:00.999999\n        ")
+      ts_unserialize_toml(text = "\n          lt1 = 07:32:00\n          lt2 = 00:32:00.999999\n        ")
     Output
       $lt1
       07:32:00
@@ -224,7 +224,7 @@
     Code
       txt <- paste0("str = \"I'm a string. \\\"You can quote me\\\". ",
         "Name\\tJos\\u00E9\\nLocation\\tSF.\"")
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Output
       $str
       [1] "I'm a string. \"You can quote me\". Name\tJosé\nLocation\tSF."
@@ -234,7 +234,7 @@
 
     Code
       txt <- paste0("str = \"\"\"\n", "Roses are red\n", "Violets are blue\"\"\"\n")
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Output
       $str
       [1] "Roses are red\nViolets are blue"
@@ -243,7 +243,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Output
       $str1
       [1] "The quick brown fox jumps over the lazy dog."
@@ -258,7 +258,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt2)
+      ts_unserialize_toml(text = txt2)
     Output
       $str4
       [1] "Here are two quotation marks: \"\". Simple enough."
@@ -276,7 +276,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt3)
+      ts_unserialize_toml(text = txt3)
     Output
       $str
       [1] "single ' quotes work fine"
@@ -286,7 +286,7 @@
 
     Code
       txt <- "str = 'C:\\Users\\nodejs\\templates\\new'"
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Output
       $str
       [1] "C:\\Users\\nodejs\\templates\\new"
@@ -295,7 +295,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt2)
+      ts_unserialize_toml(text = txt2)
     Output
       $winpath
       [1] "C:\\Users\\nodejs\\templates"
@@ -313,7 +313,7 @@
 # multi-line literal string
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Output
       $regex2
       [1] "I [dw]on't need \\d{2} apples"
@@ -325,7 +325,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt2)
+      ts_unserialize_toml(text = txt2)
     Output
       $quot15
       [1] "Here are fifteen quotation marks: \"\"\"\"\"\"\"\"\"\"\"\"\"\"\""
@@ -340,7 +340,7 @@
 # array
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Output
       $integers
       $integers[[1]]
@@ -424,7 +424,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt2)
+      ts_unserialize_toml(text = txt2)
     Output
       $numbers
       $numbers[[1]]
@@ -466,7 +466,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt3)
+      ts_unserialize_toml(text = txt3)
     Output
       $integers2
       $integers2[[1]]
@@ -491,7 +491,7 @@
 # table
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Output
       $`table-1`
       $`table-1`$key1
@@ -513,7 +513,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt2)
+      ts_unserialize_toml(text = txt2)
     Output
       $dog
       $dog$tater.man
@@ -528,7 +528,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt4)
+      ts_unserialize_toml(text = txt4)
     Output
       $x
       $x$y
@@ -543,7 +543,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt5)
+      ts_unserialize_toml(text = txt5)
     Condition
       Error in `add_dom_table()`:
       ! Duplicate table definition: fruit.
@@ -551,7 +551,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt6)
+      ts_unserialize_toml(text = txt6)
     Condition
       Error in `add_dom_table()`:
       ! Cannot redefine array of tables as table: fruit.apple.
@@ -559,7 +559,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt7)
+      ts_unserialize_toml(text = txt7)
     Output
       $fruit
       $fruit$apple
@@ -576,7 +576,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt8)
+      ts_unserialize_toml(text = txt8)
     Output
       $fruit
       $fruit$apple
@@ -593,7 +593,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt9)
+      ts_unserialize_toml(text = txt9)
     Output
       $name
       [1] "Fido"
@@ -613,7 +613,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt10)
+      ts_unserialize_toml(text = txt10)
     Output
       $fruit
       $fruit$apple
@@ -631,7 +631,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt11)
+      ts_unserialize_toml(text = txt11)
     Output
       $fruit
       $fruit$apple
@@ -654,7 +654,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt12)
+      ts_unserialize_toml(text = txt12)
     Output
       $fruit
       $fruit$apple
@@ -672,7 +672,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt13)
+      ts_unserialize_toml(text = txt13)
     Output
       $fruit
       $fruit$apple
@@ -690,7 +690,7 @@
 # table, UTF-8
 
     Code
-      unserialize_toml(text = txt3)
+      ts_unserialize_toml(text = txt3)
     Output
       $a
       $a$b
@@ -724,7 +724,7 @@
 # inline table
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Output
       $name
       $name$first
@@ -753,7 +753,7 @@
 # inline tables are self-contained
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Condition
       Error in `check_sub_keys()`:
       ! Cannot define subtable under pair: product.type.
@@ -761,7 +761,7 @@
 # inline tables are consistent
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Condition
       Error in `check_keys()`:
       ! Cannot define subtable under pair in inline table: b.
@@ -769,7 +769,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt2)
+      ts_unserialize_toml(text = txt2)
     Condition
       Error in `check_inline_table()`:
       ! Duplicate key definition in inline table: x.
@@ -777,7 +777,7 @@
 # inline tables cannot add keys or sub-tables to an existing table
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Condition
       Error in `add_dom_pair()`:
       ! Duplicate key definition: type.
@@ -785,7 +785,7 @@
 # array of tables
 
     Code
-      unserialize_toml(text = txt)
+      ts_unserialize_toml(text = txt)
     Output
       $products
       $products[[1]]
@@ -815,7 +815,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt2)
+      ts_unserialize_toml(text = txt2)
     Output
       $fruits
       $fruits[[1]]
@@ -860,7 +860,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt3)
+      ts_unserialize_toml(text = txt3)
     Condition
       Error in `add_dom_table_array_element()`:
       ! Cannot redefine table as array of tables: fruit.
@@ -868,7 +868,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt4)
+      ts_unserialize_toml(text = txt4)
     Condition
       Error in `add_dom_table_array_element()`:
       ! Cannot redefine table as array of tables: fruits.
@@ -876,7 +876,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt5)
+      ts_unserialize_toml(text = txt5)
     Condition
       Error in `add_dom_table()`:
       ! Cannot redefine array of tables as table: fruits.varieties.
@@ -884,7 +884,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt6)
+      ts_unserialize_toml(text = txt6)
     Condition
       Error in `add_dom_table_array_element()`:
       ! Cannot redefine table as array of tables: fruits.physical.
@@ -892,7 +892,7 @@
 ---
 
     Code
-      unserialize_toml(text = txt7)
+      ts_unserialize_toml(text = txt7)
     Output
       $points
       $points[[1]]
