@@ -49,9 +49,6 @@ unserialize_element <- function(tree, id) {
     table_array_element = {
       unserialize_array(tree, id)
     },
-    pair = {
-      unserialize_pair(tree, id)
-    },
     integer = {
       unserialize_integer(tree, id)
     },
@@ -91,11 +88,6 @@ unserialize_element <- function(tree, id) {
     stop("Unsupported token type: ", tree$type[id])
   )
   elt
-}
-
-unserialize_pair <- function(tree, id) {
-  stopifnot(tree$type[id] == "pair")
-  unserialize_element(tree, tree$dom_children[[id]])
 }
 
 unserialize_key <- function(tree, id) {
