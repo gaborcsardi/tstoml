@@ -238,6 +238,7 @@ add_dom <- function(tab) {
     for (cx in seq_along(children)) {
       el <- children[cx]
       tab$dom_parent[el] <- i
+      if (is.na(tab$dom_type[el])) tab$dom_type[el] <- "value"
     }
   }
 
