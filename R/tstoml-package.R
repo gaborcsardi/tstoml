@@ -10,7 +10,7 @@ NULL
 NULL
 
 #' @name quickstart
-#' @title tsjson quickstart
+#' @title tstoml quickstart
 #' @details
 #'
 #' ```{r, child = "tools/man/quickstart.Rmd"}

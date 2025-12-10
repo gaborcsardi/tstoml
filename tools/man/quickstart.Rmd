@@ -44,32 +44,32 @@ Pretty print a tstoml object:
 toml
 ```
 
-### Select elements in a tsjson object
+### Select elements in a tstoml object
 
 ```{asciicast}
 #| label: select-table
-select(toml, "owner")
+ts_tree_select(toml, "owner")
 ```
 
 Select element(s) inside elements:
 
 ```{asciicast}
 #| label: select-select
-select(toml, "owner", "name")
+ts_tree_select(toml, "owner", "name")
 ```
 
 Select element(s) of an array:
 
 ```{asciicast}
 #| label: select-array
-select(toml, "database", "ports", 1:2)
+ts_tree_select(toml, "database", "ports", 1:2)
 ```
 
 Select multiple keys from a table:
 
 ```{asciicast}
 #| label: select-multiple
-select(toml, "owner", c("name", "dob"))
+ts_tree_select(toml, "owner", c("name", "dob"))
 ```
 
 ### Delete elements
