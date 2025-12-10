@@ -1,11 +1,3 @@
-`%||%` <- function(l, r) {
-  if (is.null(l)) {
-    r
-  } else {
-    l
-  }
-}
-
 named_list <- function(n = 0) {
   structure(vector("list", n), names = character(n))
 }
@@ -26,26 +18,14 @@ na_omit <- function(x) {
   x[!is.na(x)]
 }
 
-middle <- function(x) {
-  if (length(x) <= 2) {
-    x[numeric()]
-  } else {
-    x[-c(1, length(x))]
-  }
-}
-
-max_or_na <- function(x) {
+max_or_na <- function(x, na.rm = FALSE) {
   if (length(x)) {
-    max(x)
+    max(x, na.rm = na.rm)
   } else if (is.integer(x)) {
     NA_integer_
   } else {
     NA_real_
   }
-}
-
-mkdirp <- function(x) {
-  dir.create(x, showWarnings = FALSE, recursive = TRUE)
 }
 
 is_named <- function(x) {

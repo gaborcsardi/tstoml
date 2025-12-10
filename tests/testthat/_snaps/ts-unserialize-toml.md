@@ -930,3 +930,51 @@
       
       
 
+# unserialize_key
+
+    Code
+      tree <- ts_tree_new(language = ts_language_toml(), text = "\n        k1 = 1\n        \"k2\" = 2\n        \"k 3\" = 3\n        'k \"4\"' = 4\n        d.otted.key = 5\n      ")
+      ts_tree_unserialize(tree)
+    Output
+      [[1]]
+      [[1]]$k1
+      [1] 1
+      
+      [[1]]$k2
+      [1] 2
+      
+      [[1]]$`k 3`
+      [1] 3
+      
+      [[1]]$`k "4"`
+      [1] 4
+      
+      [[1]]$d
+      [[1]]$d$otted
+      [[1]]$d$otted$key
+      [1] 5
+      
+      
+      
+      
+    Code
+      unserialize_key(tree, which(tree$type == "bare_key")[1])
+    Output
+      [1] "k1"
+    Code
+      unserialize_key(tree, which(tree$type == "quoted_key")[1])
+    Output
+      [1] "k2"
+    Code
+      unserialize_key(tree, which(tree$type == "quoted_key")[2])
+    Output
+      [1] "k 3"
+    Code
+      unserialize_key(tree, which(tree$type == "quoted_key")[3])
+    Output
+      [1] "k \"4\""
+    Code
+      unserialize_key(tree, which(tree$type == "dotted_key")[1])
+    Output
+      [1] "d"     "otted" "key"  
+

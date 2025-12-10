@@ -776,3 +776,25 @@ color = "green"
     ts_unserialize_toml(text = txt7)
   })
 })
+
+test_that("unserialize_key", {
+  expect_snapshot({
+    tree <- ts_tree_new(
+      language = ts_language_toml(),
+      text = '
+        k1 = 1
+        "k2" = 2
+        "k 3" = 3
+        \'k "4"\' = 4
+        d.otted.key = 5
+      '
+    )
+    tree |> ts_tree_unserialize()
+
+    unserialize_key(tree, which(tree$type == "bare_key")[1])
+    unserialize_key(tree, which(tree$type == "quoted_key")[1])
+    unserialize_key(tree, which(tree$type == "quoted_key")[2])
+    unserialize_key(tree, which(tree$type == "quoted_key")[3])
+    unserialize_key(tree, which(tree$type == "dotted_key")[1])
+  })
+})
