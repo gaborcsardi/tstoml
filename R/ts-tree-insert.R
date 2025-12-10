@@ -142,7 +142,7 @@ insert_into_document_pair <- function(toml, sel1, new, key) {
     },
     key,
     " = ",
-    paste0(serialize_toml_value(new), collapse = "\n")
+    paste0(ts_serialize_toml_value(new), collapse = "\n")
   )
 
   list(
@@ -160,7 +160,10 @@ insert_into_document_table <- function(toml, sel1, new, key) {
     if (nrow(toml) > 1) {
       "\n"
     },
-    paste0(serialize_toml(structure(list(new), names = key)), collapse = "\n")
+    paste0(
+      ts_serialize_toml(structure(list(new), names = key)),
+      collapse = "\n"
+    )
   )
   list(
     select = sel1,
@@ -177,7 +180,10 @@ insert_into_document_aot <- function(toml, sel1, new, key) {
     if (nrow(toml) > 1) {
       "\n"
     },
-    paste0(serialize_toml(structure(list(new), names = key)), collapse = "\n")
+    paste0(
+      ts_serialize_toml(structure(list(new), names = key)),
+      collapse = "\n"
+    )
   )
   list(
     select = sel1,
@@ -250,7 +256,7 @@ insert_into_subtable <- function(toml, sel1, new, key = key) {
     if (after != 1L) "\n",
     ts_toml_key(newkey),
     " = ",
-    paste0(serialize_toml_value(new), collapse = "\n")
+    paste0(ts_serialize_toml_value(new), collapse = "\n")
   )
 
   list(
@@ -322,7 +328,7 @@ insert_into_inline_table <- function(toml, sel1, new, key = key, at = at) {
     }
   }
 
-  code <- paste0(key, "=", serialize_toml_value(new))
+  code <- paste0(key, "=", ts_serialize_toml_value(new))
 
   add_leading_comma <- at >= nchdn && nchdn > 0
   add_trailing_comma <- (at < nchdn && nchdn > 0)
@@ -389,7 +395,7 @@ insert_into_table_pair <- function(toml, sel1, new, key) {
     "\n",
     key,
     " = ",
-    paste0(serialize_toml_value(new), collapse = "\n")
+    paste0(ts_serialize_toml_value(new), collapse = "\n")
   )
   list(
     select = sel1,
@@ -416,7 +422,7 @@ insert_into_table_table <- function(toml, sel1, new, key) {
   code <- paste0(
     "\n\n",
     paste0(
-      serialize_toml(structure(list(new), names = newkey)),
+      ts_serialize_toml(structure(list(new), names = newkey)),
       collapse = "\n"
     )
   )
@@ -444,7 +450,7 @@ insert_into_table_aot <- function(toml, sel1, new, key) {
   code <- paste0(
     "\n\n",
     paste0(
-      serialize_toml(structure(list(new), names = newkey)),
+      ts_serialize_toml(structure(list(new), names = newkey)),
       collapse = "\n"
     )
   )
@@ -556,7 +562,7 @@ insert_into_array <- function(toml, sel1, new, key = key, at = at) {
   list(
     select = sel1,
     after = chdn[after],
-    code = serialize_toml_value(new),
+    code = ts_serialize_toml_value(new),
     # need a leading comma if inserting at the end into non-empty array
     leading_comma = if (add_leading_comma) chdn[after_comma] else FALSE,
     # need a trailing comma everywhere except at the end or in an empty array

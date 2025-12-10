@@ -9,11 +9,11 @@
 \arguments{
 \item{tree}{A tstoml object}
 
-\item{new}{A R object to be converted to TOML using \code{\link[=serialize_toml_value]{serialize_toml_value()}}
+\item{new}{A R object to be converted to TOML using \code{\link[=ts_serialize_toml_value]{ts_serialize_toml_value()}}
 and used as the new value.}
 
 \item{options}{A named list of \code{tstoml} options, see
-\code{\link[=tstoml_options]{tstoml_options()}}. Passed to \code{\link[=serialize_toml_value]{serialize_toml_value()}}.}
+\code{\link[=tstoml_options]{tstoml_options()}}. Passed to \code{\link[=ts_serialize_toml_value]{ts_serialize_toml_value()}}.}
 
 \item{...}{Reserved for future use.}
 }

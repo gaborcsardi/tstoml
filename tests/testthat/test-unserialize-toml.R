@@ -1,20 +1,20 @@
 test_that("unserialize_toml empty document", {
   expect_equal(
-    unserialize_toml(text = ""),
+    ts_unserialize_toml(text = ""),
     structure(list(), names = character())
   )
 })
 
 test_that("bare key", {
   expect_equal(
-    unserialize_toml(text = "key = 1"),
+    ts_unserialize_toml(text = "key = 1"),
     list(key = 1L)
   )
 })
 
 test_that("quoted key", {
   expect_equal(
-    unserialize_toml(text = '"key with spaces" = 2'),
+    ts_unserialize_toml(text = '"key with spaces" = 2'),
     list("key with spaces" = 2L)
   )
 })
@@ -31,7 +31,7 @@ test_that("quoted key UTF-8", {
 \'quoted "value"\' = "value"
 '
   expect_snapshot({
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 })
 
@@ -43,7 +43,7 @@ physical.shape = "round"
 site."google.com" = true
 '
   expect_snapshot({
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
   txt2 <-
     'fruit.name = "banana"     # this is best practice
@@ -51,7 +51,7 @@ fruit. color = "yellow"    # same as fruit.color
 fruit . flavor = "banana"   # same as fruit.flavor
   '
   expect_snapshot({
-    unserialize_toml(text = txt2)
+    ts_unserialize_toml(text = txt2)
   })
 })
 
@@ -62,7 +62,7 @@ name = "Tom"
 name = "Pradyun"
 '
   expect_snapshot(error = TRUE, {
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 
   txt2 <-
@@ -71,7 +71,7 @@ spelling = "favorite"
 "spelling" = "favourite"
 '
   expect_snapshot(error = TRUE, {
-    unserialize_toml(text = txt2)
+    ts_unserialize_toml(text = txt2)
   })
 })
 
@@ -84,7 +84,7 @@ fruit.apple.smooth = true
 fruit.orange = 2
 '
   expect_snapshot({
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 })
 
@@ -100,7 +100,7 @@ fruit.apple = 1
 fruit.apple.smooth = true
 '
   expect_snapshot(error = TRUE, {
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 })
 
@@ -118,7 +118,7 @@ apple.color = "red"
 orange.color = "orange"
 '
   expect_snapshot({
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 
   txt2 <-
@@ -133,20 +133,20 @@ orange.skin = "thick"
 orange.color = "orange"
 '
   expect_snapshot({
-    unserialize_toml(text = txt2)
+    ts_unserialize_toml(text = txt2)
   })
 
   txt3 <-
     '3.14159 = "pi"
 '
   expect_snapshot({
-    unserialize_toml(text = txt3)
+    ts_unserialize_toml(text = txt3)
   })
 })
 
 test_that("integers", {
   expect_equal(
-    unserialize_toml(
+    ts_unserialize_toml(
       text = "
           int1 = +99
           int2 = 42
@@ -192,7 +192,7 @@ test_that("integers", {
 
 test_that("float", {
   expect_equal(
-    unserialize_toml(
+    ts_unserialize_toml(
       text = "
         # fractional
         flt1 = +1.0
@@ -241,18 +241,18 @@ test_that("float", {
 
 test_that("boolean", {
   expect_equal(
-    unserialize_toml(text = "key = true"),
+    ts_unserialize_toml(text = "key = true"),
     list(key = TRUE)
   )
   expect_equal(
-    unserialize_toml(text = "key = false"),
+    ts_unserialize_toml(text = "key = false"),
     list(key = FALSE)
   )
 })
 
 test_that("offset date-time", {
   expect_snapshot({
-    unserialize_toml(
+    ts_unserialize_toml(
       text = "
           odt1 = 1979-05-27T07:32:00Z
           odt2 = 1979-05-27T00:32:00-07:00
@@ -266,7 +266,7 @@ test_that("offset date-time", {
 test_that("local date-time", {
   withr::local_timezone("UTC")
   expect_snapshot({
-    unserialize_toml(
+    ts_unserialize_toml(
       text = "
           ldt1 = 1979-05-27T07:32:00
           ldt2 = 1979-05-27 07:32:00.999999
@@ -277,7 +277,7 @@ test_that("local date-time", {
 
 test_that("local date", {
   expect_snapshot({
-    unserialize_toml(
+    ts_unserialize_toml(
       text = "
           ld1 = 1979-05-27
           ld2 = 2000-01-01
@@ -285,7 +285,7 @@ test_that("local date", {
     )
   })
   expect_equal(
-    class(unserialize_toml(text = "ld1 = 1979-05-27")$ld1),
+    class(ts_unserialize_toml(text = "ld1 = 1979-05-27")$ld1),
     "Date"
   )
 })
@@ -293,7 +293,7 @@ test_that("local date", {
 test_that("local time", {
   loadNamespace("hms")
   expect_snapshot({
-    unserialize_toml(
+    ts_unserialize_toml(
       text = "
           lt1 = 07:32:00
           lt2 = 00:32:00.999999
@@ -301,7 +301,7 @@ test_that("local time", {
     )
   })
   expect_equal(
-    class(unserialize_toml(text = "lt1 = 07:32:00")$lt1),
+    class(ts_unserialize_toml(text = "lt1 = 07:32:00")$lt1),
     c("hms", "difftime")
   )
 })
@@ -315,7 +315,7 @@ test_that("basic string", {
       'str = "I\'m a string. \\"You can quote me\\". ',
       'Name\\tJos\\u00E9\\nLocation\\tSF."'
     )
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 })
 
@@ -326,7 +326,7 @@ test_that("multi-line basic string", {
       'Roses are red\n',
       'Violets are blue"""\n'
     )
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 
   txt <-
@@ -347,7 +347,7 @@ str3 = """\\
        """
 '
   expect_snapshot({
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 
   txt2 <-
@@ -360,19 +360,19 @@ str6 = """Here are fifteen quotation marks: ""\\"""\\"""\\"""\\"""\\"."""
 str7 = """"This," she said, "is just a pointless statement.""""
 '
   expect_snapshot({
-    unserialize_toml(text = txt2)
+    ts_unserialize_toml(text = txt2)
   })
 
   txt3 <- 'str = """single \' quotes work fine"""'
   expect_snapshot({
-    unserialize_toml(text = txt3)
+    ts_unserialize_toml(text = txt3)
   })
 })
 
 test_that("literal string", {
   expect_snapshot({
     txt <- "str = 'C:\\Users\\nodejs\\templates\\new'"
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
   txt2 <-
     '# What you see is what you get.
@@ -382,7 +382,7 @@ quoted   = \'Tom "Dubs" Preston-Werner\'
 regex    = \'<\\i\\c*\\s*>\'
 '
   expect_snapshot({
-    unserialize_toml(text = txt2)
+    ts_unserialize_toml(text = txt2)
   })
 })
 
@@ -397,7 +397,7 @@ trimmed in raw strings.
 \'\'\'
 '
   expect_snapshot({
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 
   txt2 <-
@@ -410,7 +410,7 @@ apos15 = "Here are fifteen apostrophes: \'\'\'\'\'\'\'\'\'\'\'\'\'\'\'"
 str = \'\'\'\'That,\' she said, \'is still pointless.\'\'\'\'
 '
   expect_snapshot({
-    unserialize_toml(text = txt2)
+    ts_unserialize_toml(text = txt2)
   })
 })
 
@@ -423,7 +423,7 @@ nested_mixed_array = [ [ 1, 2 ], ["a", "b", "c"] ]
 string_array = [ "all", \'strings\', """are the same""", \'\'\'type\'\'\' ]
 '
   expect_snapshot({
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 
   txt2 <-
@@ -435,7 +435,7 @@ contributors = [
 ]
 '
   expect_snapshot({
-    unserialize_toml(text = txt2)
+    ts_unserialize_toml(text = txt2)
   })
 
   txt3 <-
@@ -449,13 +449,13 @@ integers3 = [
 ]
 '
   expect_snapshot({
-    unserialize_toml(text = txt3)
+    ts_unserialize_toml(text = txt3)
   })
 })
 
 test_that("table", {
   expect_equal(
-    unserialize_toml(text = "[table]"),
+    ts_unserialize_toml(text = "[table]"),
     list(table = structure(list(), names = character()))
   )
   txt <-
@@ -468,7 +468,7 @@ key1 = "another string"
 key2 = 456
 '
   expect_snapshot({
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 
   txt2 <-
@@ -476,7 +476,7 @@ key2 = 456
 type.name = "pug"
 '
   expect_snapshot({
-    unserialize_toml(text = txt2)
+    ts_unserialize_toml(text = txt2)
   })
 
   txt4 <-
@@ -488,7 +488,7 @@ type.name = "pug"
 [x] # defining a super-table afterward is ok
 '
   expect_snapshot({
-    unserialize_toml(text = txt4)
+    ts_unserialize_toml(text = txt4)
   })
 
   txt5 <-
@@ -501,7 +501,7 @@ apple = "red"
 orange = "orange"
 '
   expect_snapshot(error = TRUE, {
-    unserialize_toml(text = txt5)
+    ts_unserialize_toml(text = txt5)
   })
 
   txt6 <-
@@ -515,7 +515,7 @@ texture = "smooth"
 '
 
   expect_snapshot(error = TRUE, {
-    unserialize_toml(text = txt6)
+    ts_unserialize_toml(text = txt6)
   })
 
   txt7 <-
@@ -525,7 +525,7 @@ texture = "smooth"
 [fruit.orange]
 '
   expect_snapshot({
-    unserialize_toml(text = txt7)
+    ts_unserialize_toml(text = txt7)
   })
 
   txt8 <-
@@ -535,7 +535,7 @@ texture = "smooth"
 [animal]
 '
   expect_snapshot({
-    unserialize_toml(text = txt8)
+    ts_unserialize_toml(text = txt8)
   })
 
   txt9 <-
@@ -549,7 +549,7 @@ name = "Regina Dogman"
 member_since = 1999-08-04
 '
   expect_snapshot({
-    unserialize_toml(text = txt9)
+    ts_unserialize_toml(text = txt9)
   })
 
   txt10 <-
@@ -562,7 +562,7 @@ fruit.apple.taste.sweet = true
 # fruit and fruit.apple were already created
 '
   expect_snapshot({
-    unserialize_toml(text = txt10)
+    ts_unserialize_toml(text = txt10)
   })
 
   txt11 <-
@@ -577,7 +577,7 @@ apple.taste.sweet = true
 smooth = true
 '
   expect_snapshot({
-    unserialize_toml(text = txt11)
+    ts_unserialize_toml(text = txt11)
   })
 
   txt12 <-
@@ -589,7 +589,7 @@ apple.taste.sweet = true
 '
 
   expect_snapshot({
-    unserialize_toml(text = txt12)
+    ts_unserialize_toml(text = txt12)
   })
 
   txt13 <-
@@ -601,7 +601,7 @@ apple.taste.sweet = true
 [fruit.apple.taste]  # INVALID
 '
   expect_snapshot({
-    unserialize_toml(text = txt13)
+    ts_unserialize_toml(text = txt13)
   })
 })
 
@@ -616,7 +616,7 @@ test_that("table, UTF-8", {
 [ j . "ʞ" . \'l\' ]  # same as [j."ʞ".\'l\']
 '
   expect_snapshot({
-    unserialize_toml(text = txt3)
+    ts_unserialize_toml(text = txt3)
   })
 })
 
@@ -627,7 +627,7 @@ point = { x = 1, y = 2 }
 animal = { type.name = "pug" }
 '
   expect_snapshot({
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 })
 
@@ -638,7 +638,7 @@ type = { name = "Nail" }
 type.edible = false  # INVALID
 '
   expect_snapshot(error = TRUE, {
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 })
 
@@ -648,7 +648,7 @@ a = { b = 1, b.b = 2 }  # INVALID
 '
 
   expect_snapshot(error = TRUE, {
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 
   txt2 <- '
@@ -656,7 +656,7 @@ a = { a = { a = { x.x = 2, x = 1 } } }  # INVALID
   '
 
   expect_snapshot(error = TRUE, {
-    unserialize_toml(text = txt2)
+    ts_unserialize_toml(text = txt2)
   })
 })
 
@@ -667,7 +667,7 @@ type.name = "Nail"
 type = { edible = false }  # INVALID
 '
   expect_snapshot(error = TRUE, {
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 })
 
@@ -686,7 +686,7 @@ sku = 284758393
 color = "gray"
 '
   expect_snapshot({
-    unserialize_toml(text = txt)
+    ts_unserialize_toml(text = txt)
   })
 
   txt2 <-
@@ -711,7 +711,7 @@ name = "banana"
 name = "plantain"
 '
   expect_snapshot({
-    unserialize_toml(text = txt2)
+    ts_unserialize_toml(text = txt2)
   })
 
   txt3 <-
@@ -725,7 +725,7 @@ shape = "round"
 name = "apple"
 '
   expect_snapshot(error = TRUE, {
-    unserialize_toml(text = txt3)
+    ts_unserialize_toml(text = txt3)
   })
 
   txt4 <-
@@ -735,7 +735,7 @@ fruits = []
 [[fruits]] # Not allowed
 '
   expect_snapshot(error = TRUE, {
-    unserialize_toml(text = txt4)
+    ts_unserialize_toml(text = txt4)
   })
 
   txt5 <-
@@ -751,7 +751,7 @@ name = "red delicious"
 name = "granny smith"
 '
   expect_snapshot(error = TRUE, {
-    unserialize_toml(text = txt5)
+    ts_unserialize_toml(text = txt5)
   })
 
   txt6 <-
@@ -764,7 +764,7 @@ shape = "round"
 color = "green"
 '
   expect_snapshot(error = TRUE, {
-    unserialize_toml(text = txt6)
+    ts_unserialize_toml(text = txt6)
   })
 
   txt7 <-
@@ -773,6 +773,6 @@ color = "green"
            { x = 2, y = 4, z = 8 } ]
 '
   expect_snapshot({
-    unserialize_toml(text = txt7)
+    ts_unserialize_toml(text = txt7)
   })
 })
