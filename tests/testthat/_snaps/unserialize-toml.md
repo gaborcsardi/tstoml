@@ -1,4 +1,4 @@
-# quoted key
+# quoted key UTF-8
 
     Code
       unserialize_toml(text = txt)
@@ -528,40 +528,6 @@
 ---
 
     Code
-      unserialize_toml(text = txt3)
-    Output
-      $a
-      $a$b
-      $a$b$c
-      named list()
-      
-      
-      
-      $d
-      $d$e
-      $d$e$f
-      named list()
-      
-      
-      
-      $g
-      $g$h
-      $g$h$i
-      named list()
-      
-      
-      
-      $j
-      $j$ʞ
-      $j$ʞ$l
-      named list()
-      
-      
-      
-
----
-
-    Code
       unserialize_toml(text = txt4)
     Output
       $x
@@ -717,6 +683,40 @@
       $fruit$apple$taste$sweet
       [1] TRUE
       
+      
+      
+      
+
+# table, UTF-8
+
+    Code
+      unserialize_toml(text = txt3)
+    Output
+      $a
+      $a$b
+      $a$b$c
+      named list()
+      
+      
+      
+      $d
+      $d$e
+      $d$e$f
+      named list()
+      
+      
+      
+      $g
+      $g$h
+      $g$h$i
+      named list()
+      
+      
+      
+      $j
+      $j$ʞ
+      $j$ʞ$l
+      named list()
       
       
       

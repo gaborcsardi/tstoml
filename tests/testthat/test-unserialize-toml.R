@@ -17,6 +17,12 @@ test_that("quoted key", {
     unserialize_toml(text = '"key with spaces" = 2'),
     list("key with spaces" = 2L)
   )
+})
+
+test_that("quoted key UTF-8", {
+  if (!l10n_info()[["UTF-8"]]) {
+    skip("Not UTF-8")
+  }
   txt <-
     '"127.0.0.1" = "value"
 "character encoding" = "value"
@@ -301,6 +307,9 @@ test_that("local time", {
 })
 
 test_that("basic string", {
+  if (!l10n_info()[["UTF-8"]]) {
+    skip("Not UTF-8")
+  }
   expect_snapshot({
     txt <- paste0(
       'str = "I\'m a string. \\"You can quote me\\". ',
@@ -470,16 +479,6 @@ type.name = "pug"
     unserialize_toml(text = txt2)
   })
 
-  txt3 <-
-    '[a.b.c]            # this is best practice
-[ d.e.f ]          # same as [d.e.f]
-[ g .  h  . i ]    # same as [g.h.i]
-[ j . "ʞ" . \'l\' ]  # same as [j."ʞ".\'l\']
-'
-  expect_snapshot({
-    unserialize_toml(text = txt3)
-  })
-
   txt4 <-
     '# [x] you
 # [x.y] don\'t
@@ -603,6 +602,21 @@ apple.taste.sweet = true
 '
   expect_snapshot({
     unserialize_toml(text = txt13)
+  })
+})
+
+test_that("table, UTF-8", {
+  if (!l10n_info()[["UTF-8"]]) {
+    skip("Not UTF-8")
+  }
+  txt3 <-
+    '[a.b.c]            # this is best practice
+[ d.e.f ]          # same as [d.e.f]
+[ g .  h  . i ]    # same as [g.h.i]
+[ j . "ʞ" . \'l\' ]  # same as [j."ʞ".\'l\']
+'
+  expect_snapshot({
+    unserialize_toml(text = txt3)
   })
 })
 
