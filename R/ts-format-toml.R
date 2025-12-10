@@ -32,7 +32,7 @@ format_toml <- function(
 #'
 #' @export
 
-ts_tree_format.ts_tree_jsonc <- function(
+ts_tree_format.ts_tree_toml <- function(
   tree,
   options = NULL,
   ...
