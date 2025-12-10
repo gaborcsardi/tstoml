@@ -6,16 +6,16 @@
 <url><loc>/index.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/quickstart.html</loc></url>
-<url><loc>/reference/serialize_toml.html</loc></url>
-<url><loc>/reference/serialize_toml_value.html</loc></url>
 <url><loc>/reference/toml_example_text.html</loc></url>
 <url><loc>/reference/ts_language_toml.html</loc></url>
 <url><loc>/reference/ts_parse_toml.html</loc></url>
+<url><loc>/reference/ts_serialize_toml.html</loc></url>
+<url><loc>/reference/ts_serialize_toml_value.html</loc></url>
 <url><loc>/reference/ts_tree_delete.ts_tree_toml.html</loc></url>
 <url><loc>/reference/ts_tree_format.ts_tree_toml.html</loc></url>
 <url><loc>/reference/ts_tree_update.ts_tree_toml.html</loc></url>
+<url><loc>/reference/ts_unserialize_toml.html</loc></url>
 <url><loc>/reference/tstoml-package.html</loc></url>
 <url><loc>/reference/tstoml_options.html</loc></url>
-<url><loc>/reference/unserialize_toml.html</loc></url>
 </urlset>
 
