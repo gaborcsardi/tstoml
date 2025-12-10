@@ -17,6 +17,12 @@ test_that("quoted key", {
     unserialize_toml(text = '"key with spaces" = 2'),
     list("key with spaces" = 2L)
   )
+})
+
+test_that("quoted key UTF-8", {
+  if (!l10n_info()[["UTF-8"]]) {
+    skip("Not UTF-8")
+  }
   txt <-
     '"127.0.0.1" = "value"
 "character encoding" = "value"
@@ -141,8 +147,7 @@ orange.color = "orange"
 test_that("integers", {
   expect_equal(
     unserialize_toml(
-      text = glue(
-        "
+      text = "
           int1 = +99
           int2 = 42
           int3 = 0
@@ -165,7 +170,6 @@ test_that("integers", {
           # binary with prefix `0b`
           bin1 = 0b11010110
     "
-      )
     ),
     list(
       int1 = 99L,
@@ -189,8 +193,7 @@ test_that("integers", {
 test_that("float", {
   expect_equal(
     unserialize_toml(
-      text = glue(
-        "
+      text = "
         # fractional
         flt1 = +1.0
         flt2 = 3.1415
@@ -216,7 +219,6 @@ test_that("float", {
         sf5 = +nan # same as `nan`
         sf6 = -nan # valid, actual encoding is implementation-specific
       "
-      )
     ),
     list(
       flt1 = 1.0,
@@ -251,27 +253,24 @@ test_that("boolean", {
 test_that("offset date-time", {
   expect_snapshot({
     unserialize_toml(
-      text = glue(
-        "
+      text = "
           odt1 = 1979-05-27T07:32:00Z
           odt2 = 1979-05-27T00:32:00-07:00
           odt3 = 1979-05-27T00:32:00.999999-07:00
           odt4 = 1979-05-27 07:32:00Z
         "
-      )
     )
   })
 })
 
 test_that("local date-time", {
+  withr::local_timezone("UTC")
   expect_snapshot({
     unserialize_toml(
-      text = glue(
-        "
+      text = "
           ldt1 = 1979-05-27T07:32:00
           ldt2 = 1979-05-27 07:32:00.999999
         "
-      )
     )
   })
 })
@@ -279,12 +278,10 @@ test_that("local date-time", {
 test_that("local date", {
   expect_snapshot({
     unserialize_toml(
-      text = glue(
-        "
+      text = "
           ld1 = 1979-05-27
           ld2 = 2000-01-01
         "
-      )
     )
   })
   expect_equal(
@@ -297,12 +294,10 @@ test_that("local time", {
   loadNamespace("hms")
   expect_snapshot({
     unserialize_toml(
-      text = glue(
-        "
+      text = "
           lt1 = 07:32:00
           lt2 = 00:32:00.999999
         "
-      )
     )
   })
   expect_equal(
@@ -312,6 +307,9 @@ test_that("local time", {
 })
 
 test_that("basic string", {
+  if (!l10n_info()[["UTF-8"]]) {
+    skip("Not UTF-8")
+  }
   expect_snapshot({
     txt <- paste0(
       'str = "I\'m a string. \\"You can quote me\\". ',
@@ -481,16 +479,6 @@ type.name = "pug"
     unserialize_toml(text = txt2)
   })
 
-  txt3 <-
-    '[a.b.c]            # this is best practice
-[ d.e.f ]          # same as [d.e.f]
-[ g .  h  . i ]    # same as [g.h.i]
-[ j . "ʞ" . \'l\' ]  # same as [j."ʞ".\'l\']
-'
-  expect_snapshot({
-    unserialize_toml(text = txt3)
-  })
-
   txt4 <-
     '# [x] you
 # [x.y] don\'t
@@ -614,6 +602,21 @@ apple.taste.sweet = true
 '
   expect_snapshot({
     unserialize_toml(text = txt13)
+  })
+})
+
+test_that("table, UTF-8", {
+  if (!l10n_info()[["UTF-8"]]) {
+    skip("Not UTF-8")
+  }
+  txt3 <-
+    '[a.b.c]            # this is best practice
+[ d.e.f ]          # same as [d.e.f]
+[ g .  h  . i ]    # same as [g.h.i]
+[ j . "ʞ" . \'l\' ]  # same as [j."ʞ".\'l\']
+'
+  expect_snapshot({
+    unserialize_toml(text = txt3)
   })
 })
 

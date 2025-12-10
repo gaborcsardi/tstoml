@@ -1,4 +1,4 @@
-# quoted key
+# quoted key UTF-8
 
     Code
       unserialize_toml(text = txt)
@@ -168,8 +168,7 @@
 # offset date-time
 
     Code
-      unserialize_toml(text = glue(
-        "\n          odt1 = 1979-05-27T07:32:00Z\n          odt2 = 1979-05-27T00:32:00-07:00\n          odt3 = 1979-05-27T00:32:00.999999-07:00\n          odt4 = 1979-05-27 07:32:00Z\n        "))
+      unserialize_toml(text = "\n          odt1 = 1979-05-27T07:32:00Z\n          odt2 = 1979-05-27T00:32:00-07:00\n          odt3 = 1979-05-27T00:32:00.999999-07:00\n          odt4 = 1979-05-27 07:32:00Z\n        ")
     Output
       $odt1
       [1] "1979-05-27 07:32:00 UTC"
@@ -187,21 +186,19 @@
 # local date-time
 
     Code
-      unserialize_toml(text = glue(
-        "\n          ldt1 = 1979-05-27T07:32:00\n          ldt2 = 1979-05-27 07:32:00.999999\n        "))
+      unserialize_toml(text = "\n          ldt1 = 1979-05-27T07:32:00\n          ldt2 = 1979-05-27 07:32:00.999999\n        ")
     Output
       $ldt1
-      [1] "1979-05-27 07:32:00 CEST"
+      [1] "1979-05-27 07:32:00 UTC"
       
       $ldt2
-      [1] "1979-05-27 07:32:00 CEST"
+      [1] "1979-05-27 07:32:00 UTC"
       
 
 # local date
 
     Code
-      unserialize_toml(text = glue(
-        "\n          ld1 = 1979-05-27\n          ld2 = 2000-01-01\n        "))
+      unserialize_toml(text = "\n          ld1 = 1979-05-27\n          ld2 = 2000-01-01\n        ")
     Output
       $ld1
       [1] "1979-05-27"
@@ -213,8 +210,7 @@
 # local time
 
     Code
-      unserialize_toml(text = glue(
-        "\n          lt1 = 07:32:00\n          lt2 = 00:32:00.999999\n        "))
+      unserialize_toml(text = "\n          lt1 = 07:32:00\n          lt2 = 00:32:00.999999\n        ")
     Output
       $lt1
       07:32:00
@@ -532,40 +528,6 @@
 ---
 
     Code
-      unserialize_toml(text = txt3)
-    Output
-      $a
-      $a$b
-      $a$b$c
-      named list()
-      
-      
-      
-      $d
-      $d$e
-      $d$e$f
-      named list()
-      
-      
-      
-      $g
-      $g$h
-      $g$h$i
-      named list()
-      
-      
-      
-      $j
-      $j$ʞ
-      $j$ʞ$l
-      named list()
-      
-      
-      
-
----
-
-    Code
       unserialize_toml(text = txt4)
     Output
       $x
@@ -721,6 +683,40 @@
       $fruit$apple$taste$sweet
       [1] TRUE
       
+      
+      
+      
+
+# table, UTF-8
+
+    Code
+      unserialize_toml(text = txt3)
+    Output
+      $a
+      $a$b
+      $a$b$c
+      named list()
+      
+      
+      
+      $d
+      $d$e
+      $d$e$f
+      named list()
+      
+      
+      
+      $g
+      $g$h
+      $g$h$i
+      named list()
+      
+      
+      
+      $j
+      $j$ʞ
+      $j$ʞ$l
+      named list()
       
       
       

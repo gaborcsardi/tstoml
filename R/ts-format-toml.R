@@ -1,0 +1,251 @@
+format_toml <- function(
+  file = NULL,
+  text = NULL,
+  options = NULL
+) {
+  # if (!missing(options)) {
+  #   check_named_arg(options)
+  # }
+  # options <- as_tstoml_options(options)
+
+  # parse file/text
+  # TODO: error on error, get error position
+  tree <- ts_tree_new(
+    ts_language_toml(),
+    file = file,
+    text = text,
+    options = options
+  )
+  format_element(tree, 1L, options = options)
+}
+
+#' Format the selected TOML elements
+#'
+#' @details
+#' If `tree` does not have a selection, then all of it is formatted.
+#' If `tree` has an empty selection, then nothing happens.
+#'
+#' @inheritParams ts_parse_toml
+#' @param tree tstoml object.
+#' @param ... Reserved for future use.
+#' @return The updated tstoml object.
+#'
+#' @export
+
+ts_tree_format.ts_tree_toml <- function(
+  tree,
+  options = NULL,
+  ...
+) {
+  if (!missing(options)) {
+    ts_check_named_arg(options)
+  }
+  # options <- as_tstoml_options(options)
+  select <- ts_tree_selected_nodes(tree)
+  fmt <- lapply(
+    select,
+    format_element,
+    tree = tree,
+    options = options
+  )
+  for (i in seq_along(select)) {
+    sel1 <- select[i]
+    prevline <- rev(which(tree$end_row == tree$start_row[sel1] - 1))[1]
+    ind0 <- sub("^.*\n", "", tree$tws[prevline])
+    if (!is.na(prevline)) {
+      fmt[[i]] <- paste0(c("", rep(ind0, length(fmt[[i]]) - 1L)), fmt[[i]])
+    }
+  }
+
+  subtrees <- lapply(select, get_subtree, tree = tree, with_root = FALSE)
+  deleted <- unique(unlist(subtrees))
+
+  # need to keep the trailing ws of the last element
+  lasts <- map_int(subtrees, max_or_na)
+  tws <- tree$tws[lasts]
+  tree$code[deleted] <- NA_character_
+  tree$tws[deleted] <- NA_character_
+  tree$code[select] <- paste0(
+    map_chr(fmt, paste, collapse = "\n"),
+    ifelse(is.na(tws), "", tws)
+  )
+  tree$tws[select] <- NA_character_
+
+  parts <- c(rbind(tree$code, tree$tws))
+  text <- unlist(lapply(na_omit(parts), charToRaw))
+
+  # TODO: update coordinates without reparsing
+  new <- ts_parse_toml(text = text)
+  attr(new, "file") <- attr(tree, "file")
+
+  new
+}
+
+get_subtree <- function(tree, id, with_root = FALSE) {
+  sel <- c(if (with_root) id, tree$children[[id]])
+  while (TRUE) {
+    sel2 <- unique(c(sel, unlist(tree$children[sel])))
+    if (length(sel2) == length(sel)) {
+      return(sel)
+    }
+    sel <- sel2
+  }
+}
+
+
+format_element <- function(tree, id, options) {
+  type <- tree$type[id]
+  switch(
+    type,
+    table = {
+      format_table(tree, id, options)
+    },
+    document = {
+      format_document(tree, id, options)
+    },
+    table_array_element = {
+      format_table_array_element(tree, id, options)
+    },
+    inline_table = {
+      format_inline_table(tree, id, options)
+    },
+    array = {
+      format_array(tree, id, options)
+    },
+    pair = {
+      format_pair(tree, id, options)
+    },
+    integer = {
+      format_integer(tree, id, options)
+    },
+    float = {
+      format_float(tree, id, options)
+    },
+    boolean = {
+      format_boolean(tree, id, options)
+    },
+    offset_date_time = {
+      format_offset_date_time(tree, id, options)
+    },
+    local_date_time = {
+      format_local_date_time(tree, id, options)
+    },
+    local_date = {
+      format_local_date(tree, id, options)
+    },
+    local_time = {
+      format_local_time(tree, id, options)
+    },
+    string = {
+      format_string(tree, id, options)
+    },
+    comment = {
+      format_comment(tree, id, options)
+    },
+    stop(ts_cnd("Internal tstoml error, unknown TOML node type: {type}."))
+  )
+}
+
+format_table <- function(tree, id, options) {
+  hdr_chld <- get_subtree(tree, tree$children[[id]][2L], with_root = TRUE)
+  hdr <- paste(na_omit(tree$code[hdr_chld]), collapse = "")
+  chld <- tree$children[[id]][-(1:3)]
+  c(
+    "",
+    paste0("[", hdr, "]"),
+    unlist(lapply(chld, format_element, tree = tree, options = options))
+  )
+}
+
+format_document <- function(tree, id, options) {
+  chld <- tree$children[[id]]
+  lns <- unlist(lapply(chld, format_element, tree = tree, options = options))
+  if (length(lns) > 0 && lns[1] == "") {
+    lns <- lns[-1]
+  }
+  lns
+}
+
+format_table_array_element <- function(tree, id, options) {
+  hdr_chld <- get_subtree(tree, tree$children[[id]][2L], with_root = TRUE)
+  hdr <- paste(na_omit(tree$code[hdr_chld]), collapse = "")
+  chld <- tree$children[[id]][-(1:3)]
+  c(
+    "",
+    paste0("[[", hdr, "]]"),
+    unlist(lapply(chld, format_element, tree = tree, options = options))
+  )
+}
+
+format_inline_table <- function(tree, id, options) {
+  chld <- tree$children[[id]]
+  chld <- chld[!tree$type[chld] %in% c("{", "}", ",")]
+  paste0(
+    "{ ",
+    paste(
+      map_chr(chld, format_pair, tree = tree, options = options),
+      collapse = ", "
+    ),
+    " }"
+  )
+}
+
+format_array <- function(tree, id, options) {
+  chld <- tree$children[[id]]
+  chld <- chld[!tree$type[chld] %in% c("[", "]", ",")]
+  paste0(
+    "[ ",
+    paste(
+      map_chr(chld, format_element, tree = tree, options = options),
+      collapse = ", "
+    ),
+    " ]"
+  )
+}
+
+format_pair <- function(tree, id, options) {
+  key_chld <- get_subtree(tree, tree$children[[id]][1L], with_root = TRUE)
+  key <- paste(na_omit(tree$code[key_chld]), collapse = "")
+  paste0(
+    key,
+    " = ",
+    format_element(tree, tree$children[[id]][3L], options = options)
+  )
+}
+
+format_integer <- function(tree, id, options) {
+  tree$code[id]
+}
+
+format_float <- function(tree, id, options) {
+  tree$code[id]
+}
+
+format_boolean <- function(tree, id, options) {
+  tree$code[id]
+}
+
+format_offset_date_time <- function(tree, id, options) {
+  tree$code[id]
+}
+
+format_local_date_time <- function(tree, id, options) {
+  tree$code[id]
+}
+
+format_local_date <- function(tree, id, options) {
+  tree$code[id]
+}
+
+format_local_time <- function(tree, id, options) {
+  tree$code[id]
+}
+
+format_string <- function(tree, id, options) {
+  chld <- get_subtree(tree, id, with_root = TRUE)
+  paste(na_omit(tree$code[chld]), collapse = "")
+}
+
+format_comment <- function(tree, id, options) {
+  tree$code[id]
+}

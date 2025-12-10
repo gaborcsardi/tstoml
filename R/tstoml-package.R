@@ -1,13 +1,16 @@
 #' @keywords internal
 "_PACKAGE"
 
+#' @import ts
+NULL
+
 ## usethis namespace: start
 #' @useDynLib tstoml, .registration = TRUE, .fixes = "c_"
 ## usethis namespace: end
 NULL
 
 #' @name quickstart
-#' @title tsjson quickstart
+#' @title tstoml quickstart
 #' @details
 #'
 #' ```{r, child = "tools/man/quickstart.Rmd"}

@@ -7,6 +7,8 @@
 
 ![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)
 [![R-CMD-check](https://github.com/gaborcsardi/tstoml/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gaborcsardi/tstoml/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/gaborcsardi/tstoml/graph/badge.svg)](https://app.codecov.io/gh/gaborcsardi/tstoml)
 <!-- badges: end -->
 
 Extract and manipulate parts of TOML files without touching the
@@ -60,7 +62,7 @@ role = "frontend"
 ip = "10.0.0.2"
 role = "backend"
 )"
-toml <- load_toml(text = txt)
+toml <- ts_parse_toml(text = txt)
 ```
 
 Pretty print a tstoml object:
@@ -73,10 +75,10 @@ toml
 <source media="(prefers-color-scheme: dark)" srcset="man/figures/print-toml-dark.svg">
 <img src="man/figures/print-toml.svg" /> </picture>
 
-### Select elements in a tsjson object
+### Select elements in a tstoml object
 
 ``` r
-select(toml, "owner")
+ts_tree_select(toml, "owner")
 ```
 
 <picture>
@@ -86,7 +88,7 @@ select(toml, "owner")
 Select element(s) inside elements:
 
 ``` r
-select(toml, "owner", "name")
+ts_tree_select(toml, "owner", "name")
 ```
 
 <picture>
@@ -96,7 +98,7 @@ select(toml, "owner", "name")
 Select element(s) of an array:
 
 ``` r
-select(toml, "database", "ports", 1:2)
+ts_tree_select(toml, "database", "ports", 1:2)
 ```
 
 <picture>
@@ -106,7 +108,7 @@ select(toml, "database", "ports", 1:2)
 Select multiple keys from a table:
 
 ``` r
-select(toml, "owner", c("name", "dob"))
+ts_tree_select(toml, "owner", c("name", "dob"))
 ```
 
 <picture>

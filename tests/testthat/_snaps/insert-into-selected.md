@@ -1,38 +1,37 @@
 # insert_into_document
 
     Code
-      insert_into_selected(toml, key = "a", 1)
+      ts_tree_insert(toml, key = "a", 1)
     Output
       # toml (1 line)
       1 | a = 1.0
     Code
-      insert_into_selected(toml, key = "b", "foobar")
+      ts_tree_insert(toml, key = "b", "foobar")
     Output
       # toml (1 line)
       1 | b = "foobar"
     Code
-      insert_into_selected(toml, key = "c", list(1, 2, 3))
+      ts_tree_insert(toml, key = "c", list(1, 2, 3))
     Output
       # toml (1 line)
       1 | c = [ 1.0, 2.0, 3.0 ]
     Code
-      insert_into_selected(toml, key = "d", structure(list(x = 10, y = 20), class = "ts_toml_inline_table"))
+      ts_tree_insert(toml, key = "d", structure(list(x = 10, y = 20), class = "ts_toml_inline_table"))
     Output
       # toml (1 line)
       1 | d = { x = 10.0, y = 20.0 }
     Code
-      insert_into_selected(toml, key = "e", ts_toml_inline_table(x = 10, y = 20))
+      ts_tree_insert(toml, key = "e", ts_toml_inline_table(x = 10, y = 20))
     Output
       # toml (1 line)
       1 | e = { x = 10.0, y = 20.0 }
     Code
-      insert_into_selected(toml, key = "f", structure(list(list(x = 10, y = 20)),
-      class = "ts_toml_array"))
+      ts_tree_insert(toml, key = "f", structure(list(list(x = 10, y = 20)), class = "ts_toml_array"))
     Output
       # toml (1 line)
       1 | f = [ { x = 10.0, y = 20.0 } ]
     Code
-      insert_into_selected(toml, key = "g", ts_toml_array(10, 20))
+      ts_tree_insert(toml, key = "g", ts_toml_array(10, 20))
     Output
       # toml (1 line)
       1 | g = [ 10.0, 20.0 ]
@@ -40,7 +39,7 @@
 # insert_into_document table
 
     Code
-      insert_into_selected(toml, key = "table", list(a = 1, b = 2))
+      ts_tree_insert(toml, key = "table", list(a = 1, b = 2))
     Output
       # toml (3 lines)
       1 | [table]
@@ -50,7 +49,7 @@
 ---
 
     Code
-      insert_into_selected(toml2, key = "table2", list(x = 10, y = 20))
+      ts_tree_insert(toml2, key = "table2", list(x = 10, y = 20))
     Output
       # toml (8 lines)
       1 | a = 1
@@ -65,8 +64,7 @@
 # insert_into_document array of tables
 
     Code
-      insert_into_selected(toml, key = "array_of_tables", list(list(a = 1, b = 2),
-      list(a = 3)))
+      ts_tree_insert(toml, key = "array_of_tables", list(list(a = 1, b = 2), list(a = 3)))
     Output
       # toml (6 lines)
       1 | [[array_of_tables]]
@@ -79,22 +77,22 @@
 # insert_into_array
 
     Code
-      insert_into_selected(select(toml, "arr"), 0)
+      ts_tree_insert(ts_tree_select(toml, "arr"), 0)
     Output
       # toml (1 line)
       1 | arr = [0.0]
     Code
-      insert_into_selected(select(toml, "arr"), "foobar")
+      ts_tree_insert(ts_tree_select(toml, "arr"), "foobar")
     Output
       # toml (1 line)
       1 | arr = ["foobar"]
     Code
-      insert_into_selected(select(toml, "arr"), list(1, 2, 3))
+      ts_tree_insert(ts_tree_select(toml, "arr"), list(1, 2, 3))
     Output
       # toml (1 line)
       1 | arr = [[ 1.0, 2.0, 3.0 ]]
     Code
-      insert_into_selected(select(toml, "arr"), structure(list(x = 10, y = 20),
+      ts_tree_insert(ts_tree_select(toml, "arr"), structure(list(x = 10, y = 20),
       class = "ts_toml_inline_table"))
     Output
       # toml (1 line)
@@ -103,22 +101,22 @@
 ---
 
     Code
-      insert_into_selected(select(toml2, "arr"), 100)
+      ts_tree_insert(ts_tree_select(toml2, "arr"), 100)
     Output
       # toml (1 line)
       1 | arr = [1, 2, 3,100.0]
     Code
-      insert_into_selected(select(toml2, "arr"), 100, at = 0)
+      ts_tree_insert(ts_tree_select(toml2, "arr"), 100, at = 0)
     Output
       # toml (1 line)
       1 | arr = [100.0,1, 2, 3]
     Code
-      insert_into_selected(select(toml2, "arr"), 100, at = 1)
+      ts_tree_insert(ts_tree_select(toml2, "arr"), 100, at = 1)
     Output
       # toml (1 line)
       1 | arr = [1, 100.0,2, 3]
     Code
-      insert_into_selected(select(toml2, "arr"), 100, at = Inf)
+      ts_tree_insert(ts_tree_select(toml2, "arr"), 100, at = Inf)
     Output
       # toml (1 line)
       1 | arr = [1, 2, 3,100.0]
@@ -126,12 +124,12 @@
 ---
 
     Code
-      insert_into_selected(select(toml3, "arr"), 100, at = 0)
+      ts_tree_insert(ts_tree_select(toml3, "arr"), 100, at = 0)
     Output
       # toml (1 line)
       1 | arr = [100.0,0]
     Code
-      insert_into_selected(select(toml3, "arr"), 100, at = 1)
+      ts_tree_insert(ts_tree_select(toml3, "arr"), 100, at = 1)
     Output
       # toml (1 line)
       1 | arr = [0,100.0]
@@ -139,17 +137,17 @@
 ---
 
     Code
-      insert_into_selected(select(toml4, "arr"), 100, at = 0)
+      ts_tree_insert(ts_tree_select(toml4, "arr"), 100, at = 0)
     Output
       # toml (1 line)
       1 | arr = [100.0,1,2]
     Code
-      insert_into_selected(select(toml4, "arr"), 100, at = 1)
+      ts_tree_insert(ts_tree_select(toml4, "arr"), 100, at = 1)
     Output
       # toml (1 line)
       1 | arr = [1,100.0,2]
     Code
-      insert_into_selected(select(toml4, "arr"), 100, at = 2)
+      ts_tree_insert(ts_tree_select(toml4, "arr"), 100, at = 2)
     Output
       # toml (1 line)
       1 | arr = [1,2,100.0]
@@ -157,12 +155,12 @@
 ---
 
     Code
-      insert_into_selected(select(toml5, "arr"), 100, at = 0)
+      ts_tree_insert(ts_tree_select(toml5, "arr"), 100, at = 0)
     Output
       # toml (1 line)
       1 | arr = [100.0,0,]
     Code
-      insert_into_selected(select(toml5, "arr"), 100, at = 1)
+      ts_tree_insert(ts_tree_select(toml5, "arr"), 100, at = 1)
     Output
       # toml (1 line)
       1 | arr = [0,100.0,]
@@ -170,17 +168,17 @@
 ---
 
     Code
-      insert_into_selected(select(toml6, "arr"), 100, at = 0)
+      ts_tree_insert(ts_tree_select(toml6, "arr"), 100, at = 0)
     Output
       # toml (1 line)
       1 | arr = [100.0,1,2,]
     Code
-      insert_into_selected(select(toml6, "arr"), 100, at = 1)
+      ts_tree_insert(ts_tree_select(toml6, "arr"), 100, at = 1)
     Output
       # toml (1 line)
       1 | arr = [1,100.0,2,]
     Code
-      insert_into_selected(select(toml6, "arr"), 100, at = 2)
+      ts_tree_insert(ts_tree_select(toml6, "arr"), 100, at = 2)
     Output
       # toml (1 line)
       1 | arr = [1,2,100.0,]
@@ -188,23 +186,23 @@
 # insert_into_inline_table
 
     Code
-      insert_into_selected(select(toml, "it"), 13, key = "a")
+      ts_tree_insert(ts_tree_select(toml, "it"), 13, key = "a")
     Output
       # toml (1 line)
       1 | it = {a=13.0}
     Code
-      insert_into_selected(select(toml, "it"), "foobar", key = "b")
+      ts_tree_insert(ts_tree_select(toml, "it"), "foobar", key = "b")
     Output
       # toml (1 line)
       1 | it = {b="foobar"}
     Code
-      insert_into_selected(select(toml, "it"), list(1, 2, 3), key = "c")
+      ts_tree_insert(ts_tree_select(toml, "it"), list(1, 2, 3), key = "c")
     Output
       # toml (1 line)
       1 | it = {c=[ 1.0, 2.0, 3.0 ]}
     Code
-      insert_into_selected(select(toml, "it"), structure(list(x = 10, y = 20), class = "ts_toml_inline_table"),
-      key = "d")
+      ts_tree_insert(ts_tree_select(toml, "it"), structure(list(x = 10, y = 20),
+      class = "ts_toml_inline_table"), key = "d")
     Output
       # toml (1 line)
       1 | it = {d={ x = 10.0, y = 20.0 }}
@@ -212,22 +210,22 @@
 ---
 
     Code
-      insert_into_selected(select(toml2, "it"), 13, key = "c")
+      ts_tree_insert(ts_tree_select(toml2, "it"), 13, key = "c")
     Output
       # toml (1 line)
       1 | it = {a = 1, b = 2,c=13.0}
     Code
-      insert_into_selected(select(toml2, "it"), 13, key = "c", at = 0)
+      ts_tree_insert(ts_tree_select(toml2, "it"), 13, key = "c", at = 0)
     Output
       # toml (1 line)
       1 | it = {c=13.0,a = 1, b = 2}
     Code
-      insert_into_selected(select(toml2, "it"), 13, key = "c", at = 1)
+      ts_tree_insert(ts_tree_select(toml2, "it"), 13, key = "c", at = 1)
     Output
       # toml (1 line)
       1 | it = {a = 1, c=13.0,b = 2}
     Code
-      insert_into_selected(select(toml2, "it"), 13, key = "c", at = Inf)
+      ts_tree_insert(ts_tree_select(toml2, "it"), 13, key = "c", at = Inf)
     Output
       # toml (1 line)
       1 | it = {a = 1, b = 2,c=13.0}
@@ -235,7 +233,7 @@
 # insert_into_table pair
 
     Code
-      insert_into_selected(select(toml, "table"), 2, key = "b")
+      ts_tree_insert(ts_tree_select(toml, "table"), 2, key = "b")
     Output
       # toml (6 lines)
       1 | [table]
@@ -248,7 +246,7 @@
 # insert_into_table table
 
     Code
-      insert_into_selected(select(toml, "table"), list(x = 10, y = 20), key = "subtable")
+      ts_tree_insert(ts_tree_select(toml, "table"), list(x = 10, y = 20), key = "subtable")
     Output
       # toml (9 lines)
       1 | [table]
@@ -264,9 +262,9 @@
 # insert_into_table array of tables
 
     Code
-      toml <- load_toml(text = "[table]\na = 1\n\n[table2]\nc = 5\n")
-      insert_into_selected(select(toml, "table"), list(list(x = 10, y = 20), list(x = 5)),
-      key = "aot")
+      toml <- ts_parse_toml(text = "[table]\na = 1\n\n[table2]\nc = 5\n")
+      ts_tree_insert(ts_tree_select(toml, "table"), list(list(x = 10, y = 20), list(
+        x = 5)), key = "aot")
     Output
       # toml (12 lines)
        1 | [table]
@@ -279,32 +277,32 @@
        8 | [[table.aot]]
        9 | x = 5.0
       10 | 
-      11 | [table2]
-      12 | c = 5
+      i 2 more lines
+      i Use `print(n = ...)` to see more lines
 
 # insert_into_subtable
 
     Code
-      toml <- load_toml(text = "a.b.c = 1\n")
-      insert_into_selected(select(toml, "a"), 100L, key = "x")
+      toml <- ts_parse_toml(text = "a.b.c = 1\n")
+      ts_tree_insert(ts_tree_select(toml, "a"), 100L, key = "x")
     Output
       # toml (2 lines)
       1 | a.b.c = 1
       2 | a.x = 100
     Code
-      insert_into_selected(select(toml, "a"), list(x = 100L, y = 200L), key = "x")
+      ts_tree_insert(ts_tree_select(toml, "a"), list(x = 100L, y = 200L), key = "x")
     Output
       # toml (2 lines)
       1 | a.b.c = 1
       2 | a.x = { x = 100, y = 200 }
     Code
-      insert_into_selected(select(toml, "a"), as.list(1:3), key = "x")
+      ts_tree_insert(ts_tree_select(toml, "a"), as.list(1:3), key = "x")
     Output
       # toml (2 lines)
       1 | a.b.c = 1
       2 | a.x = [ 1, 2, 3 ]
     Code
-      insert_into_selected(select(toml, "a"), list(list(x = 100L, y = 200L)), key = "x")
+      ts_tree_insert(ts_tree_select(toml, "a"), list(list(x = 100L, y = 200L)), key = "x")
     Output
       # toml (2 lines)
       1 | a.b.c = 1
@@ -313,8 +311,8 @@
 ---
 
     Code
-      toml <- load_toml(text = "[a.b]\nc.d.e = 1\n")
-      insert_into_selected(select(toml, "a", "b", "c"), 100L, key = "x")
+      toml <- ts_parse_toml(text = "[a.b]\nc.d.e = 1\n")
+      ts_tree_insert(ts_tree_select(toml, "a", "b", "c"), 100L, key = "x")
     Output
       # toml (3 lines)
       1 | [a.b]
@@ -324,8 +322,8 @@
 ---
 
     Code
-      toml <- load_toml(text = "[a.b]\nc.d.e = 1\n")
-      insert_into_selected(select(toml, "a"), 100L, key = "x")
+      toml <- ts_parse_toml(text = "[a.b]\nc.d.e = 1\n")
+      ts_tree_insert(ts_tree_select(toml, "a"), 100L, key = "x")
     Output
       # toml (3 lines)
       1 | a.x = 100
@@ -335,8 +333,8 @@
 ---
 
     Code
-      toml <- load_toml(text = "[[a.b]]\nc.d.e = 1\n")
-      insert_into_selected(select(toml, "a"), 100L, key = "x")
+      toml <- ts_parse_toml(text = "[[a.b]]\nc.d.e = 1\n")
+      ts_tree_insert(ts_tree_select(toml, "a"), 100L, key = "x")
     Output
       # toml (3 lines)
       1 | a.x = 100
@@ -346,8 +344,8 @@
 # insert_into_aot_element
 
     Code
-      toml <- load_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
-      insert_into_selected(select(toml, "a", 1), key = "c", 100L)
+      toml <- ts_parse_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
+      ts_tree_insert(ts_tree_select(toml, "a", 1), key = "c", 100L)
     Output
       # toml (6 lines)
       1 | [[a]]
@@ -357,7 +355,7 @@
       5 | [[a]]
       6 | b=2
     Code
-      insert_into_selected(select(toml, "a", 2), key = "c", 100L)
+      ts_tree_insert(ts_tree_select(toml, "a", 2), key = "c", 100L)
     Output
       # toml (6 lines)
       1 | [[a]]
@@ -367,7 +365,7 @@
       5 | b=2
       6 | c = 100
     Code
-      insert_into_selected(select(toml, "a", 1:2), key = "c", 100L)
+      ts_tree_insert(ts_tree_select(toml, "a", 1:2), key = "c", 100L)
     Output
       # toml (7 lines)
       1 | [[a]]
@@ -378,7 +376,7 @@
       6 | b=2
       7 | c = 100
     Code
-      insert_into_selected(select(toml, "a", 2), key = "c", list(1, 2, 3))
+      ts_tree_insert(ts_tree_select(toml, "a", 2), key = "c", list(1, 2, 3))
     Output
       # toml (6 lines)
       1 | [[a]]
@@ -388,8 +386,8 @@
       5 | b=2
       6 | c = [ 1.0, 2.0, 3.0 ]
     Code
-      insert_into_selected(select(toml, "a", 2), key = "d", structure(list(x = 10, y = 20),
-      class = "ts_toml_inline_table"))
+      ts_tree_insert(ts_tree_select(toml, "a", 2), key = "d", structure(list(x = 10,
+        y = 20), class = "ts_toml_inline_table"))
     Output
       # toml (6 lines)
       1 | [[a]]
@@ -402,8 +400,8 @@
 # insert_into_aot
 
     Code
-      toml <- load_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
-      insert_into_selected(select(toml, "a"), list(b = 3), at = 0)
+      toml <- ts_parse_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
+      ts_tree_insert(ts_tree_select(toml, "a"), list(b = 3), at = 0)
     Output
       # toml (8 lines)
       1 | [[a]]
@@ -415,7 +413,7 @@
       7 | [[a]]
       8 | b=2
     Code
-      insert_into_selected(select(toml, "a"), list(b = 3), at = 1)
+      ts_tree_insert(ts_tree_select(toml, "a"), list(b = 3), at = 1)
     Output
       # toml (8 lines)
       1 | [[a]]
@@ -427,7 +425,7 @@
       7 | [[a]]
       8 | b=2
     Code
-      insert_into_selected(select(toml, "a"), list(b = 3))
+      ts_tree_insert(ts_tree_select(toml, "a"), list(b = 3))
     Output
       # toml (8 lines)
       1 | [[a]]
@@ -442,8 +440,8 @@
 ---
 
     Code
-      toml <- load_toml(text = "# prefix\n[[a]]\nb=1\n\n[[a]]\nb=2\n#postfix\n")
-      insert_into_selected(select(toml, "a"), list(b = 3), at = 0)
+      toml <- ts_parse_toml(text = "# prefix\n[[a]]\nb=1\n\n[[a]]\nb=2\n#postfix\n")
+      ts_tree_insert(ts_tree_select(toml, "a"), list(b = 3), at = 0)
     Output
       # toml (10 lines)
        1 | # prefix
@@ -457,7 +455,7 @@
        9 | b=2
       10 | #postfix
     Code
-      insert_into_selected(select(toml, "a"), list(b = 3), at = 1)
+      ts_tree_insert(ts_tree_select(toml, "a"), list(b = 3), at = 1)
     Output
       # toml (10 lines)
        1 | # prefix
@@ -471,7 +469,7 @@
        9 | b=2
       10 | #postfix
     Code
-      insert_into_selected(select(toml, "a"), list(b = 3))
+      ts_tree_insert(ts_tree_select(toml, "a"), list(b = 3))
     Output
       # toml (10 lines)
        1 | # prefix

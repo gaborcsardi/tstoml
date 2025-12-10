@@ -200,14 +200,14 @@
 # serialize_toml_value
 
     Code
-      t <- structure(1763104922, class = c("POSIXct", "POSIXt"))
+      t <- structure(1763104922, class = c("POSIXct", "POSIXt"), tzone = "UTC")
       serialize_toml_value(t)
     Output
-      [1] "2025-11-14T08:22:02+01:00"
+      [1] "2025-11-14T07:22:02+00:00"
     Code
       serialize_toml_value(as.POSIXlt(t))
     Output
-      [1] "2025-11-14T08:22:02"
+      [1] "2025-11-14T07:22:02"
     Code
       serialize_toml_value(as.Date("2025-10-31"))
     Output
