@@ -7,3 +7,10 @@ test_that("max_or_na", {
     max_or_na(numeric(0))
   })
 })
+
+test_that("middle", {
+  expect_equal(middle(integer()), integer())
+  expect_equal(middle(1L), integer())
+  expect_equal(middle(1:2), integer())
+  expect_equal(middle(1:10), 2:9)
+})

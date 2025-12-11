@@ -18,6 +18,14 @@ na_omit <- function(x) {
   x[!is.na(x)]
 }
 
+middle <- function(x) {
+  if (length(x) <= 2) {
+    x[numeric()]
+  } else {
+    x[-c(1, length(x))]
+  }
+}
+
 max_or_na <- function(x, na.rm = FALSE) {
   if (length(x)) {
     max(x, na.rm = na.rm)
@@ -28,9 +36,12 @@ max_or_na <- function(x, na.rm = FALSE) {
   }
 }
 
-is_named <- function(x) {
+is_named <- function(x, null = FALSE) {
   nms <- names(x)
-  !is.null(nms) && length(x) == length(nms) && !anyNA(nms) && all(nms != "")
+  (null || !is.null(nms)) &&
+    length(x) == length(nms) &&
+    !anyNA(nms) &&
+    all(nms != "")
 }
 
 last <- function(x) {

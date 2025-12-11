@@ -7,5 +7,13 @@
 Options that control the behavior of tstoml functions.
 }
 \details{
-TODO
+\subsection{Formatting options:}{
+\itemize{
+\item \code{indent_width}: integer, the number of spaces to use for indentation
+when \code{indent_style} is \code{"space"}. Default is
+4.
+\item \code{indent_style}: string, either \code{"space"} or \code{"tab"}, the type of
+indentation to use. Default is space.
+}
+}
 }
