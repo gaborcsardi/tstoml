@@ -1,3 +1,8 @@
+test_that("%||%", {
+  expect_equal(NULL %||% "foo", "foo")
+  expect_equal("foo" %||% stop("nope"), "foo")
+})
+
 test_that("max_or_na", {
   expect_snapshot({
     max_or_na(1:10)

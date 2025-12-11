@@ -1,3 +1,11 @@
+`%||%` <- function(l, r) {
+  if (is.null(l)) {
+    r
+  } else {
+    l
+  }
+}
+
 named_list <- function(n = 0) {
   structure(vector("list", n), names = character(n))
 }
