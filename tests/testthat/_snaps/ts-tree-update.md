@@ -82,6 +82,45 @@
       22 | ip = "localhost"
       23 | role = "backend"
 
+# update in array of tables
+
+    Code
+      toml <- ts_parse_toml(text = toml_aot_example())
+      print(ts_tree_update(ts_tree_select(toml, "products", 2, "name"), "New Hammer"),
+      n = Inf)
+    Output
+      # toml (11 lines)
+       1 | # A TOML document with all types of arrays of tables
+       2 | 
+       3 |   [[products]]
+       4 |   name = "Hammer"
+       5 |   sku = 738594937
+       6 | 
+       7 |   [[products]]
+       8 |   name = "New Hammer"
+       9 |   sku = 284758393
+      10 |   color = "gray"
+      11 |   
+
+---
+
+    Code
+      toml <- ts_parse_toml(text = toml_aot_example())
+      print(ts_tree_update(ts_tree_select(toml, "products", TRUE, "sku"), 1044L), n = Inf)
+    Output
+      # toml (11 lines)
+       1 | # A TOML document with all types of arrays of tables
+       2 | 
+       3 |   [[products]]
+       4 |   name = "Hammer"
+       5 |   sku = 1044
+       6 | 
+       7 |   [[products]]
+       8 |   name = "Nail"
+       9 |   sku = 1044
+      10 |   color = "gray"
+      11 |   
+
 # ts_tree_update errors
 
     Code
@@ -129,4 +168,23 @@
       # toml (2 lines)
       1 | # Comment line
       2 | a = 42 # inline comment
+
+# update in inline table
+
+    Code
+      toml <- ts_parse_toml("point = { x = 1, y = 2 }")
+      ts_tree_update(ts_tree_select(toml, "point", "x"), 13L)
+    Output
+      # toml (1 line)
+      1 | point = { x = 13, y = 2 }
+
+---
+
+    Code
+      toml <- ts_parse_toml("p1 = { x = 1, y = 2 }\np2 = { x = 3, y = 4 }")
+      ts_tree_update(ts_tree_select(toml, TRUE, "x"), 13L)
+    Output
+      # toml (2 lines)
+      1 | p1 = { x = 13, y = 2 }
+      2 | p2 = { x = 13, y = 4 }
 
