@@ -1,3 +1,34 @@
+test_that("no selection", {
+  # no selection, insert into document
+  expect_snapshot({
+    toml <- ts_parse_toml(text = "a = 1\n")
+    ts_tree_insert(toml, 100, key = "x")
+  })
+  # empty selection, do nothing
+  expect_snapshot({
+    toml2 <- ts_parse_toml(text = "a = 1\n")
+    toml2 |> ts_tree_select("b") |> ts_tree_insert(toml2, 100, key = "x")
+  })
+})
+
+test_that("insert_into_document errors", {
+  # no key for pair
+  expect_snapshot(error = TRUE, {
+    toml <- ts_parse_toml(text = "a = 1\n")
+    toml |> ts_tree_insert(100)
+  })
+  # no dotted ket support yet
+  expect_snapshot(error = TRUE, {
+    toml <- ts_parse_toml(text = "a = 1\n")
+    toml |> ts_tree_insert(key = c("a", "b"), 100)
+  })
+  # key exists already
+  expect_snapshot(error = TRUE, {
+    toml <- ts_parse_toml(text = "a = 1\n")
+    toml |> ts_tree_insert(key = "a", 100)
+  })
+})
+
 test_that("insert_into_document", {
   toml <- ts_parse_toml(text = "")
   expect_snapshot({
@@ -32,8 +63,16 @@ test_that("insert_into_document table", {
 })
 
 test_that("insert_into_document array of tables", {
-  toml <- ts_parse_toml(text = "")
   expect_snapshot({
+    toml <- ts_parse_toml(text = "")
+    ts_tree_insert(
+      toml,
+      key = "array_of_tables",
+      list(list(a = 1, b = 2), list(a = 3))
+    )
+  })
+  expect_snapshot({
+    toml <- ts_parse_toml(text = "[tab]\na = 1\n")
     ts_tree_insert(
       toml,
       key = "array_of_tables",
@@ -90,6 +129,31 @@ test_that("insert_into_array", {
   })
 })
 
+test_that("insert_into_array with comments", {
+  expect_snapshot({
+    toml <- ts_parse_toml(
+      "arr = [\n  # first\n  1, # end of first\n  # second\n  2\n]"
+    )
+    toml |> ts_tree_select("arr") |> ts_tree_insert(100, at = 0)
+    toml |> ts_tree_select("arr") |> ts_tree_insert(200, at = 1)
+    toml |> ts_tree_select("arr") |> ts_tree_insert(300, at = Inf)
+  })
+
+  expect_snapshot({
+    toml <- ts_parse_toml(
+      "arr = [\n  # 1\n  1# e1\n  #c\n  ,  # 2\n  2, # e2\n  # end\n]"
+    )
+    toml |> ts_tree_select("arr") |> ts_tree_insert(300, at = 1)
+  })
+
+  expect_snapshot({
+    toml <- ts_parse_toml(
+      "arr = [\n  # 1\n  1# e1\n  ,  # 2\n  2\n  # end\n  ,\n]"
+    )
+    toml |> ts_tree_select("arr") |> ts_tree_insert(300, at = 2)
+  })
+})
+
 test_that("insert_into_inline_table", {
   toml <- ts_parse_toml(text = "it = {}")
   expect_snapshot({
@@ -110,6 +174,16 @@ test_that("insert_into_inline_table", {
     toml2 |> ts_tree_select("it") |> ts_tree_insert(13, key = "c", at = 0)
     toml2 |> ts_tree_select("it") |> ts_tree_insert(13, key = "c", at = 1)
     toml2 |> ts_tree_select("it") |> ts_tree_insert(13, key = "c", at = Inf)
+  })
+})
+
+test_that("insert_into_inline_table at w/ key", {
+  expect_snapshot({
+    toml <- ts_parse_toml(text = "it = {a = 1, b = 2, c = 3}")
+    toml |> ts_tree_select("it") |> ts_tree_insert(13, key = "x", at = "a")
+    toml |> ts_tree_select("it") |> ts_tree_insert(13, key = "x", at = "b")
+    toml |> ts_tree_select("it") |> ts_tree_insert(13, key = "x", at = "c")
+    toml |> ts_tree_select("it") |> ts_tree_insert(13, key = "x", at = "d")
   })
 })
 
@@ -135,6 +209,49 @@ test_that("insert_into_table array of tables", {
     toml |>
       ts_tree_select("table") |>
       ts_tree_insert(list(list(x = 10, y = 20), list(x = 5)), key = "aot")
+  })
+})
+
+test_that("insert_into_table errors", {
+  # no key for pair
+  expect_snapshot(error = TRUE, {
+    toml <- ts_parse_toml(text = "[table]\na = 1\n")
+    toml |> ts_tree_select("table") |> ts_tree_insert(100)
+  })
+  # no dotted ket support yet
+  expect_snapshot(error = TRUE, {
+    toml <- ts_parse_toml(text = "[table]\na = 1\n")
+    toml |> ts_tree_select("table") |> ts_tree_insert(key = c("x", "y"), 100)
+  })
+  # key exists already
+  expect_snapshot(error = TRUE, {
+    toml <- ts_parse_toml(text = "[table]\na = 1\n")
+    toml |> ts_tree_select("table") |> ts_tree_insert(key = "a", 100)
+  })
+})
+
+test_that("insert_into_inline_table errors", {
+  # no key for pair
+  expect_snapshot(error = TRUE, {
+    toml <- ts_parse_toml(text = "it = {a = 1, b = 2}")
+    toml |> ts_tree_select("it") |> ts_tree_insert(100)
+  })
+  # no dotted ket support yet
+  expect_snapshot(error = TRUE, {
+    toml <- ts_parse_toml(text = "it = {a = 1, b = 2}")
+    toml |> ts_tree_select("it") |> ts_tree_insert(key = c("x", "y"), 100)
+  })
+  # key exists already
+  expect_snapshot(error = TRUE, {
+    toml <- ts_parse_toml(text = "it = {a = 1, b = 2}")
+    toml |> ts_tree_select("it") |> ts_tree_insert(key = "a", 100)
+  })
+  # at must be single string
+  expect_snapshot(error = TRUE, {
+    toml <- ts_parse_toml(text = "it = {a = 1, b = 2}")
+    toml |>
+      ts_tree_select("it") |>
+      ts_tree_insert(key = "x", at = c("a", "b"), 100)
   })
 })
 
@@ -167,6 +284,25 @@ test_that("insert_into_subtable", {
   })
 })
 
+test_that("insert_into_subtable errors", {
+  # no key for pair
+  expect_snapshot(error = TRUE, {
+    toml <- ts_parse_toml(text = "a.b = 1\n")
+    toml |> ts_tree_select("a") |> ts_tree_insert(100)
+  })
+  # no dotted ket support yet
+  expect_snapshot(error = TRUE, {
+    toml <- ts_parse_toml(text = "a.b = 1\n")
+    toml |> ts_tree_select("a") |> ts_tree_insert(key = c("x", "y"), 100)
+  })
+  # key exists already
+  expect_snapshot(error = TRUE, {
+    toml <- ts_parse_toml(text = "a.b = 1\n")
+    toml |> ts_tree_select("a") |> ts_tree_insert(key = "b", 100)
+  })
+})
+
+
 test_that("insert_into_aot_element", {
   expect_snapshot({
     toml <- ts_parse_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
@@ -182,6 +318,13 @@ test_that("insert_into_aot_element", {
         key = "d",
         structure(list(x = 10, y = 20), class = "ts_toml_inline_table")
       )
+    toml |>
+      ts_tree_select("a", 2) |>
+      ts_tree_insert(list(x = 10, y = 20), key = "subtable")
+    toml |>
+      ts_tree_select("a", 2) |>
+      ts_tree_insert(list(list(x = 10, y = 20), list(x = 5)), key = "aot") |>
+      print(n = 100)
   })
 })
 

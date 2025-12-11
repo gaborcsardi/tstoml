@@ -59,9 +59,10 @@ ts_tree_insert.ts_tree_toml <- function(
     tree$tws[aft] <- paste0(
       if (!before_tws) tree$tws[aft],
       ins$code,
-      if (ins$trailing_comma) ",",
+      if (ins$trailing_comma) ", ",
       if (before_tws) tree$tws[aft],
-      if (ins$trailing_newline) "\n"
+      if (ins$trailing_newline) "\n",
+      ins$tws
     )
   }
 
@@ -203,7 +204,7 @@ insert_into_subtable <- function(toml, sel1, new, key = key) {
   if (is.null(key)) {
     stop(ts_cnd(
       "The `key` argument is required when inserting a {newtypename} \\
-       into the document."
+       into a subtable."
     ))
   }
   if (length(key) != 1) {
@@ -212,7 +213,7 @@ insert_into_subtable <- function(toml, sel1, new, key = key) {
   chdn <- toml$dom_children[[sel1]]
   keys <- toml$dom_name[chdn]
   if (key %in% keys) {
-    stop(ts_cnd("Key `{key}` already exists in the document."))
+    stop(ts_cnd("Key `{key}` already exists in the subtable."))
   }
 
   # check if the subtable was created from the key of a pair or table/AOT
@@ -274,18 +275,36 @@ insert_into_subtable <- function(toml, sel1, new, key = key) {
 # ------------------------------------------------------------------------------
 
 insert_into_inline_table <- function(toml, sel1, new, key = key, at = at) {
+  newtype <- get_stl_type(new)
+  newtypename <- stl_type_names[[newtype]]
+  if (is.null(key)) {
+    stop(ts_cnd(
+      "The `key` argument is required when inserting a {newtypename} \\
+       into an inline table."
+    ))
+  }
+  if (length(key) != 1) {
+    stop(ts_cnd("The `key` argument must be a single string for now."))
+  }
+  chdn <- toml$dom_children[[sel1]]
+  keys <- toml$dom_name[chdn]
+  if (key %in% keys) {
+    stop(ts_cnd("Key `{key}` already exists in the inline table."))
+  }
+
   chdn <- toml$children[[sel1]]
   isxtr <- toml$type[chdn] != "pair"
   idx <- seq_along(chdn)[!isxtr]
   nchdn <- length(idx)
 
   if (is.character(at)) {
+    if (length(at) != 1) {
+      stop(ts_cnd("The `at` argument must be a single string for now."))
+    }
     rchdn <- chdn[toml$type[chdn] == "pair"]
     keys <- map_chr(rchdn, function(id) {
-      gchdn <- toml$children[[id]]
-      gchdn <- gchdn[!is.na(toml$field_name[gchdn])]
-      keyid <- gchdn[toml$field_name[gchdn] == "key"]
-      unserialize_string(toml, keyid)
+      keyid <- toml$children[[id]][1]
+      unserialize_key(toml, keyid)
     })
     at <- match(at, keys)
     if (is.na(at)) {
@@ -301,34 +320,15 @@ insert_into_inline_table <- function(toml, sel1, new, key = key, at = at) {
     idx[at]
   }
 
-  if (
-    toml$type[chdn[after + 1L]] == "," &&
-      toml$type[chdn[after + 2L]] == "comment" &&
-      toml$end_row[chdn[after + 1L]] == toml$start_row[chdn[after + 2L]]
-  ) {
-    # skip comma + comment on the same line!
-    after <- after + 2L
-  } else if (
-    toml$type[chdn[after + 1L]] == "comment" &&
-      toml$end_row[chdn[after]] == toml$start_row[chdn[after + 1L]]
-  ) {
-    # skip comment on the same line
+  # Comments are not allowed inside inline tables, so we don't need to
+  # deal with them here.
+
+  # skip comma
+  if (toml$type[chdn[after + 1L]] == ",") {
     after <- after + 1L
-  } else if (toml$type[chdn[after + 1L]] == ",") {
-    # skip comma w/o comment on the same line
-    # keep non-line comment as non-line comment
-    after <- after + 1L
-  } else {
-    # skip comments and potentially a comma
-    while (toml$type[chdn[after + 1L]] == "comment") {
-      after <- after + 1L
-    }
-    if (toml$type[chdn[after + 1L]] == ",") {
-      after <- after + 1L
-    }
   }
 
-  code <- paste0(key, "=", ts_serialize_toml_value(new))
+  code <- paste0(key, " = ", ts_serialize_toml_value(new))
 
   add_leading_comma <- at >= nchdn && nchdn > 0
   add_trailing_comma <- (at < nchdn && nchdn > 0)
@@ -353,7 +353,7 @@ insert_into_table <- function(toml, sel1, new, key = key, at = at) {
   if (is.null(key)) {
     stop(ts_cnd(
       "The `key` argument is required when inserting a {newtypename} \\
-       into the document."
+       into a table."
     ))
   }
   if (length(key) != 1) {
@@ -362,7 +362,7 @@ insert_into_table <- function(toml, sel1, new, key = key, at = at) {
   chdn <- toml$dom_children[[sel1]]
   keys <- toml$dom_name[chdn]
   if (key %in% keys) {
-    stop(ts_cnd("Key `{key}` already exists in the document."))
+    stop(ts_cnd("Key `{key}` already exists in the table."))
   }
 
   switch(
@@ -525,6 +525,7 @@ insert_into_array <- function(toml, sel1, new, key = key, at = at) {
     idx[at]
   }
 
+  leading_newline <- FALSE
   if (
     toml$type[chdn[after + 1L]] == "," &&
       toml$type[chdn[after + 2L]] == "comment" &&
@@ -538,6 +539,15 @@ insert_into_array <- function(toml, sel1, new, key = key, at = at) {
   ) {
     # skip comment on the same line
     after <- after + 1L
+    # maybe more comments
+    while (toml$type[chdn[after + 1L]] == "comment") {
+      after <- after + 1L
+    }
+    # maybe a comma
+    if (toml$type[chdn[after + 1L]] == ",") {
+      after <- after + 1L
+      leading_newline <- TRUE
+    }
   } else if (toml$type[chdn[after + 1L]] == ",") {
     # skip comma w/o comment on the same line
     # keep non-line comment as non-line comment
@@ -559,15 +569,25 @@ insert_into_array <- function(toml, sel1, new, key = key, at = at) {
   add_trailing_comma <- (at < nchdn && nchdn > 0) ||
     (at >= nchdn && has_trailing_comma)
 
+  # if the next is a comment, it must be on a new line, keep it there
+  multiline <- toml$start_row[sel1] != toml$end_row[sel1] ||
+    toml$type[chdn[after + 1L]] == "comment"
+  tws <- if (multiline) {
+    sub("^.*\n", "", toml$tws[chdn[after]])
+  }
+  leading <- if (leading_newline) {
+    paste0("\n", tws)
+  }
+
   list(
     select = sel1,
     after = chdn[after],
-    code = ts_serialize_toml_value(new),
+    code = paste0(leading, ts_serialize_toml_value(new)),
     # need a leading comma if inserting at the end into non-empty array
     leading_comma = if (add_leading_comma) chdn[after_comma] else FALSE,
     # need a trailing comma everywhere except at the end or in an empty array
     trailing_comma = add_trailing_comma,
-    # if the next is a comment, it must be on a new line, keep it there
-    trailing_newline = toml$type[chdn[after + 1L]] == "comment"
+    trailing_newline = multiline,
+    tws = tws
   )
 }

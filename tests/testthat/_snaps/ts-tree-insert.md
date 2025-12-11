@@ -1,3 +1,50 @@
+# no selection
+
+    Code
+      toml <- ts_parse_toml(text = "a = 1\n")
+      ts_tree_insert(toml, 100, key = "x")
+    Output
+      # toml (3 lines)
+      1 | a = 1
+      2 | 
+      3 | x = 100.0
+
+---
+
+    Code
+      toml2 <- ts_parse_toml(text = "a = 1\n")
+      ts_tree_insert(ts_tree_select(toml2, "b"), toml2, 100, key = "x")
+    Output
+      # toml (1 line, 0 selected elements)
+      1 | a = 1
+
+# insert_into_document errors
+
+    Code
+      toml <- ts_parse_toml(text = "a = 1\n")
+      ts_tree_insert(toml, 100)
+    Condition
+      Error in `insert_into_document()`:
+      ! The `key` argument is required when inserting a key-value pair into the document.
+
+---
+
+    Code
+      toml <- ts_parse_toml(text = "a = 1\n")
+      ts_tree_insert(toml, key = c("a", "b"), 100)
+    Condition
+      Error in `insert_into_document()`:
+      ! The `key` argument must be a single string for now.
+
+---
+
+    Code
+      toml <- ts_parse_toml(text = "a = 1\n")
+      ts_tree_insert(toml, key = "a", 100)
+    Condition
+      Error in `insert_into_document()`:
+      ! Key `a` already exists in the document.
+
 # insert_into_document
 
     Code
@@ -64,6 +111,7 @@
 # insert_into_document array of tables
 
     Code
+      toml <- ts_parse_toml(text = "")
       ts_tree_insert(toml, key = "array_of_tables", list(list(a = 1, b = 2), list(a = 3)))
     Output
       # toml (6 lines)
@@ -73,6 +121,23 @@
       4 | 
       5 | [[array_of_tables]]
       6 | a = 3.0
+
+---
+
+    Code
+      toml <- ts_parse_toml(text = "[tab]\na = 1\n")
+      ts_tree_insert(toml, key = "array_of_tables", list(list(a = 1, b = 2), list(a = 3)))
+    Output
+      # toml (9 lines)
+      1 | [tab]
+      2 | a = 1
+      3 | 
+      4 | [[array_of_tables]]
+      5 | a = 1.0
+      6 | b = 2.0
+      7 | 
+      8 | [[array_of_tables]]
+      9 | a = 3.0
 
 # insert_into_array
 
@@ -109,12 +174,12 @@
       ts_tree_insert(ts_tree_select(toml2, "arr"), 100, at = 0)
     Output
       # toml (1 line)
-      1 | arr = [100.0,1, 2, 3]
+      1 | arr = [100.0, 1, 2, 3]
     Code
       ts_tree_insert(ts_tree_select(toml2, "arr"), 100, at = 1)
     Output
       # toml (1 line)
-      1 | arr = [1, 100.0,2, 3]
+      1 | arr = [1, 100.0, 2, 3]
     Code
       ts_tree_insert(ts_tree_select(toml2, "arr"), 100, at = Inf)
     Output
@@ -127,7 +192,7 @@
       ts_tree_insert(ts_tree_select(toml3, "arr"), 100, at = 0)
     Output
       # toml (1 line)
-      1 | arr = [100.0,0]
+      1 | arr = [100.0, 0]
     Code
       ts_tree_insert(ts_tree_select(toml3, "arr"), 100, at = 1)
     Output
@@ -140,12 +205,12 @@
       ts_tree_insert(ts_tree_select(toml4, "arr"), 100, at = 0)
     Output
       # toml (1 line)
-      1 | arr = [100.0,1,2]
+      1 | arr = [100.0, 1,2]
     Code
       ts_tree_insert(ts_tree_select(toml4, "arr"), 100, at = 1)
     Output
       # toml (1 line)
-      1 | arr = [1,100.0,2]
+      1 | arr = [1,100.0, 2]
     Code
       ts_tree_insert(ts_tree_select(toml4, "arr"), 100, at = 2)
     Output
@@ -158,12 +223,12 @@
       ts_tree_insert(ts_tree_select(toml5, "arr"), 100, at = 0)
     Output
       # toml (1 line)
-      1 | arr = [100.0,0,]
+      1 | arr = [100.0, 0,]
     Code
       ts_tree_insert(ts_tree_select(toml5, "arr"), 100, at = 1)
     Output
       # toml (1 line)
-      1 | arr = [0,100.0,]
+      1 | arr = [0,100.0, ]
 
 ---
 
@@ -171,17 +236,91 @@
       ts_tree_insert(ts_tree_select(toml6, "arr"), 100, at = 0)
     Output
       # toml (1 line)
-      1 | arr = [100.0,1,2,]
+      1 | arr = [100.0, 1,2,]
     Code
       ts_tree_insert(ts_tree_select(toml6, "arr"), 100, at = 1)
     Output
       # toml (1 line)
-      1 | arr = [1,100.0,2,]
+      1 | arr = [1,100.0, 2,]
     Code
       ts_tree_insert(ts_tree_select(toml6, "arr"), 100, at = 2)
     Output
       # toml (1 line)
-      1 | arr = [1,2,100.0,]
+      1 | arr = [1,2,100.0, ]
+
+# insert_into_array with comments
+
+    Code
+      toml <- ts_parse_toml(
+        "arr = [\n  # first\n  1, # end of first\n  # second\n  2\n]")
+      ts_tree_insert(ts_tree_select(toml, "arr"), 100, at = 0)
+    Output
+      # toml (7 lines)
+      1 | arr = [
+      2 |   # first
+      3 |   100.0, 
+      4 |   1, # end of first
+      5 |   # second
+      6 |   2
+      7 | ]
+    Code
+      ts_tree_insert(ts_tree_select(toml, "arr"), 200, at = 1)
+    Output
+      # toml (7 lines)
+      1 | arr = [
+      2 |   # first
+      3 |   1, # end of first
+      4 |   200.0, 
+      5 |   # second
+      6 |   2
+      7 | ]
+    Code
+      ts_tree_insert(ts_tree_select(toml, "arr"), 300, at = Inf)
+    Output
+      # toml (7 lines)
+      1 | arr = [
+      2 |   # first
+      3 |   1, # end of first
+      4 |   # second
+      5 |   2,
+      6 | 300.0
+      7 | ]
+
+---
+
+    Code
+      toml <- ts_parse_toml(
+        "arr = [\n  # 1\n  1# e1\n  #c\n  ,  # 2\n  2, # e2\n  # end\n]")
+      ts_tree_insert(ts_tree_select(toml, "arr"), 300, at = 1)
+    Output
+      # toml (10 lines)
+       1 | arr = [
+       2 |   # 1
+       3 |   1# e1
+       4 |   #c
+       5 |   ,  
+       6 |   300.0, 
+       7 |   # 2
+       8 |   2, # e2
+       9 |   # end
+      10 | ]
+
+---
+
+    Code
+      toml <- ts_parse_toml("arr = [\n  # 1\n  1# e1\n  ,  # 2\n  2\n  # end\n  ,\n]")
+      ts_tree_insert(ts_tree_select(toml, "arr"), 300, at = 2)
+    Output
+      # toml (9 lines)
+      1 | arr = [
+      2 |   # 1
+      3 |   1# e1
+      4 |   ,  # 2
+      5 |   2
+      6 |   # end
+      7 |   ,
+      8 | 300.0, 
+      9 | ]
 
 # insert_into_inline_table
 
@@ -189,23 +328,23 @@
       ts_tree_insert(ts_tree_select(toml, "it"), 13, key = "a")
     Output
       # toml (1 line)
-      1 | it = {a=13.0}
+      1 | it = {a = 13.0}
     Code
       ts_tree_insert(ts_tree_select(toml, "it"), "foobar", key = "b")
     Output
       # toml (1 line)
-      1 | it = {b="foobar"}
+      1 | it = {b = "foobar"}
     Code
       ts_tree_insert(ts_tree_select(toml, "it"), list(1, 2, 3), key = "c")
     Output
       # toml (1 line)
-      1 | it = {c=[ 1.0, 2.0, 3.0 ]}
+      1 | it = {c = [ 1.0, 2.0, 3.0 ]}
     Code
       ts_tree_insert(ts_tree_select(toml, "it"), structure(list(x = 10, y = 20),
       class = "ts_toml_inline_table"), key = "d")
     Output
       # toml (1 line)
-      1 | it = {d={ x = 10.0, y = 20.0 }}
+      1 | it = {d = { x = 10.0, y = 20.0 }}
 
 ---
 
@@ -213,22 +352,46 @@
       ts_tree_insert(ts_tree_select(toml2, "it"), 13, key = "c")
     Output
       # toml (1 line)
-      1 | it = {a = 1, b = 2,c=13.0}
+      1 | it = {a = 1, b = 2,c = 13.0}
     Code
       ts_tree_insert(ts_tree_select(toml2, "it"), 13, key = "c", at = 0)
     Output
       # toml (1 line)
-      1 | it = {c=13.0,a = 1, b = 2}
+      1 | it = {c = 13.0, a = 1, b = 2}
     Code
       ts_tree_insert(ts_tree_select(toml2, "it"), 13, key = "c", at = 1)
     Output
       # toml (1 line)
-      1 | it = {a = 1, c=13.0,b = 2}
+      1 | it = {a = 1, c = 13.0, b = 2}
     Code
       ts_tree_insert(ts_tree_select(toml2, "it"), 13, key = "c", at = Inf)
     Output
       # toml (1 line)
-      1 | it = {a = 1, b = 2,c=13.0}
+      1 | it = {a = 1, b = 2,c = 13.0}
+
+# insert_into_inline_table at w/ key
+
+    Code
+      toml <- ts_parse_toml(text = "it = {a = 1, b = 2, c = 3}")
+      ts_tree_insert(ts_tree_select(toml, "it"), 13, key = "x", at = "a")
+    Output
+      # toml (1 line)
+      1 | it = {a = 1, x = 13.0, b = 2, c = 3}
+    Code
+      ts_tree_insert(ts_tree_select(toml, "it"), 13, key = "x", at = "b")
+    Output
+      # toml (1 line)
+      1 | it = {a = 1, b = 2, x = 13.0, c = 3}
+    Code
+      ts_tree_insert(ts_tree_select(toml, "it"), 13, key = "x", at = "c")
+    Output
+      # toml (1 line)
+      1 | it = {a = 1, b = 2, c = 3,x = 13.0}
+    Code
+      ts_tree_insert(ts_tree_select(toml, "it"), 13, key = "x", at = "d")
+    Output
+      # toml (1 line)
+      1 | it = {a = 1, b = 2, c = 3,x = 13.0}
 
 # insert_into_table pair
 
@@ -279,6 +442,69 @@
       10 | 
       i 2 more lines
       i Use `print(n = ...)` to see more lines
+
+# insert_into_table errors
+
+    Code
+      toml <- ts_parse_toml(text = "[table]\na = 1\n")
+      ts_tree_insert(ts_tree_select(toml, "table"), 100)
+    Condition
+      Error in `insert_into_table()`:
+      ! The `key` argument is required when inserting a key-value pair into a table.
+
+---
+
+    Code
+      toml <- ts_parse_toml(text = "[table]\na = 1\n")
+      ts_tree_insert(ts_tree_select(toml, "table"), key = c("x", "y"), 100)
+    Condition
+      Error in `insert_into_table()`:
+      ! The `key` argument must be a single string for now.
+
+---
+
+    Code
+      toml <- ts_parse_toml(text = "[table]\na = 1\n")
+      ts_tree_insert(ts_tree_select(toml, "table"), key = "a", 100)
+    Condition
+      Error in `insert_into_table()`:
+      ! Key `a` already exists in the table.
+
+# insert_into_inline_table errors
+
+    Code
+      toml <- ts_parse_toml(text = "it = {a = 1, b = 2}")
+      ts_tree_insert(ts_tree_select(toml, "it"), 100)
+    Condition
+      Error in `insert_into_inline_table()`:
+      ! The `key` argument is required when inserting a key-value pair into an inline table.
+
+---
+
+    Code
+      toml <- ts_parse_toml(text = "it = {a = 1, b = 2}")
+      ts_tree_insert(ts_tree_select(toml, "it"), key = c("x", "y"), 100)
+    Condition
+      Error in `insert_into_inline_table()`:
+      ! The `key` argument must be a single string for now.
+
+---
+
+    Code
+      toml <- ts_parse_toml(text = "it = {a = 1, b = 2}")
+      ts_tree_insert(ts_tree_select(toml, "it"), key = "a", 100)
+    Condition
+      Error in `insert_into_inline_table()`:
+      ! Key `a` already exists in the inline table.
+
+---
+
+    Code
+      toml <- ts_parse_toml(text = "it = {a = 1, b = 2}")
+      ts_tree_insert(ts_tree_select(toml, "it"), key = "x", at = c("a", "b"), 100)
+    Condition
+      Error in `insert_into_inline_table()`:
+      ! The `at` argument must be a single string for now.
 
 # insert_into_subtable
 
@@ -341,6 +567,33 @@
       2 | [[a.b]]
       3 | c.d.e = 1
 
+# insert_into_subtable errors
+
+    Code
+      toml <- ts_parse_toml(text = "a.b = 1\n")
+      ts_tree_insert(ts_tree_select(toml, "a"), 100)
+    Condition
+      Error in `insert_into_subtable()`:
+      ! The `key` argument is required when inserting a key-value pair into a subtable.
+
+---
+
+    Code
+      toml <- ts_parse_toml(text = "a.b = 1\n")
+      ts_tree_insert(ts_tree_select(toml, "a"), key = c("x", "y"), 100)
+    Condition
+      Error in `insert_into_subtable()`:
+      ! The `key` argument must be a single string for now.
+
+---
+
+    Code
+      toml <- ts_parse_toml(text = "a.b = 1\n")
+      ts_tree_insert(ts_tree_select(toml, "a"), key = "b", 100)
+    Condition
+      Error in `insert_into_subtable()`:
+      ! Key `b` already exists in the subtable.
+
 # insert_into_aot_element
 
     Code
@@ -396,6 +649,36 @@
       4 | [[a]]
       5 | b=2
       6 | d = { x = 10.0, y = 20.0 }
+    Code
+      ts_tree_insert(ts_tree_select(toml, "a", 2), list(x = 10, y = 20), key = "subtable")
+    Output
+      # toml (9 lines)
+      1 | [[a]]
+      2 | b=1
+      3 | 
+      4 | [[a]]
+      5 | b=2
+      6 | 
+      7 | [a.subtable]
+      8 | x = 10.0
+      9 | y = 20.0
+    Code
+      print(ts_tree_insert(ts_tree_select(toml, "a", 2), list(list(x = 10, y = 20),
+      list(x = 5)), key = "aot"), n = 100)
+    Output
+      # toml (12 lines)
+       1 | [[a]]
+       2 | b=1
+       3 | 
+       4 | [[a]]
+       5 | b=2
+       6 | 
+       7 | [[a.aot]]
+       8 | x = 10.0
+       9 | y = 20.0
+      10 | 
+      11 | [[a.aot]]
+      12 | x = 5.0
 
 # insert_into_aot
 
