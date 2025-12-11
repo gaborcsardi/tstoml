@@ -97,7 +97,6 @@ opt_indent_style_default <- function() {
   "space"
 }
 
-
 #' tstoml options
 #'
 #' Options that control the behavior of tstoml functions.
@@ -247,10 +246,10 @@ as_toml_integer <- function(
 
 as_character <- function(x) {
   # TODO
-  x
+  x # nocov
 }
 
 as_existing_file <- function(x) {
   # TODO
-  x
+  x # nocov
 }

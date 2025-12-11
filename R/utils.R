@@ -56,6 +56,14 @@ last <- function(x) {
   x[[length(x)]]
 }
 
+plural <- function(x) {
+  if (x != 1) {
+    "s"
+  } else {
+    ""
+  }
+}
+
 # For roxygen2 -----------------------------------------------------------------
 
 # nocov start
