@@ -196,7 +196,7 @@ ts_tree_select(toml, "title") |> ts_tree_update("A New TOML Example")
 <source media="(prefers-color-scheme: dark)" srcset="man/figures/update-element-dark.svg">
 <img src="man/figures/update-element.svg" /> </picture>
 
-Update multiple emements at once:
+Update multiple elements at once:
 
 ``` r
 ts_tree_select(toml, "servers", c("alpha", "beta"), "ip") |>

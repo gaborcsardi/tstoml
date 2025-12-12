@@ -353,7 +353,7 @@ Update an existing element:
 }}
 
 
-Update multiple emements at once:
+Update multiple elements at once:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{ts_tree_select(toml, "servers", c("alpha", "beta"), "ip") |>
   ts_tree_update("192.168.1.23") |>

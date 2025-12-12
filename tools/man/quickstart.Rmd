@@ -128,7 +128,7 @@ Update an existing element:
 ts_tree_select(toml, "title") |> ts_tree_update("A New TOML Example")
 ```
 
-Update multiple emements at once:
+Update multiple elements at once:
 
 ```{asciicast}
 #| label: update-multiple
