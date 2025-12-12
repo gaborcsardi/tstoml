@@ -341,7 +341,7 @@ ts_tree_select(toml, "title") |> ts_tree_update("A New TOML Example")
     #> ℹ 13 more lines
     #> ℹ Use `print(n = ...)` to see more lines
 
-Update multiple emements at once:
+Update multiple elements at once:
 
 ``` r
 ts_tree_select(toml, "servers", c("alpha", "beta"), "ip") |>

@@ -297,7 +297,7 @@ Update an existing element:
     #> ℹ 13 more lines
     #> ℹ Use `print(n = ...)` to see more lines
 
-Update multiple emements at once:
+Update multiple elements at once:
 
     ts_tree_select(toml, "servers", c("alpha", "beta"), "ip") |>
       ts_tree_update("192.168.1.23") |>
