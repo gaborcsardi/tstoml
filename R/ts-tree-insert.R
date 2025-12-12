@@ -86,6 +86,9 @@ ts_tree_insert.ts_tree_toml <- function(
   fws <- new$end_byte %in% refmt_pos
   tofmt2 <- unique(new$parent[which(fws)])
 
+  # do not refortmat the whole document
+  tofmt2 <- setdiff(tofmt2, 1L)
+
   # auto format then each insertion might need a different format
   new <- ts_tree_select(new, I(tofmt2))
   options$insert_empty_line_before_tables <- FALSE
