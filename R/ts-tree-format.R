@@ -10,6 +10,7 @@
 #' @return The updated tstoml object.
 #'
 #' @export
+#' @keywords internal
 
 ts_tree_format.ts_tree_toml <- function(
   tree,

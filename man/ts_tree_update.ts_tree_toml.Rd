@@ -22,3 +22,4 @@ Replace all selected elements with a new element. If \code{toml} has no
 selection then the whole document is replaced. If \code{toml} has an empty
 selection, then nothing happens.
 }
+\keyword{internal}

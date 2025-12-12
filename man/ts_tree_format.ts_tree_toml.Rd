@@ -24,3 +24,4 @@ Format the selected TOML elements
 If \code{tree} does not have a selection, then all of it is formatted.
 If \code{tree} has an empty selection, then nothing happens.
 }
+\keyword{internal}

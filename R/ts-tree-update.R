@@ -11,6 +11,7 @@
 #'   [tstoml_options()]. Passed to [ts_serialize_toml_value()].
 #' @param ... Reserved for future use.
 #' @export
+#' @keywords internal
 
 ts_tree_update.ts_tree_toml <- function(tree, new, options = NULL, ...) {
   selection <- ts_tree_selection(tree)

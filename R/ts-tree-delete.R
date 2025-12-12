@@ -13,6 +13,7 @@
 #' @return Modified tstoml object.
 #'
 #' @export
+#' @keywords internal
 #' @examples
 #' library(ts)
 #' toml <- ts_parse_toml(text = toml_example_text())

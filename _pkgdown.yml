@@ -1,0 +1,51 @@
+url: https://gaborcsardi.github.io/tstoml/
+
+template:
+  package: tidytemplate
+  bootstrap: 5
+
+development:
+  mode: auto
+
+reference:
+- title: Quickstart
+  desc: |
+    * See [quickstart](quickstart.html) for a quick demonstration of tstoml.
+    * See `ts_serialize_toml()` to create TOML from R.
+    * See `ts_unserialize_toml()` to parse TOML into R.
+    * See `ts_parse_toml()`, `ts_tree_select()`, and
+      `ts_tree_unserialize()` to parse parts of TOML into R.
+    * See `ts_parse_toml()`, `ts_tree_select()`, `ts_tree_format()`,
+      and `ts_tree_write()` to format parts of a TOML file or string and
+      save it to a file.
+    * See `ts_parse_toml()`, `ts_read_toml()`, `ts_tree_select()`,
+      `ts_tree_delete()`, `ts_tree_insert()`, `ts_tree_update()`, and
+      `ts_tree_write()` to edit a TOML file or string and save it to a file.
+
+- title: Parsing
+- contents:
+  - ts_parse_toml
+  - ts_read_toml
+  - ts_language_toml
+
+- title: Serialization
+- contents:
+  - ts_serialize_toml
+  - ts_serialize_toml_value
+  - ts_unserialize_toml
+
+- title: Formatting
+- contents:
+  - ts_format_toml
+
+- title: Utilities
+- contents:
+  - toml_example_text
+
+- title: Options
+- contents:
+  - tstoml_options
+
+- title: internal
+  contents:
+  - quickstart
