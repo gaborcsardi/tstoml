@@ -12,7 +12,7 @@ asciicast::init_knitr_engine(
 knitr::opts_chunk$set(
   asciicast_knitr_output = "html",
   asciicast_include_style = FALSE,
-  cache = TRUE,
+  cache = FALSE,
   cache.path = file.path(getwd(), "man/_cache/"),
   fig.path = file.path(getwd(), "man/figures"),
   error = TRUE

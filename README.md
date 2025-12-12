@@ -117,15 +117,96 @@ ts_tree_select(toml, "owner", c("name", "dob"))
 
 ### Delete elements
 
-TODO
+Delete selected elements:
+
+``` r
+ts_tree_select(toml, "owner", "name") |> ts_tree_delete()
+```
+
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="man/figures/delete-elements-dark.svg">
+<img src="man/figures/delete-elements.svg" /> </picture>
 
 ### Insert elements
 
-TODO
+Insert a key-value pair into the document:
+
+``` r
+ts_tree_insert(toml, key = "new_key", "new_value")
+```
+
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="man/figures/insert-pair-document-dark.svg">
+<img src="man/figures/insert-pair-document.svg" /> </picture>
+
+Insert a key-value pair into a table:
+
+``` r
+ts_tree_select(toml, "owner") |> ts_tree_insert(key = "dpt", "Engineering")
+```
+
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="man/figures/insert-pair-table-dark.svg">
+<img src="man/figures/insert-pair-table.svg" /> </picture>
+
+Insert an element into an array:
+
+``` r
+ts_tree_select(toml, "database", "ports") |>
+  ts_tree_insert(10000L) |>
+  print(n = 100)
+```
+
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="man/figures/insert-element-array-dark.svg">
+<img src="man/figures/insert-element-array.svg" /> </picture>
+
+Insert a new table into the document:
+
+``` r
+ts_tree_insert(toml, key = "new_table", list(a = 1, b = 2)) |>
+  print(n = 100)
+```
+
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="man/figures/insert-table-document-dark.svg">
+<img src="man/figures/insert-table-document.svg" /> </picture>
+
+Insert a new array of tables into the document:
+
+``` r
+ts_tree_insert(toml, key = "new_aot",
+  list(list(x = 1), list(x = 2))) |>
+  print(n = 100)
+```
+
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="man/figures/insert-aot-document-dark.svg">
+<img src="man/figures/insert-aot-document.svg" /> </picture>
 
 ### Update elements
 
-TODO
+Update an existing element:
+
+``` r
+ts_tree_select(toml, "title") |> ts_tree_update("A New TOML Example")
+```
+
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="man/figures/update-element-dark.svg">
+<img src="man/figures/update-element.svg" /> </picture>
+
+Update multiple emements at once:
+
+``` r
+ts_tree_select(toml, "servers", c("alpha", "beta"), "ip") |>
+  ts_tree_update("192.168.1.23") |>
+  print(n = 100)
+```
+
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="man/figures/update-multiple-dark.svg">
+<img src="man/figures/update-multiple.svg" /> </picture>
 
 # License
 

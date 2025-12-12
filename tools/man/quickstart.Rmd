@@ -74,12 +74,65 @@ ts_tree_select(toml, "owner", c("name", "dob"))
 
 ### Delete elements
 
-TODO
+Delete selected elements:
+
+```{asciicast}
+#| label: delete-elements
+ts_tree_select(toml, "owner", "name") |> ts_tree_delete()
+```
 
 ### Insert elements
 
-TODO
+Insert a key-value pair into the document:
+
+```{asciicast}
+#| label: insert-pair-document
+ts_tree_insert(toml, key = "new_key", "new_value")
+```
+
+Insert a key-value pair into a table:
+```{asciicast}
+#| label: insert-pair-table
+ts_tree_select(toml, "owner") |> ts_tree_insert(key = "dpt", "Engineering")
+```
+
+Insert an element into an array:
+```{asciicast}
+#| label: insert-element-array
+ts_tree_select(toml, "database", "ports") |>
+  ts_tree_insert(10000L) |>
+  print(n = 100)
+```
+
+Insert a new table into the document:
+```{asciicast}
+#| label: insert-table-document
+ts_tree_insert(toml, key = "new_table", list(a = 1, b = 2)) |>
+  print(n = 100)
+```
+
+Insert a new array of tables into the document:
+```{asciicast}
+#| label: insert-aot-document
+ts_tree_insert(toml, key = "new_aot",
+  list(list(x = 1), list(x = 2))) |>
+  print(n = 100)
+```
 
 ### Update elements
 
-TODO
+Update an existing element:
+
+```{asciicast}
+#| label: update-element
+ts_tree_select(toml, "title") |> ts_tree_update("A New TOML Example")
+```
+
+Update multiple emements at once:
+
+```{asciicast}
+#| label: update-multiple
+ts_tree_select(toml, "servers", c("alpha", "beta"), "ip") |>
+  ts_tree_update("192.168.1.23") |>
+  print(n = 100)
+```
