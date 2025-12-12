@@ -133,7 +133,7 @@ format_table <- function(tree, id, options) {
   hdr <- paste(na_omit(tree$code[hdr_chld]), collapse = "")
   chld <- tree$children[[id]][-(1:3)]
   c(
-    "",
+    if (!is_false(options$insert_empty_line_before_tables)) "",
     paste0("[", hdr, "]"),
     unlist(lapply(chld, format_element, tree = tree, options = options))
   )
@@ -153,7 +153,7 @@ format_table_array_element <- function(tree, id, options) {
   hdr <- paste(na_omit(tree$code[hdr_chld]), collapse = "")
   chld <- tree$children[[id]][-(1:3)]
   c(
-    "",
+    if (!is_false(options$insert_empty_line_before_tables)) "",
     paste0("[[", hdr, "]]"),
     unlist(lapply(chld, format_element, tree = tree, options = options))
   )

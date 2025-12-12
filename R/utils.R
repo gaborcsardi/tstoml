@@ -6,6 +6,10 @@
   }
 }
 
+is_false <- function(x) {
+  is.logical(x) && length(x) == 1L && !is.na(x) && !x
+}
+
 named_list <- function(n = 0) {
   structure(vector("list", n), names = character(n))
 }

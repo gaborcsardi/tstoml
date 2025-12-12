@@ -119,7 +119,9 @@ as_tstoml_options <- function(
 ) {
   nms <- c(
     "indent_width",
-    "indent_style"
+    "indent_style",
+    # this is internal only
+    internal = "insert_empty_line_before_tables"
   )
   if (
     (is.list(x) || is.null(x)) &&
@@ -167,7 +169,7 @@ as_tstoml_options <- function(
   }
 
   bad <- paste0("`", unique(setdiff(names(x), nms)), "`")
-  good <- paste0("`", nms, "`")
+  good <- paste0("`", nms[names(nms) != "internal"], "`")
   stop(ts_cnd(
     call = call,
     "Invalid argument: `{arg}` contains unknown tsjsonc \\

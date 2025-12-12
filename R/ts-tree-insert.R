@@ -88,6 +88,7 @@ ts_tree_insert.ts_tree_toml <- function(
 
   # auto format then each insertion might need a different format
   new <- ts_tree_select(new, I(tofmt2))
+  options$insert_empty_line_before_tables <- FALSE
   new <- ts_tree_format(new, options = options)
 
   new
