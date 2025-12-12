@@ -215,17 +215,235 @@
 <div class="section level3">
 <h3 id="delete-elements">Delete elements<a class="anchor" aria-label="anchor" href="#delete-elements"></a>
 </h3>
-<p>TODO</p>
+<p>Delete selected elements:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ts_tree_select</span><span class="op">(</span><span class="va">toml</span>, <span class="st">"owner"</span>, <span class="st">"name"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">ts_tree_delete</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre>
+#&gt; <span style="color: #525252;"># toml (22 lines)</span>
+#&gt; <span style="color: #525252;"> 1 | </span># This is a TOML document
+#&gt; <span style="color: #525252;"> 2 | </span>
+#&gt; <span style="color: #525252;"> 3 | </span>title = "TOML Example"
+#&gt; <span style="color: #525252;"> 4 | </span>
+#&gt; <span style="color: #525252;"> 5 | </span>[owner]
+#&gt; <span style="color: #525252;"> 6 | </span>dob = 1979-05-27T07:32:00-08:00
+#&gt; <span style="color: #525252;"> 7 | </span>
+#&gt; <span style="color: #525252;"> 8 | </span>[database]
+#&gt; <span style="color: #525252;"> 9 | </span>enabled = true
+#&gt; <span style="color: #525252;">10 | </span>ports = [ 8000, 8001, 8002 ]
+#&gt; <span style="color: #525252;">ℹ 12 more lines</span>
+#&gt; <span style="color: #525252;">ℹ Use `print(n = ...)` to see more lines</span>
+</pre>
+</div>
 </div>
 <div class="section level3">
 <h3 id="insert-elements">Insert elements<a class="anchor" aria-label="anchor" href="#insert-elements"></a>
 </h3>
-<p>TODO</p>
+<p>Insert a key-value pair into the document:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ts_tree_insert</span><span class="op">(</span><span class="va">toml</span>, key <span class="op">=</span> <span class="st">"new_key"</span>, <span class="st">"new_value"</span><span class="op">)</span></span></code></pre></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre>
+#&gt; <span style="color: #525252;"># toml (25 lines)</span>
+#&gt; <span style="color: #525252;"> 1 | </span># This is a TOML document
+#&gt; <span style="color: #525252;"> 2 | </span>
+#&gt; <span style="color: #525252;"> 3 | </span>title = "TOML Example"
+#&gt; <span style="color: #525252;"> 4 | </span>
+#&gt; <span style="color: #525252;"> 5 | </span>
+#&gt; <span style="color: #525252;"> 6 | </span>new_key = "new_value"
+#&gt; <span style="color: #525252;"> 7 | </span>[owner]
+#&gt; <span style="color: #525252;"> 8 | </span>name = "Tom Preston-Werner"
+#&gt; <span style="color: #525252;"> 9 | </span>dob = 1979-05-27T07:32:00-08:00
+#&gt; <span style="color: #525252;">10 | </span>
+#&gt; <span style="color: #525252;">ℹ 15 more lines</span>
+#&gt; <span style="color: #525252;">ℹ Use `print(n = ...)` to see more lines</span>
+</pre>
+</div>
+<p>Insert a key-value pair into a table:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ts_tree_select</span><span class="op">(</span><span class="va">toml</span>, <span class="st">"owner"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">ts_tree_insert</span><span class="op">(</span>key <span class="op">=</span> <span class="st">"dpt"</span>, <span class="st">"Engineering"</span><span class="op">)</span></span></code></pre></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre>
+#&gt; <span style="color: #525252;"># toml (24 lines)</span>
+#&gt; <span style="color: #525252;"> 1 | </span># This is a TOML document
+#&gt; <span style="color: #525252;"> 2 | </span>
+#&gt; <span style="color: #525252;"> 3 | </span>title = "TOML Example"
+#&gt; <span style="color: #525252;"> 4 | </span>
+#&gt; <span style="color: #525252;"> 5 | </span>[owner]
+#&gt; <span style="color: #525252;"> 6 | </span>name = "Tom Preston-Werner"
+#&gt; <span style="color: #525252;"> 7 | </span>dob = 1979-05-27T07:32:00-08:00
+#&gt; <span style="color: #525252;"> 8 | </span>dpt = "Engineering"
+#&gt; <span style="color: #525252;"> 9 | </span>
+#&gt; <span style="color: #525252;">10 | </span>[database]
+#&gt; <span style="color: #525252;">ℹ 14 more lines</span>
+#&gt; <span style="color: #525252;">ℹ Use `print(n = ...)` to see more lines</span>
+</pre>
+</div>
+<p>Insert an element into an array:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ts_tree_select</span><span class="op">(</span><span class="va">toml</span>, <span class="st">"database"</span>, <span class="st">"ports"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">ts_tree_insert</span><span class="op">(</span><span class="fl">10000L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre>
+#&gt; <span style="color: #525252;"># toml (23 lines)</span>
+#&gt; <span style="color: #525252;"> 1 | </span># This is a TOML document
+#&gt; <span style="color: #525252;"> 2 | </span>
+#&gt; <span style="color: #525252;"> 3 | </span>title = "TOML Example"
+#&gt; <span style="color: #525252;"> 4 | </span>
+#&gt; <span style="color: #525252;"> 5 | </span>[owner]
+#&gt; <span style="color: #525252;"> 6 | </span>name = "Tom Preston-Werner"
+#&gt; <span style="color: #525252;"> 7 | </span>dob = 1979-05-27T07:32:00-08:00
+#&gt; <span style="color: #525252;"> 8 | </span>
+#&gt; <span style="color: #525252;"> 9 | </span>[database]
+#&gt; <span style="color: #525252;">10 | </span>enabled = true
+#&gt; <span style="color: #525252;">11 | </span>ports = [ 8000, 8001, 8002, 10000 ]
+#&gt; <span style="color: #525252;">12 | </span>data = [ ["delta", "phi"], [3.14] ]
+#&gt; <span style="color: #525252;">13 | </span>temp_targets = { cpu = 79.5, case = 72.0 }
+#&gt; <span style="color: #525252;">14 | </span>
+#&gt; <span style="color: #525252;">15 | </span>[servers]
+#&gt; <span style="color: #525252;">16 | </span>
+#&gt; <span style="color: #525252;">17 | </span>[servers.alpha]
+#&gt; <span style="color: #525252;">18 | </span>ip = "10.0.0.1"
+#&gt; <span style="color: #525252;">19 | </span>role = "frontend"
+#&gt; <span style="color: #525252;">20 | </span>
+#&gt; <span style="color: #525252;">21 | </span>[servers.beta]
+#&gt; <span style="color: #525252;">22 | </span>ip = "10.0.0.2"
+#&gt; <span style="color: #525252;">23 | </span>role = "backend"
+</pre>
+</div>
+<p>Insert a new table into the document:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ts_tree_insert</span><span class="op">(</span><span class="va">toml</span>, key <span class="op">=</span> <span class="st">"new_table"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre>
+#&gt; <span style="color: #525252;"># toml (27 lines)</span>
+#&gt; <span style="color: #525252;"> 1 | </span># This is a TOML document
+#&gt; <span style="color: #525252;"> 2 | </span>
+#&gt; <span style="color: #525252;"> 3 | </span>title = "TOML Example"
+#&gt; <span style="color: #525252;"> 4 | </span>
+#&gt; <span style="color: #525252;"> 5 | </span>[owner]
+#&gt; <span style="color: #525252;"> 6 | </span>name = "Tom Preston-Werner"
+#&gt; <span style="color: #525252;"> 7 | </span>dob = 1979-05-27T07:32:00-08:00
+#&gt; <span style="color: #525252;"> 8 | </span>
+#&gt; <span style="color: #525252;"> 9 | </span>[database]
+#&gt; <span style="color: #525252;">10 | </span>enabled = true
+#&gt; <span style="color: #525252;">11 | </span>ports = [ 8000, 8001, 8002 ]
+#&gt; <span style="color: #525252;">12 | </span>data = [ ["delta", "phi"], [3.14] ]
+#&gt; <span style="color: #525252;">13 | </span>temp_targets = { cpu = 79.5, case = 72.0 }
+#&gt; <span style="color: #525252;">14 | </span>
+#&gt; <span style="color: #525252;">15 | </span>[servers]
+#&gt; <span style="color: #525252;">16 | </span>
+#&gt; <span style="color: #525252;">17 | </span>[servers.alpha]
+#&gt; <span style="color: #525252;">18 | </span>ip = "10.0.0.1"
+#&gt; <span style="color: #525252;">19 | </span>role = "frontend"
+#&gt; <span style="color: #525252;">20 | </span>
+#&gt; <span style="color: #525252;">21 | </span>[servers.beta]
+#&gt; <span style="color: #525252;">22 | </span>ip = "10.0.0.2"
+#&gt; <span style="color: #525252;">23 | </span>role = "backend"
+#&gt; <span style="color: #525252;">24 | </span>
+#&gt; <span style="color: #525252;">25 | </span>[new_table]
+#&gt; <span style="color: #525252;">26 | </span>a = 1.0
+#&gt; <span style="color: #525252;">27 | </span>b = 2.0
+</pre>
+</div>
+<p>Insert a new array of tables into the document:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ts_tree_insert</span><span class="op">(</span><span class="va">toml</span>, key <span class="op">=</span> <span class="st">"new_aot"</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre>
+#&gt; <span style="color: #525252;"># toml (29 lines)</span>
+#&gt; <span style="color: #525252;"> 1 | </span># This is a TOML document
+#&gt; <span style="color: #525252;"> 2 | </span>
+#&gt; <span style="color: #525252;"> 3 | </span>title = "TOML Example"
+#&gt; <span style="color: #525252;"> 4 | </span>
+#&gt; <span style="color: #525252;"> 5 | </span>[owner]
+#&gt; <span style="color: #525252;"> 6 | </span>name = "Tom Preston-Werner"
+#&gt; <span style="color: #525252;"> 7 | </span>dob = 1979-05-27T07:32:00-08:00
+#&gt; <span style="color: #525252;"> 8 | </span>
+#&gt; <span style="color: #525252;"> 9 | </span>[database]
+#&gt; <span style="color: #525252;">10 | </span>enabled = true
+#&gt; <span style="color: #525252;">11 | </span>ports = [ 8000, 8001, 8002 ]
+#&gt; <span style="color: #525252;">12 | </span>data = [ ["delta", "phi"], [3.14] ]
+#&gt; <span style="color: #525252;">13 | </span>temp_targets = { cpu = 79.5, case = 72.0 }
+#&gt; <span style="color: #525252;">14 | </span>
+#&gt; <span style="color: #525252;">15 | </span>[servers]
+#&gt; <span style="color: #525252;">16 | </span>
+#&gt; <span style="color: #525252;">17 | </span>[servers.alpha]
+#&gt; <span style="color: #525252;">18 | </span>ip = "10.0.0.1"
+#&gt; <span style="color: #525252;">19 | </span>role = "frontend"
+#&gt; <span style="color: #525252;">20 | </span>
+#&gt; <span style="color: #525252;">21 | </span>[servers.beta]
+#&gt; <span style="color: #525252;">22 | </span>ip = "10.0.0.2"
+#&gt; <span style="color: #525252;">23 | </span>role = "backend"
+#&gt; <span style="color: #525252;">24 | </span>
+#&gt; <span style="color: #525252;">25 | </span>[[new_aot]]
+#&gt; <span style="color: #525252;">26 | </span>x = 1.0
+#&gt; <span style="color: #525252;">27 | </span>
+#&gt; <span style="color: #525252;">28 | </span>[[new_aot]]
+#&gt; <span style="color: #525252;">29 | </span>x = 2.0
+</pre>
+</div>
 </div>
 <div class="section level3">
 <h3 id="update-elements">Update elements<a class="anchor" aria-label="anchor" href="#update-elements"></a>
 </h3>
-<p>TODO</p>
+<p>Update an existing element:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ts_tree_select</span><span class="op">(</span><span class="va">toml</span>, <span class="st">"title"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">ts_tree_update</span><span class="op">(</span><span class="st">"A New TOML Example"</span><span class="op">)</span></span></code></pre></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre>
+#&gt; <span style="color: #525252;"># toml (23 lines)</span>
+#&gt; <span style="color: #525252;"> 1 | </span># This is a TOML document
+#&gt; <span style="color: #525252;"> 2 | </span>
+#&gt; <span style="color: #525252;"> 3 | </span>title = "A New TOML Example"
+#&gt; <span style="color: #525252;"> 4 | </span>
+#&gt; <span style="color: #525252;"> 5 | </span>[owner]
+#&gt; <span style="color: #525252;"> 6 | </span>name = "Tom Preston-Werner"
+#&gt; <span style="color: #525252;"> 7 | </span>dob = 1979-05-27T07:32:00-08:00
+#&gt; <span style="color: #525252;"> 8 | </span>
+#&gt; <span style="color: #525252;"> 9 | </span>[database]
+#&gt; <span style="color: #525252;">10 | </span>enabled = true
+#&gt; <span style="color: #525252;">ℹ 13 more lines</span>
+#&gt; <span style="color: #525252;">ℹ Use `print(n = ...)` to see more lines</span>
+</pre>
+</div>
+<p>Update multiple emements at once:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ts_tree_select</span><span class="op">(</span><span class="va">toml</span>, <span class="st">"servers"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"alpha"</span>, <span class="st">"beta"</span><span class="op">)</span>, <span class="st">"ip"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">ts_tree_update</span><span class="op">(</span><span class="st">"192.168.1.23"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre>
+#&gt; <span style="color: #525252;"># toml (23 lines)</span>
+#&gt; <span style="color: #525252;"> 1 | </span># This is a TOML document
+#&gt; <span style="color: #525252;"> 2 | </span>
+#&gt; <span style="color: #525252;"> 3 | </span>title = "TOML Example"
+#&gt; <span style="color: #525252;"> 4 | </span>
+#&gt; <span style="color: #525252;"> 5 | </span>[owner]
+#&gt; <span style="color: #525252;"> 6 | </span>name = "Tom Preston-Werner"
+#&gt; <span style="color: #525252;"> 7 | </span>dob = 1979-05-27T07:32:00-08:00
+#&gt; <span style="color: #525252;"> 8 | </span>
+#&gt; <span style="color: #525252;"> 9 | </span>[database]
+#&gt; <span style="color: #525252;">10 | </span>enabled = true
+#&gt; <span style="color: #525252;">11 | </span>ports = [ 8000, 8001, 8002 ]
+#&gt; <span style="color: #525252;">12 | </span>data = [ ["delta", "phi"], [3.14] ]
+#&gt; <span style="color: #525252;">13 | </span>temp_targets = { cpu = 79.5, case = 72.0 }
+#&gt; <span style="color: #525252;">14 | </span>
+#&gt; <span style="color: #525252;">15 | </span>[servers]
+#&gt; <span style="color: #525252;">16 | </span>
+#&gt; <span style="color: #525252;">17 | </span>[servers.alpha]
+#&gt; <span style="color: #525252;">18 | </span>ip = "192.168.1.23"
+#&gt; <span style="color: #525252;">19 | </span>role = "frontend"
+#&gt; <span style="color: #525252;">20 | </span>
+#&gt; <span style="color: #525252;">21 | </span>[servers.beta]
+#&gt; <span style="color: #525252;">22 | </span>ip = "192.168.1.23"
+#&gt; <span style="color: #525252;">23 | </span>role = "backend"
+</pre>
+</div>
 </div>
 </div>
 </div>
