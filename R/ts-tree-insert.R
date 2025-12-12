@@ -69,9 +69,26 @@ ts_tree_insert.ts_tree_toml <- function(
   parts <- c(rbind(tree$code, tree$tws))
   text <- unlist(lapply(na_omit(parts), charToRaw))
 
+  # get the reformatting positions and remove the marks
+  # (the toml parser does not handle the \f reformatting mark)
+
+  refmt_pos <- grepRaw(reformat_mark, text, fixed = TRUE, all = TRUE)
+  if (length(refmt_pos) > 0) {
+    text <- text[-refmt_pos]
+    refmt_pos <- refmt_pos - seq_along(refmt_pos)
+  }
+
   # TODO: update coordinates without reparsing
   new <- ts_parse_toml(text = text)
   attr(new, "file") <- attr(tree, "file")
+
+  # now reformat the new parts, or the newly non-empty arrays/objects
+  fws <- new$end_byte %in% refmt_pos
+  tofmt2 <- unique(new$parent[which(fws)])
+
+  # auto format then each insertion might need a different format
+  new <- ts_tree_select(new, I(tofmt2))
+  new <- ts_tree_format(new, options = options)
 
   new
 }
@@ -90,8 +107,9 @@ last_dom_descendant <- function(toml, node) {
   node
 }
 
-# reformat_mark <- "\f"
-reformat_mark <- ""
+# this has to be a single byte for TOML!
+reformat_mark <- "\f"
+stopifnot(nchar(reformat_mark, type = "bytes") == 1)
 
 # ------------------------------------------------------------------------------
 
@@ -525,7 +543,6 @@ insert_into_array <- function(toml, sel1, new, key = key, at = at) {
     idx[at]
   }
 
-  leading_newline <- FALSE
   if (
     toml$type[chdn[after + 1L]] == "," &&
       toml$type[chdn[after + 2L]] == "comment" &&
@@ -546,7 +563,6 @@ insert_into_array <- function(toml, sel1, new, key = key, at = at) {
     # maybe a comma
     if (toml$type[chdn[after + 1L]] == ",") {
       after <- after + 1L
-      leading_newline <- TRUE
     }
   } else if (toml$type[chdn[after + 1L]] == ",") {
     # skip comma w/o comment on the same line
@@ -569,25 +585,14 @@ insert_into_array <- function(toml, sel1, new, key = key, at = at) {
   add_trailing_comma <- (at < nchdn && nchdn > 0) ||
     (at >= nchdn && has_trailing_comma)
 
-  # if the next is a comment, it must be on a new line, keep it there
-  multiline <- toml$start_row[sel1] != toml$end_row[sel1] ||
-    toml$type[chdn[after + 1L]] == "comment"
-  tws <- if (multiline) {
-    sub("^.*\n", "", toml$tws[chdn[after]])
-  }
-  leading <- if (leading_newline) {
-    paste0("\n", tws)
-  }
-
   list(
     select = sel1,
     after = chdn[after],
-    code = paste0(leading, ts_serialize_toml_value(new)),
+    code = ts_serialize_toml_value(new),
     # need a leading comma if inserting at the end into non-empty array
     leading_comma = if (add_leading_comma) chdn[after_comma] else FALSE,
     # need a trailing comma everywhere except at the end or in an empty array
     trailing_comma = add_trailing_comma,
-    trailing_newline = multiline,
-    tws = tws
+    trailing_newline = toml$type[chdn[after + 1L]] == "comment"
   )
 }

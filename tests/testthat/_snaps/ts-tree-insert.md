@@ -145,23 +145,23 @@
       ts_tree_insert(ts_tree_select(toml, "arr"), 0)
     Output
       # toml (1 line)
-      1 | arr = [0.0]
+      1 | arr = [ 0.0 ]
     Code
       ts_tree_insert(ts_tree_select(toml, "arr"), "foobar")
     Output
       # toml (1 line)
-      1 | arr = ["foobar"]
+      1 | arr = [ "foobar" ]
     Code
       ts_tree_insert(ts_tree_select(toml, "arr"), list(1, 2, 3))
     Output
       # toml (1 line)
-      1 | arr = [[ 1.0, 2.0, 3.0 ]]
+      1 | arr = [ [ 1.0, 2.0, 3.0 ] ]
     Code
       ts_tree_insert(ts_tree_select(toml, "arr"), structure(list(x = 10, y = 20),
       class = "ts_toml_inline_table"))
     Output
       # toml (1 line)
-      1 | arr = [{ x = 10.0, y = 20.0 }]
+      1 | arr = [ { x = 10.0, y = 20.0 } ]
 
 ---
 
@@ -169,22 +169,22 @@
       ts_tree_insert(ts_tree_select(toml2, "arr"), 100)
     Output
       # toml (1 line)
-      1 | arr = [1, 2, 3,100.0]
+      1 | arr = [ 1, 2, 3, 100.0 ]
     Code
       ts_tree_insert(ts_tree_select(toml2, "arr"), 100, at = 0)
     Output
       # toml (1 line)
-      1 | arr = [100.0, 1, 2, 3]
+      1 | arr = [ 100.0, 1, 2, 3 ]
     Code
       ts_tree_insert(ts_tree_select(toml2, "arr"), 100, at = 1)
     Output
       # toml (1 line)
-      1 | arr = [1, 100.0, 2, 3]
+      1 | arr = [ 1, 100.0, 2, 3 ]
     Code
       ts_tree_insert(ts_tree_select(toml2, "arr"), 100, at = Inf)
     Output
       # toml (1 line)
-      1 | arr = [1, 2, 3,100.0]
+      1 | arr = [ 1, 2, 3, 100.0 ]
 
 ---
 
@@ -192,12 +192,12 @@
       ts_tree_insert(ts_tree_select(toml3, "arr"), 100, at = 0)
     Output
       # toml (1 line)
-      1 | arr = [100.0, 0]
+      1 | arr = [ 100.0, 0 ]
     Code
       ts_tree_insert(ts_tree_select(toml3, "arr"), 100, at = 1)
     Output
       # toml (1 line)
-      1 | arr = [0,100.0]
+      1 | arr = [ 0, 100.0 ]
 
 ---
 
@@ -205,17 +205,17 @@
       ts_tree_insert(ts_tree_select(toml4, "arr"), 100, at = 0)
     Output
       # toml (1 line)
-      1 | arr = [100.0, 1,2]
+      1 | arr = [ 100.0, 1, 2 ]
     Code
       ts_tree_insert(ts_tree_select(toml4, "arr"), 100, at = 1)
     Output
       # toml (1 line)
-      1 | arr = [1,100.0, 2]
+      1 | arr = [ 1, 100.0, 2 ]
     Code
       ts_tree_insert(ts_tree_select(toml4, "arr"), 100, at = 2)
     Output
       # toml (1 line)
-      1 | arr = [1,2,100.0]
+      1 | arr = [ 1, 2, 100.0 ]
 
 ---
 
@@ -223,12 +223,12 @@
       ts_tree_insert(ts_tree_select(toml5, "arr"), 100, at = 0)
     Output
       # toml (1 line)
-      1 | arr = [100.0, 0,]
+      1 | arr = [ 100.0, 0,  ]
     Code
       ts_tree_insert(ts_tree_select(toml5, "arr"), 100, at = 1)
     Output
       # toml (1 line)
-      1 | arr = [0,100.0, ]
+      1 | arr = [ 0, 100.0,  ]
 
 ---
 
@@ -236,17 +236,17 @@
       ts_tree_insert(ts_tree_select(toml6, "arr"), 100, at = 0)
     Output
       # toml (1 line)
-      1 | arr = [100.0, 1,2,]
+      1 | arr = [ 100.0, 1, 2,  ]
     Code
       ts_tree_insert(ts_tree_select(toml6, "arr"), 100, at = 1)
     Output
       # toml (1 line)
-      1 | arr = [1,100.0, 2,]
+      1 | arr = [ 1, 100.0, 2,  ]
     Code
       ts_tree_insert(ts_tree_select(toml6, "arr"), 100, at = 2)
     Output
       # toml (1 line)
-      1 | arr = [1,2,100.0, ]
+      1 | arr = [ 1, 2, 100.0,  ]
 
 # insert_into_array with comments
 
@@ -257,33 +257,33 @@
     Output
       # toml (7 lines)
       1 | arr = [
-      2 |   # first
-      3 |   100.0, 
-      4 |   1, # end of first
-      5 |   # second
-      6 |   2
+      2 |     # first
+      3 |     100.0, 
+      4 |     1,  # end of first
+      5 |     # second
+      6 |     2
       7 | ]
     Code
       ts_tree_insert(ts_tree_select(toml, "arr"), 200, at = 1)
     Output
       # toml (7 lines)
       1 | arr = [
-      2 |   # first
-      3 |   1, # end of first
-      4 |   200.0, 
-      5 |   # second
-      6 |   2
+      2 |     # first
+      3 |     1,  # end of first
+      4 |     200.0, 
+      5 |     # second
+      6 |     2
       7 | ]
     Code
       ts_tree_insert(ts_tree_select(toml, "arr"), 300, at = Inf)
     Output
       # toml (7 lines)
       1 | arr = [
-      2 |   # first
-      3 |   1, # end of first
-      4 |   # second
-      5 |   2,
-      6 | 300.0
+      2 |     # first
+      3 |     1,  # end of first
+      4 |     # second
+      5 |     2, 
+      6 |     300.0
       7 | ]
 
 ---
@@ -295,14 +295,14 @@
     Output
       # toml (10 lines)
        1 | arr = [
-       2 |   # 1
-       3 |   1# e1
-       4 |   #c
-       5 |   ,  
-       6 |   300.0, 
-       7 |   # 2
-       8 |   2, # e2
-       9 |   # end
+       2 |     # 1
+       3 |     1 # e1
+       4 |     # c
+       5 |     , 
+       6 |     300.0, 
+       7 |     # 2
+       8 |     2,  # e2
+       9 |     # end
       10 | ]
 
 ---
@@ -313,13 +313,13 @@
     Output
       # toml (9 lines)
       1 | arr = [
-      2 |   # 1
-      3 |   1# e1
-      4 |   ,  # 2
-      5 |   2
-      6 |   # end
-      7 |   ,
-      8 | 300.0, 
+      2 |     # 1
+      3 |     1 # e1
+      4 |     ,  # 2
+      5 |     2
+      6 |     # end
+      7 |     , 
+      8 |     300.0, 
       9 | ]
 
 # insert_into_inline_table
@@ -328,23 +328,23 @@
       ts_tree_insert(ts_tree_select(toml, "it"), 13, key = "a")
     Output
       # toml (1 line)
-      1 | it = {a = 13.0}
+      1 | it = { a = 13.0 }
     Code
       ts_tree_insert(ts_tree_select(toml, "it"), "foobar", key = "b")
     Output
       # toml (1 line)
-      1 | it = {b = "foobar"}
+      1 | it = { b = "foobar" }
     Code
       ts_tree_insert(ts_tree_select(toml, "it"), list(1, 2, 3), key = "c")
     Output
       # toml (1 line)
-      1 | it = {c = [ 1.0, 2.0, 3.0 ]}
+      1 | it = { c = [ 1.0, 2.0, 3.0 ] }
     Code
       ts_tree_insert(ts_tree_select(toml, "it"), structure(list(x = 10, y = 20),
       class = "ts_toml_inline_table"), key = "d")
     Output
       # toml (1 line)
-      1 | it = {d = { x = 10.0, y = 20.0 }}
+      1 | it = { d = { x = 10.0, y = 20.0 } }
 
 ---
 
@@ -352,22 +352,22 @@
       ts_tree_insert(ts_tree_select(toml2, "it"), 13, key = "c")
     Output
       # toml (1 line)
-      1 | it = {a = 1, b = 2,c = 13.0}
+      1 | it = { a = 1, b = 2, c = 13.0 }
     Code
       ts_tree_insert(ts_tree_select(toml2, "it"), 13, key = "c", at = 0)
     Output
       # toml (1 line)
-      1 | it = {c = 13.0, a = 1, b = 2}
+      1 | it = { c = 13.0, a = 1, b = 2 }
     Code
       ts_tree_insert(ts_tree_select(toml2, "it"), 13, key = "c", at = 1)
     Output
       # toml (1 line)
-      1 | it = {a = 1, c = 13.0, b = 2}
+      1 | it = { a = 1, c = 13.0, b = 2 }
     Code
       ts_tree_insert(ts_tree_select(toml2, "it"), 13, key = "c", at = Inf)
     Output
       # toml (1 line)
-      1 | it = {a = 1, b = 2,c = 13.0}
+      1 | it = { a = 1, b = 2, c = 13.0 }
 
 # insert_into_inline_table at w/ key
 
@@ -376,51 +376,53 @@
       ts_tree_insert(ts_tree_select(toml, "it"), 13, key = "x", at = "a")
     Output
       # toml (1 line)
-      1 | it = {a = 1, x = 13.0, b = 2, c = 3}
+      1 | it = { a = 1, x = 13.0, b = 2, c = 3 }
     Code
       ts_tree_insert(ts_tree_select(toml, "it"), 13, key = "x", at = "b")
     Output
       # toml (1 line)
-      1 | it = {a = 1, b = 2, x = 13.0, c = 3}
+      1 | it = { a = 1, b = 2, x = 13.0, c = 3 }
     Code
       ts_tree_insert(ts_tree_select(toml, "it"), 13, key = "x", at = "c")
     Output
       # toml (1 line)
-      1 | it = {a = 1, b = 2, c = 3,x = 13.0}
+      1 | it = { a = 1, b = 2, c = 3, x = 13.0 }
     Code
       ts_tree_insert(ts_tree_select(toml, "it"), 13, key = "x", at = "d")
     Output
       # toml (1 line)
-      1 | it = {a = 1, b = 2, c = 3,x = 13.0}
+      1 | it = { a = 1, b = 2, c = 3, x = 13.0 }
 
 # insert_into_table pair
 
     Code
       ts_tree_insert(ts_tree_select(toml, "table"), 2, key = "b")
     Output
-      # toml (6 lines)
-      1 | [table]
-      2 | a = 1
-      3 | b = 2.0
-      4 | 
-      5 | [table2]
-      6 | c = 5
+      # toml (7 lines)
+      1 | 
+      2 | [table]
+      3 | a = 1
+      4 | b = 2.0
+      5 | 
+      6 | [table2]
+      7 | c = 5
 
 # insert_into_table table
 
     Code
       ts_tree_insert(ts_tree_select(toml, "table"), list(x = 10, y = 20), key = "subtable")
     Output
-      # toml (9 lines)
-      1 | [table]
-      2 | a = 1
-      3 | 
-      4 | [table.subtable]
-      5 | x = 10.0
-      6 | y = 20.0
-      7 | 
-      8 | [table2]
-      9 | c = 5
+      # toml (10 lines)
+       1 | 
+       2 | [table]
+       3 | a = 1
+       4 | 
+       5 | [table.subtable]
+       6 | x = 10.0
+       7 | y = 20.0
+       8 | 
+       9 | [table2]
+      10 | c = 5
 
 # insert_into_table array of tables
 
@@ -429,18 +431,18 @@
       ts_tree_insert(ts_tree_select(toml, "table"), list(list(x = 10, y = 20), list(
         x = 5)), key = "aot")
     Output
-      # toml (12 lines)
-       1 | [table]
-       2 | a = 1
-       3 | 
-       4 | [[table.aot]]
-       5 | x = 10.0
-       6 | y = 20.0
-       7 | 
-       8 | [[table.aot]]
-       9 | x = 5.0
-      10 | 
-      i 2 more lines
+      # toml (13 lines)
+       1 | 
+       2 | [table]
+       3 | a = 1
+       4 | 
+       5 | [[table.aot]]
+       6 | x = 10.0
+       7 | y = 20.0
+       8 | 
+       9 | [[table.aot]]
+      10 | x = 5.0
+      i 3 more lines
       i Use `print(n = ...)` to see more lines
 
 # insert_into_table errors
@@ -686,39 +688,42 @@
       toml <- ts_parse_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
       ts_tree_insert(ts_tree_select(toml, "a"), list(b = 3), at = 0)
     Output
-      # toml (8 lines)
+      # toml (9 lines)
       1 | [[a]]
       2 | b = 3.0
       3 | 
-      4 | [[a]]
-      5 | b=1
-      6 | 
-      7 | [[a]]
-      8 | b=2
+      4 | 
+      5 | [[a]]
+      6 | b = 1
+      7 | 
+      8 | [[a]]
+      9 | b=2
     Code
       ts_tree_insert(ts_tree_select(toml, "a"), list(b = 3), at = 1)
     Output
-      # toml (8 lines)
-      1 | [[a]]
-      2 | b=1
-      3 | 
-      4 | [[a]]
-      5 | b = 3.0
-      6 | 
-      7 | [[a]]
-      8 | b=2
+      # toml (9 lines)
+      1 | 
+      2 | [[a]]
+      3 | b = 1
+      4 | 
+      5 | [[a]]
+      6 | b = 3.0
+      7 | 
+      8 | [[a]]
+      9 | b=2
     Code
       ts_tree_insert(ts_tree_select(toml, "a"), list(b = 3))
     Output
-      # toml (8 lines)
-      1 | [[a]]
-      2 | b=1
-      3 | 
-      4 | [[a]]
-      5 | b=2
-      6 | 
-      7 | [[a]]
-      8 | b = 3.0
+      # toml (9 lines)
+      1 | 
+      2 | [[a]]
+      3 | b = 1
+      4 | 
+      5 | [[a]]
+      6 | b=2
+      7 | 
+      8 | [[a]]
+      9 | b = 3.0
 
 ---
 
@@ -726,43 +731,49 @@
       toml <- ts_parse_toml(text = "# prefix\n[[a]]\nb=1\n\n[[a]]\nb=2\n#postfix\n")
       ts_tree_insert(ts_tree_select(toml, "a"), list(b = 3), at = 0)
     Output
-      # toml (10 lines)
+      # toml (11 lines)
        1 | # prefix
        2 | [[a]]
        3 | b = 3.0
        4 | 
-       5 | [[a]]
-       6 | b=1
-       7 | 
-       8 | [[a]]
-       9 | b=2
-      10 | #postfix
+       5 | 
+       6 | [[a]]
+       7 | b = 1
+       8 | 
+       9 | [[a]]
+      10 | b=2
+      i 1 more line
+      i Use `print(n = ...)` to see more lines
     Code
       ts_tree_insert(ts_tree_select(toml, "a"), list(b = 3), at = 1)
     Output
-      # toml (10 lines)
+      # toml (11 lines)
        1 | # prefix
-       2 | [[a]]
-       3 | b=1
-       4 | 
-       5 | [[a]]
-       6 | b = 3.0
-       7 | 
-       8 | [[a]]
-       9 | b=2
-      10 | #postfix
+       2 | 
+       3 | [[a]]
+       4 | b = 1
+       5 | 
+       6 | [[a]]
+       7 | b = 3.0
+       8 | 
+       9 | [[a]]
+      10 | b=2
+      i 1 more line
+      i Use `print(n = ...)` to see more lines
     Code
       ts_tree_insert(ts_tree_select(toml, "a"), list(b = 3))
     Output
-      # toml (10 lines)
+      # toml (11 lines)
        1 | # prefix
-       2 | [[a]]
-       3 | b=1
-       4 | 
-       5 | [[a]]
-       6 | b=2
-       7 | #postfix
-       8 | 
-       9 | [[a]]
-      10 | b = 3.0
+       2 | 
+       3 | [[a]]
+       4 | b = 1
+       5 | 
+       6 | [[a]]
+       7 | b=2
+       8 | #postfix
+       9 | 
+      10 | [[a]]
+      i 1 more line
+      i Use `print(n = ...)` to see more lines
 
