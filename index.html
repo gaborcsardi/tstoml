@@ -119,26 +119,98 @@
 <p>Pretty print a tstoml object:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">toml</span></span></code></pre></div>
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="reference/figures/print-toml-dark.svg"><img src="reference/figures/print-toml.svg"></source></picture></p>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre>
+#&gt; <span style="color: #525252;"># toml (24 lines)</span>
+#&gt; <span style="color: #525252;"> 1 | </span>
+#&gt; <span style="color: #525252;"> 2 | </span># This is a TOML document
+#&gt; <span style="color: #525252;"> 3 | </span>
+#&gt; <span style="color: #525252;"> 4 | </span>title = "TOML Example"
+#&gt; <span style="color: #525252;"> 5 | </span>
+#&gt; <span style="color: #525252;"> 6 | </span>[owner]
+#&gt; <span style="color: #525252;"> 7 | </span>name = "Tom Preston-Werner"
+#&gt; <span style="color: #525252;"> 8 | </span>dob = 1979-05-27T07:32:00-08:00
+#&gt; <span style="color: #525252;"> 9 | </span>
+#&gt; <span style="color: #525252;">10 | </span>[database]
+#&gt; <span style="color: #525252;">ℹ 14 more lines</span>
+#&gt; <span style="color: #525252;">ℹ Use `print(n = ...)` to see more lines</span>
+</pre>
+</div>
 </div>
 <div class="section level3">
 <h3 id="select-elements-in-a-tstoml-object">Select elements in a tstoml object<a class="anchor" aria-label="anchor" href="#select-elements-in-a-tstoml-object"></a>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ts_tree_select</span><span class="op">(</span><span class="va">toml</span>, <span class="st">"owner"</span><span class="op">)</span></span></code></pre></div>
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="reference/figures/select-table-dark.svg"><img src="reference/figures/select-table.svg"></source></picture></p>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre>
+#&gt; <span style="color: #525252;"># toml (24 lines, 1 selected element)</span>
+#&gt;   <span style="color: #525252;">...</span>
+#&gt;   <span style="color: #525252;"> 3  | </span>
+#&gt;   <span style="color: #525252;"> 4  | </span>title = "TOML Example"
+#&gt;   <span style="color: #525252;"> 5  | </span>
+#&gt; <span style="background-color: #2AA198;">&gt;</span> <span style="color: #525252;"> 6  | </span><span style="color: #2AA198;">[owner]</span>
+#&gt; <span style="background-color: #2AA198;">&gt;</span> <span style="color: #525252;"> 7  | </span><span style="color: #2AA198;">name = "Tom Preston-Werner"</span>
+#&gt; <span style="background-color: #2AA198;">&gt;</span> <span style="color: #525252;"> 8  | </span><span style="color: #2AA198;">dob = 1979-05-27T07:32:00-08:00</span>
+#&gt; <span style="background-color: #2AA198;">&gt;</span> <span style="color: #525252;"> 9  | </span>
+#&gt;   <span style="color: #525252;">10  | </span>[database]
+#&gt;   <span style="color: #525252;">11  | </span>enabled = true
+#&gt;   <span style="color: #525252;">12  | </span>ports = [ 8000, 8001, 8002 ]
+#&gt;   <span style="color: #525252;">...</span>
+</pre>
+</div>
 <p>Select element(s) inside elements:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ts_tree_select</span><span class="op">(</span><span class="va">toml</span>, <span class="st">"owner"</span>, <span class="st">"name"</span><span class="op">)</span></span></code></pre></div>
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="reference/figures/select-select-dark.svg"><img src="reference/figures/select-select.svg"></source></picture></p>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre>
+#&gt; <span style="color: #525252;"># toml (24 lines, 1 selected element)</span>
+#&gt;   <span style="color: #525252;">...</span>
+#&gt;   <span style="color: #525252;"> 4  | </span>title = "TOML Example"
+#&gt;   <span style="color: #525252;"> 5  | </span>
+#&gt;   <span style="color: #525252;"> 6  | </span>[owner]
+#&gt; <span style="background-color: #2AA198;">&gt;</span> <span style="color: #525252;"> 7  | </span>name = <span style="color: #2AA198;">"Tom Preston-Werner"</span>
+#&gt;   <span style="color: #525252;"> 8  | </span>dob = 1979-05-27T07:32:00-08:00
+#&gt;   <span style="color: #525252;"> 9  | </span>
+#&gt;   <span style="color: #525252;">10  | </span>[database]
+#&gt;   <span style="color: #525252;">...</span>
+</pre>
+</div>
 <p>Select element(s) of an array:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ts_tree_select</span><span class="op">(</span><span class="va">toml</span>, <span class="st">"database"</span>, <span class="st">"ports"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="reference/figures/select-array-dark.svg"><img src="reference/figures/select-array.svg"></source></picture></p>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre>
+#&gt; <span style="color: #525252;"># toml (24 lines, 2 selected elements)</span>
+#&gt;   <span style="color: #525252;">...</span>
+#&gt;   <span style="color: #525252;"> 9  | </span>
+#&gt;   <span style="color: #525252;">10  | </span>[database]
+#&gt;   <span style="color: #525252;">11  | </span>enabled = true
+#&gt; <span style="background-color: #2AA198;">&gt;</span> <span style="color: #525252;">12  | </span>ports = [ <span style="color: #2AA198;">8000</span>, <span style="color: #2AA198;">8001</span>, 8002 ]
+#&gt;   <span style="color: #525252;">13  | </span>data = [ ["delta", "phi"], [3.14] ]
+#&gt;   <span style="color: #525252;">14  | </span>temp_targets = { cpu = 79.5, case = 72.0 }
+#&gt;   <span style="color: #525252;">15  | </span>
+#&gt;   <span style="color: #525252;">...</span>
+</pre>
+</div>
 <p>Select multiple keys from a table:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ts_tree_select</span><span class="op">(</span><span class="va">toml</span>, <span class="st">"owner"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"dob"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="reference/figures/select-multiple-dark.svg"><img src="reference/figures/select-multiple.svg"></source></picture></p>
+<div class="asciicast" style="color: #172431;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000">
+<pre>
+#&gt; <span style="color: #525252;"># toml (24 lines, 2 selected elements)</span>
+#&gt;   <span style="color: #525252;">...</span>
+#&gt;   <span style="color: #525252;"> 4  | </span>title = "TOML Example"
+#&gt;   <span style="color: #525252;"> 5  | </span>
+#&gt;   <span style="color: #525252;"> 6  | </span>[owner]
+#&gt; <span style="background-color: #2AA198;">&gt;</span> <span style="color: #525252;"> 7  | </span>name = <span style="color: #2AA198;">"Tom Preston-Werner"</span>
+#&gt; <span style="background-color: #2AA198;">&gt;</span> <span style="color: #525252;"> 8  | </span>dob = <span style="color: #2AA198;">1979-05-27T07:32:00-08:00</span>
+#&gt;   <span style="color: #525252;"> 9  | </span>
+#&gt;   <span style="color: #525252;">10  | </span>[database]
+#&gt;   <span style="color: #525252;">11  | </span>enabled = true
+#&gt;   <span style="color: #525252;">...</span>
+</pre>
+</div>
 </div>
 <div class="section level3">
 <h3 id="delete-elements">Delete elements<a class="anchor" aria-label="anchor" href="#delete-elements"></a>
