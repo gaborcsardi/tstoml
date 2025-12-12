@@ -21,3 +21,18 @@
     Output
       [1] NA
 
+# plural
+
+    Code
+      plural(0)
+    Output
+      [1] "s"
+    Code
+      plural(1)
+    Output
+      [1] ""
+    Code
+      plural(2)
+    Output
+      [1] "s"
+

@@ -19,3 +19,11 @@ test_that("middle", {
   expect_equal(middle(1:2), integer())
   expect_equal(middle(1:10), 2:9)
 })
+
+test_that("plural", {
+  expect_snapshot({
+    plural(0)
+    plural(1)
+    plural(2)
+  })
+})
