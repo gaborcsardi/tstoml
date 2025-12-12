@@ -1,7 +1,7 @@
 # ts_tree_update
 
     Code
-      toml <- ts_parse_toml(text = toml_example_text())
+      toml <- ts_parse_toml(text = toml_example_text(), option = NULL)
       ts_tree_update(ts_tree_select(toml, "owner", "name"), "new_name")
     Output
       # toml (23 lines)
@@ -34,9 +34,10 @@
       i 13 more lines
       i Use `print(n = ...)` to see more lines
     Code
-      ts_tree_update(ts_tree_select(toml, "servers", "alpha", "enabled"), FALSE)
+      print(ts_tree_update(ts_tree_select(toml, "servers", "alpha", "enabled"), FALSE),
+      n = Inf)
     Output
-      # toml (23 lines)
+      # toml (24 lines)
        1 | # This is a TOML document
        2 | 
        3 | title = "TOML Example"
@@ -47,8 +48,20 @@
        8 | 
        9 | [database]
       10 | enabled = true
-      i 13 more lines
-      i Use `print(n = ...)` to see more lines
+      11 | ports = [ 8000, 8001, 8002 ]
+      12 | data = [ ["delta", "phi"], [3.14] ]
+      13 | temp_targets = { cpu = 79.5, case = 72.0 }
+      14 | 
+      15 | [servers]
+      16 | 
+      17 | [servers.alpha]
+      18 | ip = "10.0.0.1"
+      19 | role = "frontend"
+      20 | enabled = false
+      21 | 
+      22 | [servers.beta]
+      23 | ip = "10.0.0.2"
+      24 | role = "backend"
 
 # ts_tree_update multiple values
 

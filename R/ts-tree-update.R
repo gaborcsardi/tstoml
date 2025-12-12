@@ -14,9 +14,32 @@
 #' @keywords internal
 
 ts_tree_update.ts_tree_toml <- function(tree, new, options = NULL, ...) {
+  if (!missing(options)) {
+    ts_check_named_arg(options)
+  }
+  options <- as_tstoml_options(options)
+
   selection <- ts_tree_selection(tree)
   ptr <- length(selection)
   select <- selection[[ptr]]$nodes
+
+  # if no selection, then maybe this is an insert
+  if (length(select) == 0) {
+    while (length(selection[[ptr]]$nodes) == 0) {
+      slt <- selection[[ptr]]$selector
+      # only if characters
+      if (inherits(slt, "ts_tree_selector") || !is.character(slt)) {
+        return(tree)
+      }
+      ptr <- ptr - 1L
+      new <- structure(
+        replicate(length(slt), new, simplify = FALSE),
+        names = slt
+      )
+    }
+    attr(tree, "selection") <- selection[1:ptr]
+    return(ts_tree_insert(tree, new[[1]], key = names(new)))
+  }
 
   types <- tree$type[select]
   if (any(!types %in% value_types)) {

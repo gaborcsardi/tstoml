@@ -1,11 +1,12 @@
 test_that("ts_tree_update", {
   expect_snapshot({
-    toml <- ts_parse_toml(text = toml_example_text())
+    toml <- ts_parse_toml(text = toml_example_text(), option = NULL)
     toml |> ts_tree_select("owner", "name") |> ts_tree_update("new_name")
     toml |> ts_tree_select("database", "ports", 2) |> ts_tree_update(9090L)
     toml |>
       ts_tree_select("servers", "alpha", "enabled") |>
-      ts_tree_update(FALSE)
+      ts_tree_update(FALSE) |>
+      print(n = Inf)
   })
 })
 
