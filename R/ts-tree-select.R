@@ -11,11 +11,140 @@
 #' toml |> ts_tree_select(c("b", "c"), TRUE)
 #' ```
 #'
+#' @ts ts_tree_select_character TOML example
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml('
+#'   a = 1
+#'   b = [10, 20, 30]
+#'   [c]
+#'   c1 = true
+#'   c2 = []
+#' ')
+#' toml |> ts_tree_select(c("a", "c"), "c1")
+#' ```
+#'
+#' @ts ts_tree_select_integer TOML example
+#'
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml('
+#'   a = 1
+#'   b = [10, 20, 30]
+#'   [c]
+#'   c1 = true
+#'   c2 = []
+#' ')
+#' toml |> ts_tree_select(c("b", "c"), -1)
+#' ```
+#'
+#' @ts ts_tree_select_regex TOML example
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml(
+#'  'apple = 1\nalmond = 2\nbanana = 3\ncherry = 4\n'
+#' )
+#' toml |> ts_tree_select(regex = "^a")
+#' ```
+#'
+#' @ts ts_tree_select_tsquery TOML example
+#'
+#' <p>
+#'
+#' See [tstoml::ts_language_toml()] for details on the TOML grammar.
+#'
+#' <p>
+#'
+#' This example selects all integers in the TOML document.
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml(
+#'   'a = 1\nb = [10, 20, 30]\nc = { c1 = true, c2 = 100 }\n'
+#' )
+#' toml |> ts_tree_select(query = "(integer) @integer")
+#' ```
+#'
+#' @ts ts_tree_select_ids TOML example
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml(
+#'   'a = 1\nb = [10, 20, 30]\nc = { c1 = true, c2 = [] }\n'
+#' )
+#' ts_tree_dom(toml)
+#' ```
+#'
+#' ```{asciicast}
+#' toml |> ts_tree_select(I(9))
+#' ```
+#'
 #' @ts ts_tree_select_examples TOML examples
 #'
 #' ## Examples
 #'
-#' TODO
+#' ```{asciicast}
+#' #| results: hide
+#' txt <- r"(
+#' # This is a TOML document
+#'
+#' title = "TOML Example"
+#'
+#' [owner]
+#' name = "Tom Preston-Werner"
+#' dob = 1979-05-27T07:32:00-08:00
+#'
+#' [database]
+#' enabled = true
+#' ports = [ 8000, 8001, 8002 ]
+#' data = [ ["delta", "phi"], [3.14] ]
+#' temp_targets = { cpu = 79.5, case = 72.0 }
+#'
+#' [servers]
+#'
+#' [servers.alpha]
+#' ip = "10.0.0.1"
+#' role = "frontend"
+#'
+#' [servers.beta]
+#' ip = "10.0.0.2"
+#' role = "backend"
+#' )"
+#' toml <- ts_parse_toml(text = txt)
+#' ```
+#'
+#' Pretty print a tstoml object:
+#'
+#' ```{asciicast}
+#' #| label: print-toml
+#' toml
+#' ```
+#'
+#' Select elements in a tstoml object
+#'
+#' ```{asciicast}
+#' #| label: select-table
+#' ts_tree_select(toml, "owner")
+#' ```
+#'
+#' Select element(s) inside elements:
+#'
+#' ```{asciicast}
+#' #| label: select-select
+#' ts_tree_select(toml, "owner", "name")
+#' ```
+#'
+#' Select element(s) of an array:
+#'
+#' ```{asciicast}
+#' #| label: select-array
+#' ts_tree_select(toml, "database", "ports", 1:2)
+#' ```
+#'
+#' Select multiple keys from a table:
+#'
+#' ```{asciicast}
+#' #| label: select-multiple
+#' ts_tree_select(toml, "owner", c("name", "dob"))
+#' ```
 NULL
 
 #' @export

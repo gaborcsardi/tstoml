@@ -2,5 +2,133 @@
 # ---
 \subsection{Examples}{
 
-TODO
+\if{html}{\out{<div class="sourceCode r"><p style="display:none">&nbsp;}}\preformatted{txt <- r"(
+# This is a TOML document
+
+title = "TOML Example"
+
+[owner]
+name = "Tom Preston-Werner"
+dob = 1979-05-27T07:32:00-08:00
+
+[database]
+enabled = true
+ports = [ 8000, 8001, 8002 ]
+data = [ ["delta", "phi"], [3.14] ]
+temp_targets = \{ cpu = 79.5, case = 72.0 \}
+
+[servers]
+
+[servers.alpha]
+ip = "10.0.0.1"
+role = "frontend"
+
+[servers.beta]
+ip = "10.0.0.2"
+role = "backend"
+)"
+toml <- ts_parse_toml(text = txt)
+}\if{html}{\out{</div>}}
+
+Pretty print a tstoml object:
+
+\if{html}{\out{<div class="sourceCode r"><p style="display:none">&nbsp;}}\preformatted{toml
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #B9C0CB;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #6F7783;"># toml (24 lines)</span>                                                               
+#> <span style="color: #6F7783;"> 1 | </span>                                                                           
+#> <span style="color: #6F7783;"> 2 | </span># This is a TOML document                                                  
+#> <span style="color: #6F7783;"> 3 | </span>                                                                           
+#> <span style="color: #6F7783;"> 4 | </span>title = "TOML Example"                                                     
+#> <span style="color: #6F7783;"> 5 | </span>                                                                           
+#> <span style="color: #6F7783;"> 6 | </span>&#91;owner&#93;                                                                    
+#> <span style="color: #6F7783;"> 7 | </span>name = "Tom Preston-Werner"                                                
+#> <span style="color: #6F7783;"> 8 | </span>dob = 1979-05-27T07:32:00-08:00                                            
+#> <span style="color: #6F7783;"> 9 | </span>                                                                           
+#> <span style="color: #6F7783;">10 | </span>&#91;database&#93;                                                                 
+#> <span style="color: #6F7783;">ℹ 14 more lines</span>                                                                 
+#> <span style="color: #6F7783;">ℹ Use `print(n = ...)` to see more lines</span>                                        
+</pre></div>
+}}
+
+
+Select elements in a tstoml object
+
+\if{html}{\out{<div class="sourceCode r"><p style="display:none">&nbsp;}}\preformatted{ts_tree_select(toml, "owner")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #B9C0CB;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #6F7783;"># toml (24 lines, 1 selected element)</span>                                           
+#>   <span style="color: #6F7783;">...</span>                                                                           
+#>   <span style="color: #6F7783;"> 3  | </span>                                                                        
+#>   <span style="color: #6F7783;"> 4  | </span>title = "TOML Example"                                                  
+#>   <span style="color: #6F7783;"> 5  | </span>                                                                        
+#> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 6  | </span><span style="color: #66C2CD;">&#91;owner&#93;</span>                                                                 
+#> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 7  | </span><span style="color: #66C2CD;">name = "Tom Preston-Werner"</span>                                             
+#> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 8  | </span><span style="color: #66C2CD;">dob = 1979-05-27T07:32:00-08:00</span>                                         
+#> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 9  | </span>                                                                        
+#>   <span style="color: #6F7783;">10  | </span>&#91;database&#93;                                                              
+#>   <span style="color: #6F7783;">11  | </span>enabled = true                                                          
+#>   <span style="color: #6F7783;">12  | </span>ports = &#91; 8000, 8001, 8002 &#93;                                            
+#>   <span style="color: #6F7783;">...</span>                                                                           
+</pre></div>
+}}
+
+
+Select element(s) inside elements:
+
+\if{html}{\out{<div class="sourceCode r"><p style="display:none">&nbsp;}}\preformatted{ts_tree_select(toml, "owner", "name")
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #B9C0CB;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #6F7783;"># toml (24 lines, 1 selected element)</span>                                           
+#>   <span style="color: #6F7783;">...</span>                                                                           
+#>   <span style="color: #6F7783;"> 4  | </span>title = "TOML Example"                                                  
+#>   <span style="color: #6F7783;"> 5  | </span>                                                                        
+#>   <span style="color: #6F7783;"> 6  | </span>&#91;owner&#93;                                                                 
+#> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 7  | </span>name = <span style="color: #66C2CD;">"Tom Preston-Werner"</span>                                             
+#>   <span style="color: #6F7783;"> 8  | </span>dob = 1979-05-27T07:32:00-08:00                                         
+#>   <span style="color: #6F7783;"> 9  | </span>                                                                        
+#>   <span style="color: #6F7783;">10  | </span>&#91;database&#93;                                                              
+#>   <span style="color: #6F7783;">...</span>                                                                           
+</pre></div>
+}}
+
+
+Select element(s) of an array:
+
+\if{html}{\out{<div class="sourceCode r"><p style="display:none">&nbsp;}}\preformatted{ts_tree_select(toml, "database", "ports", 1:2)
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #B9C0CB;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #6F7783;"># toml (24 lines, 2 selected elements)</span>                                          
+#>   <span style="color: #6F7783;">...</span>                                                                           
+#>   <span style="color: #6F7783;"> 9  | </span>                                                                        
+#>   <span style="color: #6F7783;">10  | </span>&#91;database&#93;                                                              
+#>   <span style="color: #6F7783;">11  | </span>enabled = true                                                          
+#> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;">12  | </span>ports = &#91; <span style="color: #66C2CD;">8000</span>, <span style="color: #66C2CD;">8001</span>, 8002 &#93;                                            
+#>   <span style="color: #6F7783;">13  | </span>data = &#91; &#91;"delta", "phi"&#93;, &#91;3.14&#93; &#93;                                     
+#>   <span style="color: #6F7783;">14  | </span>temp_targets = \{ cpu = 79.5, case = 72.0 \}                              
+#>   <span style="color: #6F7783;">15  | </span>                                                                        
+#>   <span style="color: #6F7783;">...</span>                                                                           
+</pre></div>
+}}
+
+
+Select multiple keys from a table:
+
+\if{html}{\out{<div class="sourceCode r"><p style="display:none">&nbsp;}}\preformatted{ts_tree_select(toml, "owner", c("name", "dob"))
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #B9C0CB;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#> <span style="color: #6F7783;"># toml (24 lines, 2 selected elements)</span>                                          
+#>   <span style="color: #6F7783;">...</span>                                                                           
+#>   <span style="color: #6F7783;"> 4  | </span>title = "TOML Example"                                                  
+#>   <span style="color: #6F7783;"> 5  | </span>                                                                        
+#>   <span style="color: #6F7783;"> 6  | </span>&#91;owner&#93;                                                                 
+#> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 7  | </span>name = <span style="color: #66C2CD;">"Tom Preston-Werner"</span>                                             
+#> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 8  | </span>dob = <span style="color: #66C2CD;">1979-05-27T07:32:00-08:00</span>                                         
+#>   <span style="color: #6F7783;"> 9  | </span>                                                                        
+#>   <span style="color: #6F7783;">10  | </span>&#91;database&#93;                                                              
+#>   <span style="color: #6F7783;">11  | </span>enabled = true                                                          
+#>   <span style="color: #6F7783;">...</span>                                                                           
+</pre></div>
+}}
+
 }
