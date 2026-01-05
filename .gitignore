@@ -4,3 +4,4 @@ docs
 /README.html
 /quickstart.Rmd
 /.dev
+/man/macros/eval2.Rd

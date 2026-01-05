@@ -27,6 +27,12 @@ reference:
   - ts_parse_toml
   - ts_read_toml
   - ts_language_toml
+  - ts::ts_tree_new
+
+- title: Selection
+  desc: |
+     <dl><dt><code>[ts_tree_select()](ts_tree_select.tstoml.html)</code></dt>
+     <dd>Select parts of a TOML tree-sitter tree.</dd></dl>
 
 - title: Serialization
 - contents:
@@ -49,3 +55,4 @@ reference:
 - title: internal
   contents:
   - quickstart
+  - ts_tree_select.tstoml

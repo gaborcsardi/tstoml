@@ -17,3 +17,4 @@
 ^man/_cache$
 ^quickstart.Rmd$
 ^[.]?air[.]toml$
+^man/macros/eval2\.Rd$
