@@ -74,6 +74,10 @@ get_dom_subtree <- function(tree, id, with_root = FALSE) {
 #'
 #' @description
 #' \eval{ts:::doc_insert("ts::ts_tree_select_description", "tstoml")}
+#'
+#' This is the S3 method of the [ts::ts_tree_select()] generic,
+#' for [tstoml] objects.
+#'
 #' @details
 #' \eval{ts:::doc_insert("ts::ts_tree_select_details", "tstoml")}
 #' \eval{ts:::doc_insert("tstoml::ts_tree_select_examples", "tstoml")}

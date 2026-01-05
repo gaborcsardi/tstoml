@@ -18,6 +18,9 @@
 }
 \description{
 \eval{ts:::doc_insert("ts::ts_tree_select_description", "tstoml")}
+
+This is the S3 method of the \code{\link[ts:ts_tree_select]{ts::ts_tree_select()}} generic,
+for \link{tstoml} objects.
 }
 \details{
 \eval{ts:::doc_insert("ts::ts_tree_select_details", "tstoml")}
