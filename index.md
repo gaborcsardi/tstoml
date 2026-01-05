@@ -18,7 +18,7 @@ pak::pak("gaborcsardi/tstoml")
 See at
 [`https://gaborcsardi.github.io/tstoml/`](https://gaborcsardi.github.io/tstoml/reference/index.html/)
 and also in the installed package:
-[`help(package = "tstoml")`](https://rdrr.io/pkg/tstoml/man).
+[`help(package = "tstoml")`](https://gaborcsardi.github.io/tstoml/reference).
 
 ## Quickstart
 

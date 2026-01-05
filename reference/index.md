@@ -33,6 +33,13 @@
   : Parse a TOML file or string into a ts_tree_toml object
 - [`ts_language_toml()`](https://gaborcsardi.github.io/tstoml/reference/ts_language_toml.md)
   : TODO
+- [`ts_tree_new()`](https://gaborcsardi.github.io/ts/reference/ts_tree_new.html)
+  : Create tree-sitter tree from file or string (from ts)
+
+## Selection
+
+- [`ts_tree_select()`](https://gaborcsardi.github.io/tstoml/reference/ts_tree_select.tstoml.md)
+  : Select parts of a TOML tree-sitter tree.
 
 ## Serialization
 
