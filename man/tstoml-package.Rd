@@ -12,6 +12,7 @@ Extract and manipulate parts of TOML files without touching the formatting and c
 Useful links:
 \itemize{
   \item \url{https://github.com/gaborcsardi/tstoml}
+  \item \url{https://gaborcsardi.github.io/tstoml/}
   \item Report bugs at \url{https://github.com/gaborcsardi/tstoml/issues}
 }
 
