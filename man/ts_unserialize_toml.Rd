@@ -7,13 +7,11 @@
 ts_unserialize_toml(file = NULL, text = NULL, ranges = NULL, options = NULL)
 }
 \arguments{
-\item{file}{Path of a file. Use either \code{file} or \code{text}, but not both.}
+\item{file}{\Sexpr[stage=render,results=rd]{ts:::doc_insert("ts::ts_tree_new_param_file", "ts")}}
 
-\item{text}{String. Use either \code{file} or \code{text}, but not both.}
+\item{text}{\Sexpr[stage=render,results=rd]{ts:::doc_insert("ts::ts_tree_new_param_text", "ts")}}
 
-\item{ranges}{Can be used to parse part(s) of the input. It must be a
-data frame with integer columns \code{start_row}, \code{start_col}, \code{end_row},
-\code{end_col}, \code{start_byte}, \code{end_byte}, in this order.}
+\item{ranges}{\Sexpr[stage=render,results=rd]{ts:::doc_insert("ts::ts_tree_new_param_ranges", "ts")}}
 
 \item{options}{Named list of parsing options, see
 \link[=tstoml_options]{tstoml options}.}
