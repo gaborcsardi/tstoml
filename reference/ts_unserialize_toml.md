@@ -12,11 +12,11 @@ ts_unserialize_toml(file = NULL, text = NULL, ranges = NULL, options = NULL)
 
 - file:
 
-  Path of a file. Use either `file` or `text`, but not both.
+  Path of a file to parse. Use either `file` or `text`, but not both.
 
 - text:
 
-  String. Use either `file` or `text`, but not both.
+  String to parse. Use either `file` or `text`, but not both.
 
 - ranges:
 

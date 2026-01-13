@@ -14,7 +14,7 @@ ts_read_toml(file, ranges = NULL, fail_on_parse_error = TRUE, options = NULL)
 
 - text:
 
-  String. Use either `file` or `text`, but not both.
+  String to parse. Use either `file` or `text`, but not both.
 
 - ranges:
 
@@ -34,7 +34,7 @@ ts_read_toml(file, ranges = NULL, fail_on_parse_error = TRUE, options = NULL)
 
 - file:
 
-  Path of a file. Use either `file` or `text`, but not both.
+  Path of a file to parse. Use either `file` or `text`, but not both.
 
 ## Value
 

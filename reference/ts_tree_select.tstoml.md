@@ -38,13 +38,16 @@ A `ts_tree` object with the selected parts.
 
 ## Details
 
-A selection starts from the root of the DOM tree, the document node (see
+The selection process is iterative. Selection expressions (selectors)
+are applied one by one, and each selector selects nodes from the
+currently selected nodes. For each selector, it is applied individually
+to each currently selected node, and the results are concatenated.
+
+The selection process starts from the root of the DOM tree, the document
+node (see
 [`ts_tree_dom()`](https://gaborcsardi.github.io/ts/reference/ts_tree_dom.html)),
 unless `refine = TRUE` is set, in which case it starts from the current
 selection.
-
-A list of selection expressions is applied in order. Each selection
-expression selects nodes from the currently selected nodes.
 
 See the various types of selection expressions below.
 
@@ -209,15 +212,149 @@ is `TRUE`, then the selection starts from the already selected elements
 (all of them simultanously), instead of starting from the document
 element.
 
+ 
+
+    toml <- tstoml::ts_parse_toml(
+      '[table]\na = 1\nb = [10, 20, 30]\nc = { c1 = true, c2 = [] }\n'
+    )
+    toml <- toml |> ts_tree_select("table", "b")
+
+ 
+
+    # selects the first two elements in the document node, ie. "table"
+    toml |> ts_tree_select(1:2)
+
+    #> # toml (4 lines, 1 selected element)
+    #> > 1 | [table]
+    #> > 2 | a = 1
+    #> > 3 | b = [10, 20, 30]
+    #> > 4 | c = { c1 = true, c2 = [] }
+
+ 
+
+    # selects the first two elements inside "table" and "b"
+    toml |> ts_tree_select(1:2, refine = TRUE)
+
+    #> # toml (4 lines, 2 selected elements)
+    #>   1 | [table]
+    #>   2 | a = 1
+    #> > 3 | b = [10, 20, 30]
+    #>   4 | c = { c1 = true, c2 = [] }
+
+### The `ts_tree_select<-()` replacement function
+
+The
+[`ts_tree_select<-()`](https://gaborcsardi.github.io/ts/reference/select-set.html)
+replacement function works similarly to the combination of
+[`ts_tree_select()`](https://gaborcsardi.github.io/ts/reference/ts_tree_select.html)
+and
+[`ts_tree_update()`](https://gaborcsardi.github.io/ts/reference/ts_tree_update.html),
+but it might be more readable.
+
+ 
+
+    toml <- tstoml::ts_parse_toml(
+      '[table]\na = 1\nb = [10, 20, 30]\nc = { c1 = true, c2 = [] }\n'
+    )
+    toml
+
+    #> # toml (4 lines)
+    #> 1 | [table]
+    #> 2 | a = 1
+    #> 3 | b = [10, 20, 30]
+    #> 4 | c = { c1 = true, c2 = [] }
+
+ 
+
+    toml |> ts_tree_select("table", "b", 1)
+
+    #> # toml (4 lines, 1 selected element)
+    #>   1 | [table]
+    #>   2 | a = 1
+    #> > 3 | b = [10, 20, 30]
+    #>   4 | c = { c1 = true, c2 = [] }
+
+ 
+
+    ts_tree_select(toml, "table", "b", 1) <- 100
+    toml
+
+    #> # toml (4 lines)
+    #> 1 | [table]
+    #> 2 | a = 1
+    #> 3 | b = [100.0, 20, 30]
+    #> 4 | c = { c1 = true, c2 = [] }
+
 ### The `[[` and `[[<-` operators
 
-The `[[` operator works similarly to
+The `[[` operator works similarly to the combination of
 [`ts_tree_select()`](https://gaborcsardi.github.io/ts/reference/ts_tree_select.html)
-on ts_tree objects, but it might be more readable.
-
-The `[[<-` operator works similarly to
-[`ts::ts_tree_select<-()`](https://gaborcsardi.github.io/ts/reference/select-set.html),
+and
+[`ts_tree_unserialize()`](https://gaborcsardi.github.io/ts/reference/ts_tree_unserialize.html),
 but it might be more readable.
+
+ 
+
+    toml <- tstoml::ts_parse_toml(
+      '[table]\na = 1\nb = [10, 20, 30]\nc = { c1 = true, c2 = [] }\n'
+    )
+    toml |> ts_tree_select("table", "b", 1)
+
+    #> # toml (4 lines, 1 selected element)
+    #>   1 | [table]
+    #>   2 | a = 1
+    #> > 3 | b = [10, 20, 30]
+    #>   4 | c = { c1 = true, c2 = [] }
+
+ 
+
+    toml[[list("table", "b", 1)]]
+
+    #> [[1]]
+    #> [1] 10
+    #>
+
+The `[[<-` operator works similarly to the combination of
+[`ts_tree_select()`](https://gaborcsardi.github.io/ts/reference/ts_tree_select.html)
+and
+[`ts_tree_update()`](https://gaborcsardi.github.io/ts/reference/ts_tree_update.html),
+(and also to the replacement function
+[`ts_tree_select<-()`](https://gaborcsardi.github.io/ts/reference/select-set.html)),
+but it might be more readable.
+
+ 
+
+    toml <- tstoml::ts_parse_toml(
+      '[table]\na = 1\nb = [10, 20, 30]\nc = { c1 = true, c2 = [] }\n'
+    )
+    toml
+
+    #> # toml (4 lines)
+    #> 1 | [table]
+    #> 2 | a = 1
+    #> 3 | b = [10, 20, 30]
+    #> 4 | c = { c1 = true, c2 = [] }
+
+ 
+
+    toml |> ts_tree_select("table", "b", 1)
+
+    #> # toml (4 lines, 1 selected element)
+    #>   1 | [table]
+    #>   2 | a = 1
+    #> > 3 | b = [10, 20, 30]
+    #>   4 | c = { c1 = true, c2 = [] }
+
+ 
+
+    toml[[list("table", "b", 1)]] <- 100
+    toml
+
+    #> # toml (4 lines)
+    #> 1 | [table]
+    #> 2 | a = 1
+    #> 3 | b = [100.0, 20, 30]
+    #> 4 | c = { c1 = true, c2 = [] }
 
 ### Examples
 
