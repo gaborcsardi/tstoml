@@ -1,4 +1,83 @@
 #' @export
+#'
+#' @ts ts_tree_new_examples TOML examples
+#'
+#' ```{asciicast}
+#' toml <- ts::ts_tree_new(
+#'   tstoml::ts_language_toml(),
+#'   text = "[table]\nkey = \"value\""
+#' )
+#' toml
+#' ```
+#'
+#' @ts ts_tree_select_refine TOML example
+#'
+#' ```{asciicast}
+#' #| results = "hide"
+#' toml <- tstoml::ts_parse_toml(
+#'   '[table]\na = 1\nb = [10, 20, 30]\nc = { c1 = true, c2 = [] }\n'
+#' )
+#' toml <- toml |> ts_tree_select("table", "b")
+#' ```
+#'
+#' ```{asciicast}
+#' # selects the first two elements in the document node, ie. "table"
+#' toml |> ts_tree_select(1:2)
+#' ```
+#'
+#' ```{asciicast}
+#' # selects the first two elements inside "table" and "b"
+#' toml |> ts_tree_select(1:2, refine = TRUE)
+#' ```
+#'
+#' @ts ts_tree_select_set TOML example
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml(
+#'   '[table]\na = 1\nb = [10, 20, 30]\nc = { c1 = true, c2 = [] }\n'
+#' )
+#' toml
+#' ```
+#'
+#' ```{asciicast}
+#' toml |> ts_tree_select("table", "b", 1)
+#' ```
+#'
+#' ```{asciicast}
+#' ts_tree_select(toml, "table", "b", 1) <- 100
+#' toml
+#' ```
+#'
+#' @ts ts_tree_select_brackets TOML example
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml(
+#'   '[table]\na = 1\nb = [10, 20, 30]\nc = { c1 = true, c2 = [] }\n'
+#' )
+#' toml |> ts_tree_select("table", "b", 1)
+#' ```
+#'
+#' ```{asciicast}
+#' toml[[list("table", "b", 1)]]
+#' ```
+#'
+#' @ts ts_tree_select_brackets_set TOML example
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml(
+#'   '[table]\na = 1\nb = [10, 20, 30]\nc = { c1 = true, c2 = [] }\n'
+#' )
+#' toml
+#' ```
+#'
+#' ```{asciicast}
+#' toml |> ts_tree_select("table", "b", 1)
+#' ```
+#'
+#' ```{asciicast}
+#' toml[[list("table", "b", 1)]] <- 100
+#' toml
+#' ```
 
 ts_tree_new.ts_language_toml <- function(
   language,
