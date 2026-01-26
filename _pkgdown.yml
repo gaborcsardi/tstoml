@@ -55,4 +55,5 @@ reference:
 - title: internal
   contents:
   - quickstart
-  - ts_tree_select.tstoml
+  - ts_tree_select.ts_tree_toml
+  - ts_tree_query.ts_tree_toml

@@ -213,6 +213,6 @@ get_dom_subtree <- function(tree, id, with_root = FALSE) {
 #' \eval{ts:::doc_extra()}
 #' @export
 
-ts_tree_select.tstoml <- function(tree, ..., refine = FALSE) {
+ts_tree_select.ts_tree_toml <- function(tree, ..., refine = FALSE) {
   NextMethod()
 }
