@@ -4,7 +4,7 @@
 \alias{ts_tree_select.ts_tree_toml}
 \title{Select parts of a TOML tree-sitter tree}
 \usage{
-\method{ts_tree_select}{tstoml}(tree, ..., refine = FALSE)
+\method{ts_tree_select}{ts_tree_toml}(tree, ..., refine = FALSE)
 }
 \arguments{
 \item{tree}{\eval{ts:::doc_insert("ts::ts_tree_select_param_tree", "tstoml")}}

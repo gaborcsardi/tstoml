@@ -191,7 +191,7 @@ get_dom_subtree <- function(tree, id, with_root = FALSE) {
 #' @title
 #' Select parts of a TOML tree-sitter tree
 #' @usage
-#' \method{ts_tree_select}{tstoml}(tree, ..., refine = FALSE)
+#' \method{ts_tree_select}{ts_tree_toml}(tree, ..., refine = FALSE)
 #' @param tree
 #' \eval{ts:::doc_insert("ts::ts_tree_select_param_tree", "tstoml")}
 #' @param ...
