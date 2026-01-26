@@ -12,7 +12,7 @@ objects.
 ## Usage
 
 ``` r
-# S3 method for class 'tstoml'
+# S3 method for class 'ts_tree_toml'
 ts_tree_select(tree, ..., refine = FALSE)
 ```
 
