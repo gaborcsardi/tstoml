@@ -1,5 +1,21 @@
 #' Format the selected TOML elements
 #'
+#' @ts ts_tree_format_details_no_selection
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml("a = [1,2,3]")
+#' toml |> ts_tree_format()
+#' ```
+#'
+#' @ts ts_tree_format_details_empty_selection
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml("a = [1,2,3]")
+#' toml |> ts_tree_select("c") |> ts_tree_format()
+#' ```
+#'
+# TODO: @ts ts_tree_format_details_options
+#'
 #' @details
 #' If `tree` does not have a selection, then all of it is formatted.
 #' If `tree` has an empty selection, then nothing happens.

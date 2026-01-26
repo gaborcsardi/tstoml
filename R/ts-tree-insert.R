@@ -1,3 +1,24 @@
+#' @ts ts_tree_insert_details_errors
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml("a = true\nb = [1, 2, 3]")
+#' toml |> ts_tree_select("a") |> ts_tree_insert("foo")
+#' ```
+#'
+#' @ts ts_tree_insert_details_no_selection
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml("a = true\nb = [1, 2, 3]")
+#' toml |> ts_tree_insert(key = "c", new = "foo")
+#' ```
+#'
+#' @ts ts_tree_insert_details_empty_selection
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml("a = true\nb = [1, 2, 3]")
+#' toml |> ts_tree_select("nonexistent") |> ts_tree_insert("foo")
+#' ```
+#'
 #' @export
 
 ts_tree_insert.ts_tree_toml <- function(

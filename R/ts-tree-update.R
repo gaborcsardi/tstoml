@@ -4,6 +4,21 @@
 #' selection then the whole document is replaced. If `toml` has an empty
 #' selection, then nothing happens.
 #'
+# TODO: this does not work yet https://github.com/gaborcsardi/tstoml/issues/6
+# @ts ts_tree_update_details_no_selection
+#
+# ```{asciicast}
+# tree <- tstoml::ts_parse_toml("a = true\nb = [1, 2, 3]")
+# tree |> ts_tree_update(as.list(4:6))
+# ```
+#
+#' @ts ts_tree_update_details_empty_selection
+#'
+#' ```{asciicast}
+#' tree <- tstoml::ts_parse_toml("a = true\nb = [1, 2, 3]")
+#' tree |> ts_tree_select("new") |> ts_tree_update(as.list(4:6))
+#' ```
+#'
 #' @param tree A tstoml object
 #' @param new A R object to be converted to TOML using [ts_serialize_toml_value()]
 #'  and used as the new value.

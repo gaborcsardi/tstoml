@@ -4,6 +4,59 @@
 #' appearing inside the deleted elements are also deleted. Other comments
 #' are left as is.
 #'
+#' @ts ts_tree_delete_details_formatting TOML example
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml("
+#'   [package]
+#'   name = 'tstoml'
+#'   version = '0.1.0'
+#' ")
+#' toml
+#' ```
+#'
+#' ```{asciicast}
+#' toml |> ts_tree_select("package", "name") |> ts_tree_delete()
+#' ```
+#'
+#' @ts ts_tree_delete_details_no_selection TOML example
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml("
+#'   [package]
+#'   name = 'tstoml'
+#'   version = '0.1.0'
+#' ") |> ts::ts_tree_format()
+#' toml |> ts_tree_delete()
+#' ```
+#'
+#' @ts ts_tree_delete_details_empty_selection
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml("
+#'   [package]
+#'   name = 'tstoml'
+#'   version = '0.1.0'
+#' ") |> ts::ts_tree_format()
+#' toml |> ts_tree_select("nothere") |> ts_tree_delete()
+#' ```
+#'
+#' @ts ts_tree_delete_details_comments
+#'
+#' ```{asciicast}
+#' toml <- tstoml::ts_parse_toml("
+#'   # top comment
+#'   [package]
+#'   name = 'tstoml' # inline comment
+#'   version = '0.1.0'
+#' ") |> ts::ts_tree_format()
+#' toml
+#' ```
+#'
+#' ```{asciicast}
+#' toml |> ts_tree_select("package", "name") |> ts_tree_delete()
+#' ```
+#'
 #' @details
 #' If `toml` has no selection then the the whole document is deleted.
 #' If `toml` has an empty selection, then nothing is delted.
