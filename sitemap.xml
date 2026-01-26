@@ -14,7 +14,8 @@
 <url><loc>https://gaborcsardi.github.io/tstoml/reference/ts_serialize_toml_value.html</loc></url>
 <url><loc>https://gaborcsardi.github.io/tstoml/reference/ts_tree_delete.ts_tree_toml.html</loc></url>
 <url><loc>https://gaborcsardi.github.io/tstoml/reference/ts_tree_format.ts_tree_toml.html</loc></url>
-<url><loc>https://gaborcsardi.github.io/tstoml/reference/ts_tree_select.tstoml.html</loc></url>
+<url><loc>https://gaborcsardi.github.io/tstoml/reference/ts_tree_query.ts_tree_toml.html</loc></url>
+<url><loc>https://gaborcsardi.github.io/tstoml/reference/ts_tree_select.ts_tree_toml.html</loc></url>
 <url><loc>https://gaborcsardi.github.io/tstoml/reference/ts_tree_update.ts_tree_toml.html</loc></url>
 <url><loc>https://gaborcsardi.github.io/tstoml/reference/ts_unserialize_toml.html</loc></url>
 <url><loc>https://gaborcsardi.github.io/tstoml/reference/tstoml-package.html</loc></url>
