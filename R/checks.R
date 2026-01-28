@@ -129,6 +129,8 @@ as_tstoml_options <- function(
       all(names(x) %in% nms)
   ) {
     force(arg)
+    # older R versions would set NULL to logical(), not list()
+    x <- as.list(x)
 
     x[["indent_width"]] <- as_count(
       x[["indent_width"]] %||% opt_indent_width_default(),
