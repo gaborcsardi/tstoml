@@ -1,10 +1,5 @@
 #| title: TOML example
 # ---
-\if{html}{\out{
-<p>
-}}
-
-
 See \code{\link[tstoml:ts_language_toml]{tstoml::ts_language_toml()}} for details on the TOML grammar.\if{html}{\out{
 <p>
 }}

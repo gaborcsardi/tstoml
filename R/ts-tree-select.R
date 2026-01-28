@@ -49,8 +49,6 @@
 #'
 #' @ts ts_tree_select_tsquery TOML example
 #'
-#' <p>
-#'
 #' See [tstoml::ts_language_toml()] for details on the TOML grammar.
 #'
 #' <p>
