@@ -1,8 +1,8 @@
-pandoc: 3.1.11
+pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles: {}
-last_built: 2026-01-28T18:05Z
+last_built: 2026-05-11T09:13Z
 urls:
   reference: https://gaborcsardi.github.io/tstoml/reference
   article: https://gaborcsardi.github.io/tstoml/articles

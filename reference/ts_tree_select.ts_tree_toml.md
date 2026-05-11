@@ -68,6 +68,7 @@ Selects all child nodes of the current nodes.
     ')
     toml |> ts_tree_select(c("b", "c"), TRUE)
 
+
     #> # toml (6 lines, 5 selected elements)
     #>   1 | 
     #>   2 |   a = 1
@@ -92,6 +93,7 @@ If a node has no named children, it selects nothing from that node.
     ')
     toml |> ts_tree_select(c("a", "c"), "c1")
 
+
     #> # toml (6 lines, 1 selected element)
     #>   2 |   a = 1
     #>   3 |   b = [10, 20, 30]
@@ -115,6 +117,7 @@ negative indices count from the end. Zero indices are not allowed.
     ')
     toml |> ts_tree_select(c("b", "c"), -1)
 
+
     #> # toml (6 lines, 2 selected elements)
     #>   1 | 
     #>   2 |   a = 1
@@ -136,6 +139,7 @@ node.
      'apple = 1\nalmond = 2\nbanana = 3\ncherry = 4\n'
     )
     toml |> ts_tree_select(regex = "^a")
+
 
     #> # toml (4 lines, 2 selected elements)
     #> > 1 | apple = 1
@@ -168,6 +172,7 @@ This example selects all integers in the TOML document.
     )
     toml |> ts_tree_select(query = "(integer) @integer")
 
+
     #> # toml (3 lines, 5 selected elements)
     #> > 1 | a = 1
     #> > 2 | b = [10, 20, 30]
@@ -185,6 +190,7 @@ for advanced use cases only.
     )
     ts_tree_dom(toml)
 
+
     #> document (1)
     #> ├─value (5) # a
     #> ├─array (9) # b
@@ -198,6 +204,7 @@ for advanced use cases only.
  
 
     toml |> ts_tree_select(I(9))
+
 
     #> # toml (3 lines, 1 selected element)
     #>   1 | a = 1
@@ -224,6 +231,7 @@ element.
     # selects the first two elements in the document node, ie. "table"
     toml |> ts_tree_select(1:2)
 
+
     #> # toml (4 lines, 1 selected element)
     #> > 1 | [table]
     #> > 2 | a = 1
@@ -234,6 +242,7 @@ element.
 
     # selects the first two elements inside "table" and "b"
     toml |> ts_tree_select(1:2, refine = TRUE)
+
 
     #> # toml (4 lines, 2 selected elements)
     #>   1 | [table]
@@ -258,6 +267,7 @@ but it might be more readable.
     )
     toml
 
+
     #> # toml (4 lines)
     #> 1 | [table]
     #> 2 | a = 1
@@ -267,6 +277,7 @@ but it might be more readable.
  
 
     toml |> ts_tree_select("table", "b", 1)
+
 
     #> # toml (4 lines, 1 selected element)
     #>   1 | [table]
@@ -278,6 +289,7 @@ but it might be more readable.
 
     ts_tree_select(toml, "table", "b", 1) <- 100
     toml
+
 
     #> # toml (4 lines)
     #> 1 | [table]
@@ -300,6 +312,7 @@ but it might be more readable.
     )
     toml |> ts_tree_select("table", "b", 1)
 
+
     #> # toml (4 lines, 1 selected element)
     #>   1 | [table]
     #>   2 | a = 1
@@ -309,6 +322,7 @@ but it might be more readable.
  
 
     toml[[list("table", "b", 1)]]
+
 
     #> [[1]]
     #> [1] 10
@@ -329,6 +343,7 @@ but it might be more readable.
     )
     toml
 
+
     #> # toml (4 lines)
     #> 1 | [table]
     #> 2 | a = 1
@@ -338,6 +353,7 @@ but it might be more readable.
  
 
     toml |> ts_tree_select("table", "b", 1)
+
 
     #> # toml (4 lines, 1 selected element)
     #>   1 | [table]
@@ -349,6 +365,7 @@ but it might be more readable.
 
     toml[[list("table", "b", 1)]] <- 100
     toml
+
 
     #> # toml (4 lines)
     #> 1 | [table]
@@ -381,6 +398,7 @@ Pretty print a tstoml object:
 
     toml
 
+
     #> # toml (24 lines)
     #>  1 | 
     #>  2 | # This is a TOML document
@@ -400,6 +418,7 @@ Select elements in a tstoml object
  
 
     ts_tree_select(toml, "owner")
+
 
     #> # toml (24 lines, 1 selected element)
     #>   ...
@@ -421,6 +440,7 @@ Select element(s) inside elements:
 
     ts_tree_select(toml, "owner", "name")
 
+
     #> # toml (24 lines, 1 selected element)
     #>   ...
     #>    4  | title = "TOML Example"
@@ -438,6 +458,7 @@ Select element(s) of an array:
 
     ts_tree_select(toml, "database", "ports", 1:2)
 
+
     #> # toml (24 lines, 2 selected elements)
     #>   ...
     #>    9  | 
@@ -454,6 +475,7 @@ Select multiple keys from a table:
  
 
     ts_tree_select(toml, "owner", c("name", "dob"))
+
 
     #> # toml (24 lines, 2 selected elements)
     #>   ...

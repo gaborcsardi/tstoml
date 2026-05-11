@@ -39,6 +39,7 @@ Pretty print a tstoml object:
 
     toml
 
+
     #> # toml (24 lines)
     #>  1 | 
     #>  2 | # This is a TOML document
@@ -56,6 +57,7 @@ Pretty print a tstoml object:
 ### Select elements in a tstoml object
 
     ts_tree_select(toml, "owner")
+
 
     #> # toml (24 lines, 1 selected element)
     #>   ...
@@ -75,6 +77,7 @@ Select element(s) inside elements:
 
     ts_tree_select(toml, "owner", "name")
 
+
     #> # toml (24 lines, 1 selected element)
     #>   ...
     #>    4  | title = "TOML Example"
@@ -90,6 +93,7 @@ Select element(s) of an array:
 
     ts_tree_select(toml, "database", "ports", 1:2)
 
+
     #> # toml (24 lines, 2 selected elements)
     #>   ...
     #>    9  | 
@@ -104,6 +108,7 @@ Select element(s) of an array:
 Select multiple keys from a table:
 
     ts_tree_select(toml, "owner", c("name", "dob"))
+
 
     #> # toml (24 lines, 2 selected elements)
     #>   ...
@@ -122,6 +127,7 @@ Select multiple keys from a table:
 Delete selected elements:
 
     ts_tree_select(toml, "owner", "name") |> ts_tree_delete()
+
 
     #> # toml (22 lines)
     #>  1 | # This is a TOML document
@@ -143,6 +149,7 @@ Insert a key-value pair into the document:
 
     ts_tree_insert(toml, key = "new_key", "new_value")
 
+
     #> # toml (25 lines)
     #>  1 | # This is a TOML document
     #>  2 | 
@@ -160,6 +167,7 @@ Insert a key-value pair into the document:
 Insert a key-value pair into a table:
 
     ts_tree_select(toml, "owner") |> ts_tree_insert(key = "dpt", "Engineering")
+
 
     #> # toml (24 lines)
     #>  1 | # This is a TOML document
@@ -180,6 +188,7 @@ Insert an element into an array:
     ts_tree_select(toml, "database", "ports") |>
       ts_tree_insert(10000L) |>
       print(n = 100)
+
 
     #> # toml (23 lines)
     #>  1 | # This is a TOML document
@@ -210,6 +219,7 @@ Insert a new table into the document:
 
     ts_tree_insert(toml, key = "new_table", list(a = 1, b = 2)) |>
       print(n = 100)
+
 
     #> # toml (27 lines)
     #>  1 | # This is a TOML document
@@ -245,6 +255,7 @@ Insert a new array of tables into the document:
     ts_tree_insert(toml, key = "new_aot",
       list(list(x = 1), list(x = 2))) |>
       print(n = 100)
+
 
     #> # toml (29 lines)
     #>  1 | # This is a TOML document
@@ -283,6 +294,7 @@ Update an existing element:
 
     ts_tree_select(toml, "title") |> ts_tree_update("A New TOML Example")
 
+
     #> # toml (23 lines)
     #>  1 | # This is a TOML document
     #>  2 | 
@@ -302,6 +314,7 @@ Update multiple elements at once:
     ts_tree_select(toml, "servers", c("alpha", "beta"), "ip") |>
       ts_tree_update("192.168.1.23") |>
       print(n = 100)
+
 
     #> # toml (23 lines)
     #>  1 | # This is a TOML document

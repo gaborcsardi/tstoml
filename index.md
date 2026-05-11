@@ -9,6 +9,7 @@ You can install the development version of tstoml from
 [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("pak")
 pak::pak("gaborcsardi/tstoml")
 ```
@@ -27,6 +28,7 @@ and also in the installed package:
 Create a tstoml object from a string:
 
 ``` r
+
 txt <- r"(
 # This is a TOML document
 
@@ -58,8 +60,10 @@ toml <- ts_parse_toml(text = txt)
 Pretty print a tstoml object:
 
 ``` r
+
 toml
 ```
+
 
     #> # toml (24 lines)
     #>  1 | 
@@ -78,8 +82,10 @@ toml
 ### Select elements in a tstoml object
 
 ``` r
+
 ts_tree_select(toml, "owner")
 ```
+
 
     #> # toml (24 lines, 1 selected element)
     #>   ...
@@ -98,8 +104,10 @@ ts_tree_select(toml, "owner")
 Select element(s) inside elements:
 
 ``` r
+
 ts_tree_select(toml, "owner", "name")
 ```
+
 
     #> # toml (24 lines, 1 selected element)
     #>   ...
@@ -115,8 +123,10 @@ ts_tree_select(toml, "owner", "name")
 Select element(s) of an array:
 
 ``` r
+
 ts_tree_select(toml, "database", "ports", 1:2)
 ```
+
 
     #> # toml (24 lines, 2 selected elements)
     #>   ...
@@ -132,8 +142,10 @@ ts_tree_select(toml, "database", "ports", 1:2)
 Select multiple keys from a table:
 
 ``` r
+
 ts_tree_select(toml, "owner", c("name", "dob"))
 ```
+
 
     #> # toml (24 lines, 2 selected elements)
     #>   ...
@@ -152,8 +164,10 @@ ts_tree_select(toml, "owner", c("name", "dob"))
 Delete selected elements:
 
 ``` r
+
 ts_tree_select(toml, "owner", "name") |> ts_tree_delete()
 ```
+
 
     #> # toml (22 lines)
     #>  1 | # This is a TOML document
@@ -174,8 +188,10 @@ ts_tree_select(toml, "owner", "name") |> ts_tree_delete()
 Insert a key-value pair into the document:
 
 ``` r
+
 ts_tree_insert(toml, key = "new_key", "new_value")
 ```
+
 
     #> # toml (25 lines)
     #>  1 | # This is a TOML document
@@ -194,8 +210,10 @@ ts_tree_insert(toml, key = "new_key", "new_value")
 Insert a key-value pair into a table:
 
 ``` r
+
 ts_tree_select(toml, "owner") |> ts_tree_insert(key = "dpt", "Engineering")
 ```
+
 
     #> # toml (24 lines)
     #>  1 | # This is a TOML document
@@ -214,10 +232,12 @@ ts_tree_select(toml, "owner") |> ts_tree_insert(key = "dpt", "Engineering")
 Insert an element into an array:
 
 ``` r
+
 ts_tree_select(toml, "database", "ports") |>
   ts_tree_insert(10000L) |>
   print(n = 100)
 ```
+
 
     #> # toml (23 lines)
     #>  1 | # This is a TOML document
@@ -247,9 +267,11 @@ ts_tree_select(toml, "database", "ports") |>
 Insert a new table into the document:
 
 ``` r
+
 ts_tree_insert(toml, key = "new_table", list(a = 1, b = 2)) |>
   print(n = 100)
 ```
+
 
     #> # toml (27 lines)
     #>  1 | # This is a TOML document
@@ -283,10 +305,12 @@ ts_tree_insert(toml, key = "new_table", list(a = 1, b = 2)) |>
 Insert a new array of tables into the document:
 
 ``` r
+
 ts_tree_insert(toml, key = "new_aot",
   list(list(x = 1), list(x = 2))) |>
   print(n = 100)
 ```
+
 
     #> # toml (29 lines)
     #>  1 | # This is a TOML document
@@ -324,8 +348,10 @@ ts_tree_insert(toml, key = "new_aot",
 Update an existing element:
 
 ``` r
+
 ts_tree_select(toml, "title") |> ts_tree_update("A New TOML Example")
 ```
+
 
     #> # toml (23 lines)
     #>  1 | # This is a TOML document
@@ -344,10 +370,12 @@ ts_tree_select(toml, "title") |> ts_tree_update("A New TOML Example")
 Update multiple elements at once:
 
 ``` r
+
 ts_tree_select(toml, "servers", c("alpha", "beta"), "ip") |>
   ts_tree_update("192.168.1.23") |>
   print(n = 100)
 ```
+
 
     #> # toml (23 lines)
     #>  1 | # This is a TOML document
