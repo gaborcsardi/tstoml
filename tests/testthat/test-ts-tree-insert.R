@@ -343,4 +343,8 @@ test_that("insert_into_aot", {
     toml |> ts_tree_select("a") |> ts_tree_insert(list(b = 3), at = 1)
     toml |> ts_tree_select("a") |> ts_tree_insert(list(b = 3))
   })
+  expect_snapshot({
+    toml <- ts_parse_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
+    toml |> ts_tree_select("a") |> ts_tree_insert(list(b = 3, c = 4), at = 0)
+  })
 })

@@ -766,3 +766,20 @@
        9 | [[a]]
       10 | b = 3.0
 
+---
+
+    Code
+      toml <- ts_parse_toml(text = "[[a]]\nb=1\n\n[[a]]\nb=2\n")
+      ts_tree_insert(ts_tree_select(toml, "a"), list(b = 3, c = 4), at = 0)
+    Output
+      # toml (9 lines)
+      1 | [[a]]
+      2 | b = 3.0
+      3 | c = 4.0
+      4 | 
+      5 | [[a]]
+      6 | b = 1
+      7 | 
+      8 | [[a]]
+      9 | b=2
+

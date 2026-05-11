@@ -529,7 +529,7 @@ insert_into_aot <- function(toml, sel1, new, at = Inf) {
     "[[",
     key,
     "]]\n",
-    stl_table_body(new),
+    paste(stl_table_body(new), collapse = "\n"),
     "\n"
   )
 
