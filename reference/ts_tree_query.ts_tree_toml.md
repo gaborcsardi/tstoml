@@ -46,7 +46,7 @@ the query language support. See links below.
 
 ``` r
 # Select all numbers in a TOML document ------------------------------------
-library(ts)
+library(tsitter)
 toml <- tstoml::ts_parse_toml(
   'a = 1\nb = [10.0, 20, 30]\nc = { c1 = true, c2 = 100 }'
 )

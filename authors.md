@@ -16,11 +16,11 @@
 Source:
 [`DESCRIPTION`](https://github.com/gaborcsardi/tstoml/blob/main/DESCRIPTION)
 
-Csárdi G (2026). *tstoml: Edit TOML files*. R package version
+Csárdi G (2026). *tstoml: Edit TOML Files*. R package version
 0.0.0.9000, <https://github.com/gaborcsardi/tstoml>.
 
     @Manual{,
-      title = {tstoml: Edit TOML files},
+      title = {tstoml: Edit TOML Files},
       author = {Gábor Csárdi},
       year = {2026},
       note = {R package version 0.0.0.9000},

@@ -17,7 +17,7 @@ pak::pak("gaborcsardi/tstoml")
 ## Documentation
 
 See at
-[`https://gaborcsardi.github.io/tstoml/`](https://gaborcsardi.github.io/tstoml/reference/index.html/)
+[`https://gaborcsardi.github.io/tstoml/`](https://gaborcsardi.github.io/tstoml/reference/index.html)
 and also in the installed package:
 [`help(package = "tstoml")`](https://gaborcsardi.github.io/tstoml/reference).
 
@@ -441,8 +441,8 @@ MIT © Posit Software, PBC
   : Parse a TOML file or string into a ts_tree_toml object
 - [`ts_language_toml()`](https://gaborcsardi.github.io/tstoml/reference/ts_language_toml.md)
   : TODO
-- [`ts_tree_new()`](https://r-lib.github.io/ts/reference/ts_tree_new.html)
-  : Create tree-sitter tree from file or string (from ts)
+- [`ts_tree_new()`](https://r-lib.github.io/tsitter/reference/ts_tree_new.html)
+  : Create tree-sitter tree from file or string (from tsitter)
 
 ## Selection
 

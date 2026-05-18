@@ -33,7 +33,7 @@ If `toml` has no selection then the the whole document is deleted. If
 ## Examples
 
 ``` r
-library(ts)
+library(tsitter)
 toml <- ts_parse_toml(text = toml_example_text())
 toml
 #> # toml (23 lines)
