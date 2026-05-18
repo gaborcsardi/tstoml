@@ -997,7 +997,7 @@
       ts_tree_select(toml, 0)
     Condition
       [1m[33mError[39m in `ts_tree_select1.ts_tree.integer()`:[22m
-      [33m![39m Zero indices are not allowed in ts selectors.
+      [33m![39m Zero indices are not allowed in tsitter selectors.
 
 ---
 

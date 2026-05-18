@@ -27,7 +27,7 @@ reference:
   - ts_parse_toml
   - ts_read_toml
   - ts_language_toml
-  - ts::ts_tree_new
+  - tsitter::ts_tree_new
 
 - title: Selection
   desc: |

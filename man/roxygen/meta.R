@@ -8,7 +8,7 @@ asciicast::init_knitr_engine(
   timeout = as.integer(Sys.getenv("ASCIICAST_TIMEOUT", 10)),
   startup = quote({
     options(cli.num_colors = 256)
-    library(ts)
+    library(tsitter)
     library(tstoml)
   })
 )
@@ -23,10 +23,10 @@ knitr::opts_chunk$set(
 )
 
 Sys.setenv("R_TS_PACKAGE" = "tstoml")
-ts:::ts_roclet_register()
+tsitter:::ts_roclet_register()
 
 list(
   markdown = TRUE,
   restrict_image_formats = TRUE,
-  roclets = c("rd", "namespace", "collate", "ts:::roclet_ts")
+  roclets = c("rd", "namespace", "collate", "tsitter:::roclet_ts")
 )
