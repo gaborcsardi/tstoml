@@ -24,7 +24,7 @@ If \code{toml} has no selection then the the whole document is deleted.
 If \code{toml} has an empty selection, then nothing is delted.
 }
 \examples{
-library(ts)
+library(tsitter)
 toml <- ts_parse_toml(text = toml_example_text())
 toml
 

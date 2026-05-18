@@ -7,23 +7,23 @@
 \method{ts_tree_query}{ts_tree_toml}(tree, query)
 }
 \arguments{
-\item{tree}{\eval{ts:::doc_insert("ts_tree_query_param_tree", "tsjtoml")}}
+\item{tree}{\eval{tsitter:::doc_insert("ts_tree_query_param_tree", "tsjtoml")}}
 
-\item{query}{\eval{ts:::doc_insert("ts_tree_query_param_query", "tsjtoml")}}
+\item{query}{\eval{tsitter:::doc_insert("ts_tree_query_param_query", "tsjtoml")}}
 }
 \value{
-\eval{ts:::doc_insert("ts_tree_query_return", "tsjtoml")}
+\eval{tsitter:::doc_insert("ts_tree_query_return", "tsjtoml")}
 }
 \description{
-\eval{ts:::doc_insert("ts_tree_query_description", "tsjtoml")}
+\eval{tsitter:::doc_insert("ts_tree_query_description", "tsjtoml")}
 }
 \details{
-\eval{ts:::doc_insert("ts_tree_query_details", "tsjtoml")}
-\eval{ts:::doc_extra()}
+\eval{tsitter:::doc_insert("ts_tree_query_details", "tsjtoml")}
+\eval{tsitter:::doc_extra()}
 }
 \examples{
 # Select all numbers in a TOML document ------------------------------------
-library(ts)
+library(tsitter)
 toml <- tstoml::ts_parse_toml(
   'a = 1\nb = [10.0, 20, 30]\nc = { c1 = true, c2 = 100 }'
 )

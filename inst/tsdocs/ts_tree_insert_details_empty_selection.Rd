@@ -6,6 +6,6 @@ toml |> ts_tree_select("nonexistent") |> ts_tree_insert("foo")
 <div class="asciicast" style="color: #B9C0CB;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
 #> <span style="color: #6F7783;"># toml (2 lines, 0 selected elements)</span>                                           
 #> <span style="color: #6F7783;">1 | </span>a = true                                                                    
-#> <span style="color: #6F7783;">2 | </span>b = &#91;1, 2, 3&#93;                                                               
+#> <span style="color: #6F7783;">2 | </span>b = [1, 2, 3]                                                               
 </pre></div>
 }}

@@ -7,11 +7,11 @@
 ts_unserialize_toml(file = NULL, text = NULL, ranges = NULL, options = NULL)
 }
 \arguments{
-\item{file}{\Sexpr[stage=render,results=rd]{ts:::doc_insert("ts::ts_tree_new_param_file", "ts")}}
+\item{file}{\Sexpr[stage=render,results=rd]{tsitter:::doc_insert("tsitter::ts_tree_new_param_file", "ts")}}
 
-\item{text}{\Sexpr[stage=render,results=rd]{ts:::doc_insert("ts::ts_tree_new_param_text", "ts")}}
+\item{text}{\Sexpr[stage=render,results=rd]{tsitter:::doc_insert("tsitter::ts_tree_new_param_text", "ts")}}
 
-\item{ranges}{\Sexpr[stage=render,results=rd]{ts:::doc_insert("ts::ts_tree_new_param_ranges", "ts")}}
+\item{ranges}{\Sexpr[stage=render,results=rd]{tsitter:::doc_insert("tsitter::ts_tree_new_param_ranges", "ts")}}
 
 \item{options}{Named list of parsing options, see
 \link[=tstoml_options]{tstoml options}.}

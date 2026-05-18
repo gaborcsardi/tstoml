@@ -10,16 +10,16 @@ ts_parse_toml(text, ranges = NULL, fail_on_parse_error = TRUE, options = NULL)
 ts_read_toml(file, ranges = NULL, fail_on_parse_error = TRUE, options = NULL)
 }
 \arguments{
-\item{text}{\Sexpr[stage=render,results=rd]{ts:::doc_insert("ts::ts_tree_new_param_text", "ts")}}
+\item{text}{\Sexpr[stage=render,results=rd]{tsitter:::doc_insert("tsitter::ts_tree_new_param_text", "ts")}}
 
-\item{ranges}{\Sexpr[stage=render,results=rd]{ts:::doc_insert("ts::ts_tree_new_param_ranges", "ts")}}
+\item{ranges}{\Sexpr[stage=render,results=rd]{tsitter:::doc_insert("tsitter::ts_tree_new_param_ranges", "ts")}}
 
-\item{fail_on_parse_error}{\Sexpr[stage=render,results=rd]{ts:::doc_insert("ts::ts_tree_new_param_fail_on_parse_error", "ts")}}
+\item{fail_on_parse_error}{\Sexpr[stage=render,results=rd]{tsitter:::doc_insert("tsitter::ts_tree_new_param_fail_on_parse_error", "ts")}}
 
 \item{options}{Named list of parsing options, see
 \link[=tstoml_options]{tstoml options}.}
 
-\item{file}{\Sexpr[stage=render,results=rd]{ts:::doc_insert("ts::ts_tree_new_param_file", "ts")}}
+\item{file}{\Sexpr[stage=render,results=rd]{tsitter:::doc_insert("tsitter::ts_tree_new_param_file", "ts")}}
 }
 \value{
 A \code{ts_tree_toml} object.

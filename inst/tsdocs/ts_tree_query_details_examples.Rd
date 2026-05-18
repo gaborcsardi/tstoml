@@ -10,7 +10,7 @@ toml |> ts_tree_query("[(float) (integer)] @number")
 #> <span style="color: #999999;"># A data frame: 1 × 4</span>                                                           
 #>      id name  pattern                         match_count                       
 #>   <span style="font-style: italic;color: #999999;">&lt;int&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span> <span style="font-style: italic;color: #999999;">&lt;chr&gt;</span>                                 <span style="font-style: italic;color: #999999;">&lt;int&gt;</span>                       
-#> <span style="color: #c2c2c2;">1</span>     1 <span style="color: #E88388;">NA</span>    <span style="color: #999999;">"</span>&#91;(float) (integer)&#93; @number\\n<span style="color: #999999;">"</span>           5                       
+#> <span style="color: #c2c2c2;">1</span>     1 <span style="color: #E88388;">NA</span>    <span style="color: #999999;">"</span>[(float) (integer)] @number\\n<span style="color: #999999;">"</span>           5                       
 #>                                                                                 
 #> $captures                                                                       
 #> <span style="color: #999999;"># A data frame: 1 × 2</span>                                                           

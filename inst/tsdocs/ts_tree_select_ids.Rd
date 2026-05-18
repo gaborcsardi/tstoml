@@ -24,7 +24,7 @@ ts_tree_dom(toml)
 <div class="asciicast" style="color: #B9C0CB;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
 #> <span style="color: #6F7783;"># toml (3 lines, 1 selected element)</span>                                            
 #>   <span style="color: #6F7783;">1 | </span>a = 1                                                                     
-#> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;">2 | </span>b = <span style="color: #66C2CD;">&#91;10, 20, 30&#93;</span>                                                          
-#>   <span style="color: #6F7783;">3 | </span>c = \{ c1 = true, c2 = &#91;&#93; \}                                                
+#> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;">2 | </span>b = <span style="color: #66C2CD;">[10, 20, 30]</span>                                                          
+#>   <span style="color: #6F7783;">3 | </span>c = \{ c1 = true, c2 = [] \}                                                
 </pre></div>
 }}

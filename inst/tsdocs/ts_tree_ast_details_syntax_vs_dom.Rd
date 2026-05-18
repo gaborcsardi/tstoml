@@ -5,16 +5,21 @@
   name = 'tstoml'
   version = '0.1.0'"
 )
-}\if{html}{\out{</div>}}
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #B9C0CB;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                                                                 
+</pre></div>
+}}
+
 
 \if{html}{\out{<div class="sourceCode r"><p style="display:none">&nbsp;}}\preformatted{ts_tree_ast(tree)
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #B9C0CB;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
 #> document (1)                             1|                                     
 #> └─table (2)                              2|                                     
-#>   ├─&#91; (3)                                 |  &#91;                                  
+#>   ├─[ (3)                                 |  [                                  
 #>   ├─bare_key (4)                          |   package                           
-#>   ├─&#93; (5)                                 |          &#93;                          
+#>   ├─] (5)                                 |          ]                          
 #>   ├─pair (6)                             3|                                     
 #>   │ ├─bare_key (7)                        |  name                               
 #>   │ ├─= (8)                               |       =                             

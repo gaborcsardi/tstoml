@@ -10,7 +10,7 @@ toml
 <div class="asciicast" style="color: #B9C0CB;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
 #> <span style="color: #6F7783;"># toml (4 lines)</span>                                                                
 #> <span style="color: #6F7783;">1 | </span>                                                                            
-#> <span style="color: #6F7783;">2 | </span>  &#91;package&#93;                                                                 
+#> <span style="color: #6F7783;">2 | </span>  [package]                                                                 
 #> <span style="color: #6F7783;">3 | </span>  name = 'tstoml'                                                           
 #> <span style="color: #6F7783;">4 | </span>  version = '0.1.0'                                                         
 </pre></div>
@@ -21,7 +21,7 @@ toml
 }\if{html}{\out{</div>}}\if{html}{\out{
 <div class="asciicast" style="color: #B9C0CB;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
 #> <span style="color: #6F7783;"># toml (2 lines)</span>                                                                
-#> <span style="color: #6F7783;">1 | </span>&#91;package&#93;                                                                   
+#> <span style="color: #6F7783;">1 | </span>[package]                                                                   
 #> <span style="color: #6F7783;">2 | </span>  version = '0.1.0'                                                         
 </pre></div>
 }}

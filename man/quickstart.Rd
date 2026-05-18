@@ -37,7 +37,12 @@ ip = "10.0.0.2"
 role = "backend"
 )"
 toml <- ts_parse_toml(text = txt)
-}\if{html}{\out{</div>}}
+}\if{html}{\out{</div>}}\if{html}{\out{
+<div class="asciicast" style="color: #B9C0CB;font-family: 'Fira Code',Monaco,Consolas,Menlo,'Bitstream Vera Sans Mono','Powerline Symbols',monospace;line-height: 1.300000"><pre>
+#>                                                                                 
+</pre></div>
+}}
+
 
 Pretty print a tstoml object:
 
@@ -50,11 +55,11 @@ Pretty print a tstoml object:
 #> <span style="color: #6F7783;"> 3 | </span>                                                                           
 #> <span style="color: #6F7783;"> 4 | </span>title = "TOML Example"                                                     
 #> <span style="color: #6F7783;"> 5 | </span>                                                                           
-#> <span style="color: #6F7783;"> 6 | </span>&#91;owner&#93;                                                                    
+#> <span style="color: #6F7783;"> 6 | </span>[owner]                                                                    
 #> <span style="color: #6F7783;"> 7 | </span>name = "Tom Preston-Werner"                                                
 #> <span style="color: #6F7783;"> 8 | </span>dob = 1979-05-27T07:32:00-08:00                                            
 #> <span style="color: #6F7783;"> 9 | </span>                                                                           
-#> <span style="color: #6F7783;">10 | </span>&#91;database&#93;                                                                 
+#> <span style="color: #6F7783;">10 | </span>[database]                                                                 
 #> <span style="color: #6F7783;">ℹ 14 more lines</span>                                                                 
 #> <span style="color: #6F7783;">ℹ Use `print(n = ...)` to see more lines</span>                                        
 </pre></div>
@@ -72,13 +77,13 @@ Pretty print a tstoml object:
 #>   <span style="color: #6F7783;"> 3  | </span>                                                                        
 #>   <span style="color: #6F7783;"> 4  | </span>title = "TOML Example"                                                  
 #>   <span style="color: #6F7783;"> 5  | </span>                                                                        
-#> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 6  | </span><span style="color: #66C2CD;">&#91;owner&#93;</span>                                                                 
+#> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 6  | </span><span style="color: #66C2CD;">[owner]</span>                                                                 
 #> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 7  | </span><span style="color: #66C2CD;">name = "Tom Preston-Werner"</span>                                             
 #> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 8  | </span><span style="color: #66C2CD;">dob = 1979-05-27T07:32:00-08:00</span>                                         
 #> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 9  | </span>                                                                        
-#>   <span style="color: #6F7783;">10  | </span>&#91;database&#93;                                                              
+#>   <span style="color: #6F7783;">10  | </span>[database]                                                              
 #>   <span style="color: #6F7783;">11  | </span>enabled = true                                                          
-#>   <span style="color: #6F7783;">12  | </span>ports = &#91; 8000, 8001, 8002 &#93;                                            
+#>   <span style="color: #6F7783;">12  | </span>ports = [ 8000, 8001, 8002 ]                                            
 #>   <span style="color: #6F7783;">...</span>                                                                           
 </pre></div>
 }}
@@ -93,11 +98,11 @@ Select element(s) inside elements:
 #>   <span style="color: #6F7783;">...</span>                                                                           
 #>   <span style="color: #6F7783;"> 4  | </span>title = "TOML Example"                                                  
 #>   <span style="color: #6F7783;"> 5  | </span>                                                                        
-#>   <span style="color: #6F7783;"> 6  | </span>&#91;owner&#93;                                                                 
+#>   <span style="color: #6F7783;"> 6  | </span>[owner]                                                                 
 #> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 7  | </span>name = <span style="color: #66C2CD;">"Tom Preston-Werner"</span>                                             
 #>   <span style="color: #6F7783;"> 8  | </span>dob = 1979-05-27T07:32:00-08:00                                         
 #>   <span style="color: #6F7783;"> 9  | </span>                                                                        
-#>   <span style="color: #6F7783;">10  | </span>&#91;database&#93;                                                              
+#>   <span style="color: #6F7783;">10  | </span>[database]                                                              
 #>   <span style="color: #6F7783;">...</span>                                                                           
 </pre></div>
 }}
@@ -111,10 +116,10 @@ Select element(s) of an array:
 #> <span style="color: #6F7783;"># toml (24 lines, 2 selected elements)</span>                                          
 #>   <span style="color: #6F7783;">...</span>                                                                           
 #>   <span style="color: #6F7783;"> 9  | </span>                                                                        
-#>   <span style="color: #6F7783;">10  | </span>&#91;database&#93;                                                              
+#>   <span style="color: #6F7783;">10  | </span>[database]                                                              
 #>   <span style="color: #6F7783;">11  | </span>enabled = true                                                          
-#> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;">12  | </span>ports = &#91; <span style="color: #66C2CD;">8000</span>, <span style="color: #66C2CD;">8001</span>, 8002 &#93;                                            
-#>   <span style="color: #6F7783;">13  | </span>data = &#91; &#91;"delta", "phi"&#93;, &#91;3.14&#93; &#93;                                     
+#> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;">12  | </span>ports = [ <span style="color: #66C2CD;">8000</span>, <span style="color: #66C2CD;">8001</span>, 8002 ]                                            
+#>   <span style="color: #6F7783;">13  | </span>data = [ ["delta", "phi"], [3.14] ]                                     
 #>   <span style="color: #6F7783;">14  | </span>temp_targets = \{ cpu = 79.5, case = 72.0 \}                              
 #>   <span style="color: #6F7783;">15  | </span>                                                                        
 #>   <span style="color: #6F7783;">...</span>                                                                           
@@ -131,11 +136,11 @@ Select multiple keys from a table:
 #>   <span style="color: #6F7783;">...</span>                                                                           
 #>   <span style="color: #6F7783;"> 4  | </span>title = "TOML Example"                                                  
 #>   <span style="color: #6F7783;"> 5  | </span>                                                                        
-#>   <span style="color: #6F7783;"> 6  | </span>&#91;owner&#93;                                                                 
+#>   <span style="color: #6F7783;"> 6  | </span>[owner]                                                                 
 #> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 7  | </span>name = <span style="color: #66C2CD;">"Tom Preston-Werner"</span>                                             
 #> <span style="background-color: #66C2CD;">&gt;</span> <span style="color: #6F7783;"> 8  | </span>dob = <span style="color: #66C2CD;">1979-05-27T07:32:00-08:00</span>                                         
 #>   <span style="color: #6F7783;"> 9  | </span>                                                                        
-#>   <span style="color: #6F7783;">10  | </span>&#91;database&#93;                                                              
+#>   <span style="color: #6F7783;">10  | </span>[database]                                                              
 #>   <span style="color: #6F7783;">11  | </span>enabled = true                                                          
 #>   <span style="color: #6F7783;">...</span>                                                                           
 </pre></div>
@@ -155,12 +160,12 @@ Delete selected elements:
 #> <span style="color: #6F7783;"> 2 | </span>                                                                           
 #> <span style="color: #6F7783;"> 3 | </span>title = "TOML Example"                                                     
 #> <span style="color: #6F7783;"> 4 | </span>                                                                           
-#> <span style="color: #6F7783;"> 5 | </span>&#91;owner&#93;                                                                    
+#> <span style="color: #6F7783;"> 5 | </span>[owner]                                                                    
 #> <span style="color: #6F7783;"> 6 | </span>dob = 1979-05-27T07:32:00-08:00                                            
 #> <span style="color: #6F7783;"> 7 | </span>                                                                           
-#> <span style="color: #6F7783;"> 8 | </span>&#91;database&#93;                                                                 
+#> <span style="color: #6F7783;"> 8 | </span>[database]                                                                 
 #> <span style="color: #6F7783;"> 9 | </span>enabled = true                                                             
-#> <span style="color: #6F7783;">10 | </span>ports = &#91; 8000, 8001, 8002 &#93;                                               
+#> <span style="color: #6F7783;">10 | </span>ports = [ 8000, 8001, 8002 ]                                               
 #> <span style="color: #6F7783;">ℹ 12 more lines</span>                                                                 
 #> <span style="color: #6F7783;">ℹ Use `print(n = ...)` to see more lines</span>                                        
 </pre></div>
@@ -182,7 +187,7 @@ Insert a key-value pair into the document:
 #> <span style="color: #6F7783;"> 4 | </span>                                                                           
 #> <span style="color: #6F7783;"> 5 | </span>                                                                           
 #> <span style="color: #6F7783;"> 6 | </span>new_key = "new_value"                                                      
-#> <span style="color: #6F7783;"> 7 | </span>&#91;owner&#93;                                                                    
+#> <span style="color: #6F7783;"> 7 | </span>[owner]                                                                    
 #> <span style="color: #6F7783;"> 8 | </span>name = "Tom Preston-Werner"                                                
 #> <span style="color: #6F7783;"> 9 | </span>dob = 1979-05-27T07:32:00-08:00                                            
 #> <span style="color: #6F7783;">10 | </span>                                                                           
@@ -202,12 +207,12 @@ Insert a key-value pair into a table:
 #> <span style="color: #6F7783;"> 2 | </span>                                                                           
 #> <span style="color: #6F7783;"> 3 | </span>title = "TOML Example"                                                     
 #> <span style="color: #6F7783;"> 4 | </span>                                                                           
-#> <span style="color: #6F7783;"> 5 | </span>&#91;owner&#93;                                                                    
+#> <span style="color: #6F7783;"> 5 | </span>[owner]                                                                    
 #> <span style="color: #6F7783;"> 6 | </span>name = "Tom Preston-Werner"                                                
 #> <span style="color: #6F7783;"> 7 | </span>dob = 1979-05-27T07:32:00-08:00                                            
 #> <span style="color: #6F7783;"> 8 | </span>dpt = "Engineering"                                                        
 #> <span style="color: #6F7783;"> 9 | </span>                                                                           
-#> <span style="color: #6F7783;">10 | </span>&#91;database&#93;                                                                 
+#> <span style="color: #6F7783;">10 | </span>[database]                                                                 
 #> <span style="color: #6F7783;">ℹ 14 more lines</span>                                                                 
 #> <span style="color: #6F7783;">ℹ Use `print(n = ...)` to see more lines</span>                                        
 </pre></div>
@@ -226,23 +231,23 @@ Insert an element into an array:
 #> <span style="color: #6F7783;"> 2 | </span>                                                                           
 #> <span style="color: #6F7783;"> 3 | </span>title = "TOML Example"                                                     
 #> <span style="color: #6F7783;"> 4 | </span>                                                                           
-#> <span style="color: #6F7783;"> 5 | </span>&#91;owner&#93;                                                                    
+#> <span style="color: #6F7783;"> 5 | </span>[owner]                                                                    
 #> <span style="color: #6F7783;"> 6 | </span>name = "Tom Preston-Werner"                                                
 #> <span style="color: #6F7783;"> 7 | </span>dob = 1979-05-27T07:32:00-08:00                                            
 #> <span style="color: #6F7783;"> 8 | </span>                                                                           
-#> <span style="color: #6F7783;"> 9 | </span>&#91;database&#93;                                                                 
+#> <span style="color: #6F7783;"> 9 | </span>[database]                                                                 
 #> <span style="color: #6F7783;">10 | </span>enabled = true                                                             
-#> <span style="color: #6F7783;">11 | </span>ports = &#91; 8000, 8001, 8002, 10000 &#93;                                        
-#> <span style="color: #6F7783;">12 | </span>data = &#91; &#91;"delta", "phi"&#93;, &#91;3.14&#93; &#93;                                        
+#> <span style="color: #6F7783;">11 | </span>ports = [ 8000, 8001, 8002, 10000 ]                                        
+#> <span style="color: #6F7783;">12 | </span>data = [ ["delta", "phi"], [3.14] ]                                        
 #> <span style="color: #6F7783;">13 | </span>temp_targets = \{ cpu = 79.5, case = 72.0 \}                                 
 #> <span style="color: #6F7783;">14 | </span>                                                                           
-#> <span style="color: #6F7783;">15 | </span>&#91;servers&#93;                                                                  
+#> <span style="color: #6F7783;">15 | </span>[servers]                                                                  
 #> <span style="color: #6F7783;">16 | </span>                                                                           
-#> <span style="color: #6F7783;">17 | </span>&#91;servers.alpha&#93;                                                            
+#> <span style="color: #6F7783;">17 | </span>[servers.alpha]                                                            
 #> <span style="color: #6F7783;">18 | </span>ip = "10.0.0.1"                                                            
 #> <span style="color: #6F7783;">19 | </span>role = "frontend"                                                          
 #> <span style="color: #6F7783;">20 | </span>                                                                           
-#> <span style="color: #6F7783;">21 | </span>&#91;servers.beta&#93;                                                             
+#> <span style="color: #6F7783;">21 | </span>[servers.beta]                                                             
 #> <span style="color: #6F7783;">22 | </span>ip = "10.0.0.2"                                                            
 #> <span style="color: #6F7783;">23 | </span>role = "backend"                                                           
 </pre></div>
@@ -260,27 +265,27 @@ Insert a new table into the document:
 #> <span style="color: #6F7783;"> 2 | </span>                                                                           
 #> <span style="color: #6F7783;"> 3 | </span>title = "TOML Example"                                                     
 #> <span style="color: #6F7783;"> 4 | </span>                                                                           
-#> <span style="color: #6F7783;"> 5 | </span>&#91;owner&#93;                                                                    
+#> <span style="color: #6F7783;"> 5 | </span>[owner]                                                                    
 #> <span style="color: #6F7783;"> 6 | </span>name = "Tom Preston-Werner"                                                
 #> <span style="color: #6F7783;"> 7 | </span>dob = 1979-05-27T07:32:00-08:00                                            
 #> <span style="color: #6F7783;"> 8 | </span>                                                                           
-#> <span style="color: #6F7783;"> 9 | </span>&#91;database&#93;                                                                 
+#> <span style="color: #6F7783;"> 9 | </span>[database]                                                                 
 #> <span style="color: #6F7783;">10 | </span>enabled = true                                                             
-#> <span style="color: #6F7783;">11 | </span>ports = &#91; 8000, 8001, 8002 &#93;                                               
-#> <span style="color: #6F7783;">12 | </span>data = &#91; &#91;"delta", "phi"&#93;, &#91;3.14&#93; &#93;                                        
+#> <span style="color: #6F7783;">11 | </span>ports = [ 8000, 8001, 8002 ]                                               
+#> <span style="color: #6F7783;">12 | </span>data = [ ["delta", "phi"], [3.14] ]                                        
 #> <span style="color: #6F7783;">13 | </span>temp_targets = \{ cpu = 79.5, case = 72.0 \}                                 
 #> <span style="color: #6F7783;">14 | </span>                                                                           
-#> <span style="color: #6F7783;">15 | </span>&#91;servers&#93;                                                                  
+#> <span style="color: #6F7783;">15 | </span>[servers]                                                                  
 #> <span style="color: #6F7783;">16 | </span>                                                                           
-#> <span style="color: #6F7783;">17 | </span>&#91;servers.alpha&#93;                                                            
+#> <span style="color: #6F7783;">17 | </span>[servers.alpha]                                                            
 #> <span style="color: #6F7783;">18 | </span>ip = "10.0.0.1"                                                            
 #> <span style="color: #6F7783;">19 | </span>role = "frontend"                                                          
 #> <span style="color: #6F7783;">20 | </span>                                                                           
-#> <span style="color: #6F7783;">21 | </span>&#91;servers.beta&#93;                                                             
+#> <span style="color: #6F7783;">21 | </span>[servers.beta]                                                             
 #> <span style="color: #6F7783;">22 | </span>ip = "10.0.0.2"                                                            
 #> <span style="color: #6F7783;">23 | </span>role = "backend"                                                           
 #> <span style="color: #6F7783;">24 | </span>                                                                           
-#> <span style="color: #6F7783;">25 | </span>&#91;new_table&#93;                                                                
+#> <span style="color: #6F7783;">25 | </span>[new_table]                                                                
 #> <span style="color: #6F7783;">26 | </span>a = 1.0                                                                    
 #> <span style="color: #6F7783;">27 | </span>b = 2.0                                                                    
 </pre></div>
@@ -299,30 +304,30 @@ Insert a new array of tables into the document:
 #> <span style="color: #6F7783;"> 2 | </span>                                                                           
 #> <span style="color: #6F7783;"> 3 | </span>title = "TOML Example"                                                     
 #> <span style="color: #6F7783;"> 4 | </span>                                                                           
-#> <span style="color: #6F7783;"> 5 | </span>&#91;owner&#93;                                                                    
+#> <span style="color: #6F7783;"> 5 | </span>[owner]                                                                    
 #> <span style="color: #6F7783;"> 6 | </span>name = "Tom Preston-Werner"                                                
 #> <span style="color: #6F7783;"> 7 | </span>dob = 1979-05-27T07:32:00-08:00                                            
 #> <span style="color: #6F7783;"> 8 | </span>                                                                           
-#> <span style="color: #6F7783;"> 9 | </span>&#91;database&#93;                                                                 
+#> <span style="color: #6F7783;"> 9 | </span>[database]                                                                 
 #> <span style="color: #6F7783;">10 | </span>enabled = true                                                             
-#> <span style="color: #6F7783;">11 | </span>ports = &#91; 8000, 8001, 8002 &#93;                                               
-#> <span style="color: #6F7783;">12 | </span>data = &#91; &#91;"delta", "phi"&#93;, &#91;3.14&#93; &#93;                                        
+#> <span style="color: #6F7783;">11 | </span>ports = [ 8000, 8001, 8002 ]                                               
+#> <span style="color: #6F7783;">12 | </span>data = [ ["delta", "phi"], [3.14] ]                                        
 #> <span style="color: #6F7783;">13 | </span>temp_targets = \{ cpu = 79.5, case = 72.0 \}                                 
 #> <span style="color: #6F7783;">14 | </span>                                                                           
-#> <span style="color: #6F7783;">15 | </span>&#91;servers&#93;                                                                  
+#> <span style="color: #6F7783;">15 | </span>[servers]                                                                  
 #> <span style="color: #6F7783;">16 | </span>                                                                           
-#> <span style="color: #6F7783;">17 | </span>&#91;servers.alpha&#93;                                                            
+#> <span style="color: #6F7783;">17 | </span>[servers.alpha]                                                            
 #> <span style="color: #6F7783;">18 | </span>ip = "10.0.0.1"                                                            
 #> <span style="color: #6F7783;">19 | </span>role = "frontend"                                                          
 #> <span style="color: #6F7783;">20 | </span>                                                                           
-#> <span style="color: #6F7783;">21 | </span>&#91;servers.beta&#93;                                                             
+#> <span style="color: #6F7783;">21 | </span>[servers.beta]                                                             
 #> <span style="color: #6F7783;">22 | </span>ip = "10.0.0.2"                                                            
 #> <span style="color: #6F7783;">23 | </span>role = "backend"                                                           
 #> <span style="color: #6F7783;">24 | </span>                                                                           
-#> <span style="color: #6F7783;">25 | </span>&#91;&#91;new_aot&#93;&#93;                                                                
+#> <span style="color: #6F7783;">25 | </span>[[new_aot]]                                                                
 #> <span style="color: #6F7783;">26 | </span>x = 1.0                                                                    
 #> <span style="color: #6F7783;">27 | </span>                                                                           
-#> <span style="color: #6F7783;">28 | </span>&#91;&#91;new_aot&#93;&#93;                                                                
+#> <span style="color: #6F7783;">28 | </span>[[new_aot]]                                                                
 #> <span style="color: #6F7783;">29 | </span>x = 2.0                                                                    
 </pre></div>
 }}
@@ -341,11 +346,11 @@ Update an existing element:
 #> <span style="color: #6F7783;"> 2 | </span>                                                                           
 #> <span style="color: #6F7783;"> 3 | </span>title = "A New TOML Example"                                               
 #> <span style="color: #6F7783;"> 4 | </span>                                                                           
-#> <span style="color: #6F7783;"> 5 | </span>&#91;owner&#93;                                                                    
+#> <span style="color: #6F7783;"> 5 | </span>[owner]                                                                    
 #> <span style="color: #6F7783;"> 6 | </span>name = "Tom Preston-Werner"                                                
 #> <span style="color: #6F7783;"> 7 | </span>dob = 1979-05-27T07:32:00-08:00                                            
 #> <span style="color: #6F7783;"> 8 | </span>                                                                           
-#> <span style="color: #6F7783;"> 9 | </span>&#91;database&#93;                                                                 
+#> <span style="color: #6F7783;"> 9 | </span>[database]                                                                 
 #> <span style="color: #6F7783;">10 | </span>enabled = true                                                             
 #> <span style="color: #6F7783;">ℹ 13 more lines</span>                                                                 
 #> <span style="color: #6F7783;">ℹ Use `print(n = ...)` to see more lines</span>                                        
@@ -365,23 +370,23 @@ Update multiple elements at once:
 #> <span style="color: #6F7783;"> 2 | </span>                                                                           
 #> <span style="color: #6F7783;"> 3 | </span>title = "TOML Example"                                                     
 #> <span style="color: #6F7783;"> 4 | </span>                                                                           
-#> <span style="color: #6F7783;"> 5 | </span>&#91;owner&#93;                                                                    
+#> <span style="color: #6F7783;"> 5 | </span>[owner]                                                                    
 #> <span style="color: #6F7783;"> 6 | </span>name = "Tom Preston-Werner"                                                
 #> <span style="color: #6F7783;"> 7 | </span>dob = 1979-05-27T07:32:00-08:00                                            
 #> <span style="color: #6F7783;"> 8 | </span>                                                                           
-#> <span style="color: #6F7783;"> 9 | </span>&#91;database&#93;                                                                 
+#> <span style="color: #6F7783;"> 9 | </span>[database]                                                                 
 #> <span style="color: #6F7783;">10 | </span>enabled = true                                                             
-#> <span style="color: #6F7783;">11 | </span>ports = &#91; 8000, 8001, 8002 &#93;                                               
-#> <span style="color: #6F7783;">12 | </span>data = &#91; &#91;"delta", "phi"&#93;, &#91;3.14&#93; &#93;                                        
+#> <span style="color: #6F7783;">11 | </span>ports = [ 8000, 8001, 8002 ]                                               
+#> <span style="color: #6F7783;">12 | </span>data = [ ["delta", "phi"], [3.14] ]                                        
 #> <span style="color: #6F7783;">13 | </span>temp_targets = \{ cpu = 79.5, case = 72.0 \}                                 
 #> <span style="color: #6F7783;">14 | </span>                                                                           
-#> <span style="color: #6F7783;">15 | </span>&#91;servers&#93;                                                                  
+#> <span style="color: #6F7783;">15 | </span>[servers]                                                                  
 #> <span style="color: #6F7783;">16 | </span>                                                                           
-#> <span style="color: #6F7783;">17 | </span>&#91;servers.alpha&#93;                                                            
+#> <span style="color: #6F7783;">17 | </span>[servers.alpha]                                                            
 #> <span style="color: #6F7783;">18 | </span>ip = "192.168.1.23"                                                        
 #> <span style="color: #6F7783;">19 | </span>role = "frontend"                                                          
 #> <span style="color: #6F7783;">20 | </span>                                                                           
-#> <span style="color: #6F7783;">21 | </span>&#91;servers.beta&#93;                                                             
+#> <span style="color: #6F7783;">21 | </span>[servers.beta]                                                             
 #> <span style="color: #6F7783;">22 | </span>ip = "192.168.1.23"                                                        
 #> <span style="color: #6F7783;">23 | </span>role = "backend"                                                           
 </pre></div>

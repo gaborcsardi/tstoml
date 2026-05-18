@@ -7,23 +7,23 @@
 \method{ts_tree_select}{ts_tree_toml}(tree, ..., refine = FALSE)
 }
 \arguments{
-\item{tree}{\eval{ts:::doc_insert("ts::ts_tree_select_param_tree", "tstoml")}}
+\item{tree}{\eval{tsitter:::doc_insert("tsitter::ts_tree_select_param_tree", "tstoml")}}
 
-\item{...}{\eval{ts:::doc_insert("ts::ts_tree_select_param_dots", "tstoml")}}
+\item{...}{\eval{tsitter:::doc_insert("tsitter::ts_tree_select_param_dots", "tstoml")}}
 
-\item{refine}{\eval{ts:::doc_insert("ts::ts_tree_select_param_refine", "tstoml")}}
+\item{refine}{\eval{tsitter:::doc_insert("tsitter::ts_tree_select_param_refine", "tstoml")}}
 }
 \value{
-\eval{ts:::doc_insert("ts::ts_tree_select_return", "tstoml")}
+\eval{tsitter:::doc_insert("tsitter::ts_tree_select_return", "tstoml")}
 }
 \description{
-\eval{ts:::doc_insert("ts::ts_tree_select_description", "tstoml")}
+\eval{tsitter:::doc_insert("tsitter::ts_tree_select_description", "tstoml")}
 
-This is the S3 method of the \code{\link[ts:ts_tree_select]{ts::ts_tree_select()}} generic,
+This is the S3 method of the \code{\link[tsitter:ts_tree_select]{tsitter::ts_tree_select()}} generic,
 for \link{tstoml} objects.
 }
 \details{
-\eval{ts:::doc_insert("ts::ts_tree_select_details", "tstoml")}
-\eval{ts:::doc_insert("tstoml::ts_tree_select_examples", "tstoml")}
-\eval{ts:::doc_extra()}
+\eval{tsitter:::doc_insert("tsitter::ts_tree_select_details", "tstoml")}
+\eval{tsitter:::doc_insert("tstoml::ts_tree_select_examples", "tstoml")}
+\eval{tsitter:::doc_extra()}
 }
